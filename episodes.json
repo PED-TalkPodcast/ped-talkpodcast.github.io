@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-02T09:11:28.671856+00:00",
+  "updated": "2026-11-02T09:31:00Z",
   "episodes": [
     {
       "title": "S01E05",
@@ -7,7 +7,12 @@
       "audio": "https://anchor.fm/s/11831bbb8/podcast/play/128172384/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-27%2F435104897-44100-2-23762f9fc0449.m4a",
       "link": "https://podcasters.spotify.com/pod/show/ped-talk-podcast/episodes/S01E05-e3r60t0",
       "published": "Tue, 27 Oct 2026 11:15:52 GMT",
-      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/46908798/46908798-1791315408205-f8eae903f17b3.jpg"
+      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_nologo/46908798/46908798-1791315408205-f8eae903f17b3.jpg",
+      "season": "Season 1",
+      "categories": [
+        "Leadership",
+        "Personal Growth"
+      ]
     },
     {
       "title": "S01E04",
@@ -15,7 +20,12 @@
       "audio": "https://anchor.fm/s/11831bbb8/podcast/play/127822515/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-21%2F434640678-44100-2-63e2ac8923502.m4a",
       "link": "https://podcasters.spotify.com/pod/show/ped-talk-podcast/episodes/S01E04-e3qrb7j",
       "published": "Wed, 21 Oct 2026 07:59:07 GMT",
-      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1792569554720-caffa21c1ef3.jpg"
+      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1792569554720-caffa21c1ef3.jpg",
+      "season": "Season 1",
+      "categories": [
+        "Relationships",
+        "Personal Growth"
+      ]
     },
     {
       "title": "S01E03- Character becomes destiny",
@@ -23,7 +33,12 @@
       "audio": "https://anchor.fm/s/11831bbb8/podcast/play/127373792/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-13%2F434034380-44100-2-3982d4c0776ab.m4a",
       "link": "https://podcasters.spotify.com/pod/show/ped-talk-podcast/episodes/S01E03--Character-becomes-destiny-e3qdl10",
       "published": "Tue, 13 Oct 2026 02:47:27 GMT",
-      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791859654467-cd59b0764affd.jpg"
+      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791859654467-cd59b0764affd.jpg",
+      "season": "Season 1",
+      "categories": [
+        "Leadership",
+        "Personal Growth"
+      ]
     },
     {
       "title": "The High Road of Life",
@@ -31,7 +46,11 @@
       "audio": "https://anchor.fm/s/11831bbb8/podcast/play/127019269/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-7%2F05e6d378-a5e7-044d-bbf7-467e3b96898c.mp3",
       "link": "https://podcasters.spotify.com/pod/show/ped-talk-podcast/episodes/The-High-Road-of-Life-e3q2qq5",
       "published": "Wed, 07 Oct 2026 10:36:17 GMT",
-      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791369492263-824d93e091537.jpg"
+      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791369492263-824d93e091537.jpg",
+      "season": "Season 1",
+      "categories": [
+        "Personal Growth"
+      ]
     },
     {
       "title": "Joseph Leveled Up",
@@ -39,7 +58,11 @@
       "audio": "https://anchor.fm/s/11831bbb8/podcast/play/126974183/https%3A%2F%2Fd3ctxlq1ktw2nl.cloudfront.net%2Fstaging%2F2026-9-6%2F4c9cc06c-b336-3376-e457-bb64a751f6c2.mp3",
       "link": "https://podcasters.spotify.com/pod/show/ped-talk-podcast/episodes/Joseph-Leveled-Up-e3q1ep7",
       "published": "Tue, 06 Oct 2026 22:24:59 GMT",
-      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791325285613-b78695bcf6151.jpg"
+      "image": "https://d3t3ozftmdmh3i.cloudfront.net/staging/podcast_uploaded_episode/46908798/46908798-1791325285613-b78695bcf6151.jpg",
+      "season": "Season 1",
+      "categories": [
+        "Leadership"
+      ]
     }
   ]
 }
