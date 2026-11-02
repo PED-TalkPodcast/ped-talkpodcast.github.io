@@ -53,40 +53,18 @@
     }
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    body {
-      margin: 0;
-      background: var(--paper);
-      color: var(--ink);
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.55;
-    }
-    body::before {
-      content: "";
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      opacity: .16;
-      background-image: radial-gradient(rgba(11,36,26,.16) .7px, transparent .7px);
-      background-size: 6px 6px;
-      mix-blend-mode: multiply;
-      z-index: -1;
-    }
+    body { margin: 0; background: var(--paper); color: var(--ink); font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; line-height: 1.55; }
+    body::before { content: ""; position: fixed; inset: 0; pointer-events: none; opacity: .16; background-image: radial-gradient(rgba(11,36,26,.16) .7px, transparent .7px); background-size: 6px 6px; mix-blend-mode: multiply; z-index: -1; }
     a { color: inherit; text-decoration: none; }
     button, audio { font: inherit; }
     .wrap { width: min(1180px, calc(100% - 40px)); margin: 0 auto; }
     .eyebrow { color: var(--lime); font-size: 11px; font-weight: 850; letter-spacing: .2em; text-transform: uppercase; }
     .eyebrow.dark { color: var(--green); }
-    .button {
-      display: inline-flex; align-items: center; justify-content: center; gap: 9px;
-      min-height: 48px; padding: 0 20px; border-radius: 999px;
-      background: var(--lime); color: var(--ink); font-weight: 800; font-size: 14px;
-      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
-    }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 48px; padding: 0 20px; border-radius: 999px; background: var(--lime); color: var(--ink); font-weight: 800; font-size: 14px; transition: transform .2s ease, background .2s ease, box-shadow .2s ease; }
     .button:hover { transform: translateY(-2px); background: #d8f3a9; box-shadow: 0 10px 25px rgba(0,0,0,.16); }
     .button.ghost { background: transparent; border: 1px solid rgba(255,255,255,.38); color: var(--white); }
     .button.ghost:hover { background: rgba(255,255,255,.1); }
     .button.dark { background: var(--ink); color: var(--white); }
-
     header { position: sticky; top: 0; z-index: 50; background: rgba(11,36,26,.94); border-bottom: 1px solid rgba(255,255,255,.13); backdrop-filter: blur(16px); }
     .nav { min-height: 74px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
     .brand { display: inline-flex; align-items: center; gap: 11px; font-weight: 900; color: var(--white); letter-spacing: -.02em; }
@@ -96,7 +74,6 @@
     nav a:hover { color: var(--lime); }
     .nav-listen { padding: 9px 15px; border-radius: 999px; background: var(--lime); color: var(--ink); }
     .menu { display: none; border: 1px solid var(--line); background: transparent; color: var(--white); border-radius: 9px; padding: 7px 11px; font-size: 19px; }
-
     .hero { overflow: hidden; position: relative; padding: 76px 0 82px; background: var(--ink); color: var(--white); }
     .hero::after { content: ""; position: absolute; width: 540px; height: 540px; right: -180px; top: -250px; border-radius: 50%; background: radial-gradient(circle, rgba(200,231,142,.27), transparent 67%); pointer-events: none; }
     .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.03fr) minmax(360px, .97fr); align-items: center; gap: 76px; }
@@ -109,20 +86,6 @@
     .install-prompt { display: none; margin-top: 20px; padding: 12px 14px; border: 1px solid rgba(200,231,142,.3); border-radius: 14px; background: rgba(255,255,255,.06); color: #c7d8c9; font-size: 12px; }
     .install-prompt.visible { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
     .install-prompt button { border: 0; cursor: pointer; white-space: nowrap; }
-    .healing { background: var(--ink-soft); color: var(--white); }
-    .healing-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 62px; align-items: center; }
-    .healing-copy h2 { max-width: 560px; margin: 10px 0 18px; font-size: clamp(38px, 5vw, 63px); line-height: .98; letter-spacing: -.07em; }
-    .healing-copy p { max-width: 560px; color: #c2d3c5; font-size: 17px; }
-    .healing-note { margin-top: 24px; padding-left: 17px; border-left: 2px solid var(--lime); color: var(--lime-soft); font-size: 14px; font-weight: 700; }
-    .healing-art { overflow: hidden; min-height: 390px; border: 1px solid rgba(200,231,142,.35); border-radius: 27px; background: #244936; box-shadow: var(--shadow); }
-    .healing-art img { display: block; width: 100%; height: 100%; min-height: 390px; object-fit: cover; }
-    .healing-caption { padding: 12px 17px; color: #bdd0c1; background: rgba(11,36,26,.74); font-size: 11px; letter-spacing: .04em; }
-    .subscription { background: var(--lime-soft); }
-    .subscription-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 30px; }
-    .subscription h2 { margin: 8px 0 8px; font-size: clamp(30px, 4vw, 48px); line-height: 1; letter-spacing: -.06em; }
-    .subscription p { max-width: 600px; margin: 0; color: #496354; }
-    .standby { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 1px solid rgba(11,36,26,.25); border-radius: 999px; background: transparent; color: var(--ink); font-size: 13px; font-weight: 800; cursor: not-allowed; opacity: .72; }
-    .standby::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #d39a42; }
     .hero-card { position: relative; min-height: 430px; padding: 25px; border: 1px solid rgba(200,231,142,.42); border-radius: 28px; background: linear-gradient(145deg, #39754e 0%, #1d4d33 51%, #102d20 100%); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; transform: rotate(1.2deg); }
     .hero-card::before { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(255,255,255,.16); border-radius: 19px; pointer-events: none; }
     .hero-card-top, .hero-card-bottom { position: relative; z-index: 1; display: flex; justify-content: space-between; color: #d4e8d0; font-size: 10px; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
@@ -132,6 +95,29 @@
     .hero-card-title span { color: var(--lime); }
     .hero-wave { display: flex; align-items: center; justify-content: center; gap: 5px; height: 58px; margin: 18px 0; }
     .hero-wave i { display: block; width: 4px; height: var(--h); border-radius: 8px; background: var(--lime); opacity: .85; }
+
+    .announcement { padding: 28px 0; background: var(--lime-soft); border-bottom: 1px solid rgba(11,36,26,.12); }
+    .announcement-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 22px; align-items: stretch; }
+    .announcement-copy { padding: 22px 4px; }
+    .announcement-copy h2 { margin: 8px 0 10px; font-size: clamp(28px, 4vw, 45px); line-height: .98; letter-spacing: -.065em; }
+    .announcement-copy p { max-width: 440px; margin: 0; color: #496354; font-size: 14px; }
+    .countdown { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 19px; }
+    .countdown-unit { min-width: 68px; padding: 10px 9px 8px; border-radius: 12px; background: var(--ink); color: var(--white); text-align: center; }
+    .countdown-unit strong { display: block; color: var(--lime); font-size: 24px; line-height: 1; letter-spacing: -.04em; }
+    .countdown-unit span { display: block; margin-top: 4px; color: #b8cbbc; font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
+    .carousel { position: relative; overflow: hidden; min-height: 220px; border-radius: 22px; background: var(--ink); color: var(--white); box-shadow: 0 16px 38px rgba(11,36,26,.15); touch-action: pan-y; }
+    .carousel-track { display: flex; height: 100%; transition: transform .45s cubic-bezier(.2,.75,.25,1); }
+    .carousel-slide { flex: 0 0 100%; min-height: 220px; padding: 24px 68px 26px 27px; display: flex; flex-direction: column; justify-content: center; }
+    .carousel-slide .episode-meta { margin: 0 0 7px; color: var(--lime); }
+    .carousel-slide h3 { max-width: 590px; margin: 0 0 8px; font-size: clamp(23px, 3vw, 34px); line-height: 1.03; letter-spacing: -.05em; }
+    .carousel-slide p { max-width: 620px; margin: 0; color: #bfd1c2; font-size: 13px; }
+    .carousel-slide a { width: fit-content; margin-top: 14px; color: var(--lime); font-size: 12px; font-weight: 800; }
+    .carousel-controls { position: absolute; right: 18px; bottom: 18px; display: flex; gap: 7px; }
+    .carousel-controls button { width: 35px; height: 35px; border: 1px solid rgba(255,255,255,.25); border-radius: 50%; background: rgba(255,255,255,.08); color: var(--white); cursor: pointer; }
+    .carousel-controls button:hover, .carousel-controls button:focus-visible { background: var(--lime); color: var(--ink); outline: none; }
+    .carousel-dots { position: absolute; left: 27px; bottom: 22px; display: flex; gap: 6px; }
+    .carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.35); cursor: pointer; }
+    .carousel-dots button.active { width: 22px; border-radius: 10px; background: var(--lime); }
 
     .section { padding: 92px 0; }
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 32px; }
@@ -148,7 +134,6 @@
     audio { accent-color: var(--green); }
     .text-link { display: inline-flex; width: fit-content; color: var(--lime); font-weight: 800; font-size: 13px; }
     .text-link:hover { text-decoration: underline; text-underline-offset: 4px; }
-
     .library { background: var(--paper-deep); }
     .episode-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .episode { display: flex; flex-direction: column; min-width: 0; padding: 14px; border: 1px solid var(--line-dark); border-radius: 19px; background: rgba(255,253,248,.62); transition: transform .2s ease, box-shadow .2s ease; }
@@ -161,7 +146,14 @@
     .episode .text-link { margin-top: 12px; color: var(--green-deep); }
     .status { color: #698074; font-size: 13px; }
     #updateStatus { margin: 22px 0 0; }
-
+    .healing { background: var(--ink-soft); color: var(--white); }
+    .healing-grid { display: grid; grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 62px; align-items: center; }
+    .healing-copy h2 { max-width: 560px; margin: 10px 0 18px; font-size: clamp(38px, 5vw, 63px); line-height: .98; letter-spacing: -.07em; }
+    .healing-copy p { max-width: 560px; color: #c2d3c5; font-size: 17px; }
+    .healing-note { margin-top: 24px; padding-left: 17px; border-left: 2px solid var(--lime); color: var(--lime-soft); font-size: 14px; font-weight: 700; }
+    .healing-art { overflow: hidden; min-height: 390px; border: 1px solid rgba(200,231,142,.35); border-radius: 27px; background: #244936; box-shadow: var(--shadow); }
+    .healing-art img { display: block; width: 100%; height: 100%; min-height: 390px; object-fit: cover; }
+    .healing-caption { padding: 12px 17px; color: #bdd0c1; background: rgba(11,36,26,.74); font-size: 11px; letter-spacing: .04em; }
     .about-section { background: var(--white); }
     .about-grid { display: grid; grid-template-columns: .82fr 1.18fr; gap: 80px; align-items: start; }
     .about-grid h2 { max-width: 480px; margin: 10px 0 0; font-size: clamp(38px, 5vw, 64px); line-height: .98; letter-spacing: -.07em; }
@@ -169,21 +161,25 @@
     .about-copy p { margin-top: 0; }
     .topic-list { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 28px; }
     .topic { padding: 9px 13px; border: 1px solid var(--line-dark); border-radius: 999px; color: var(--green-deep); font-size: 12px; font-weight: 750; }
-
+    .subscription { background: var(--lime-soft); }
+    .subscription-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 30px; }
+    .subscription h2 { margin: 8px 0 8px; font-size: clamp(30px, 4vw, 48px); line-height: 1; letter-spacing: -.06em; }
+    .subscription p { max-width: 600px; margin: 0; color: #496354; }
+    .standby { display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px; border: 1px solid rgba(11,36,26,.25); border-radius: 999px; background: transparent; color: var(--ink); font-size: 13px; font-weight: 800; cursor: not-allowed; opacity: .72; }
+    .standby::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #d39a42; }
     .contact { background: var(--green); color: var(--white); }
     .contact-grid { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 30px; }
     .contact h2 { max-width: 650px; margin: 9px 0 12px; font-size: clamp(32px, 5vw, 58px); line-height: .98; letter-spacing: -.065em; }
     .contact p { max-width: 580px; margin: 0; color: #d3e3d2; }
     .contact .eyebrow { color: var(--lime); }
-
     footer { padding: 30px 0 44px; background: var(--ink); color: var(--white); }
     .footer-row { display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap; }
     footer p { margin: 22px 0 0; color: #8ea695; font-size: 12px; }
     .footer-links { display: flex; gap: 17px; color: #bdd0c1; font-size: 13px; }
-
     @media (max-width: 850px) {
       .hero-grid { grid-template-columns: 1fr; gap: 45px; }
       .hero-card { max-width: 560px; width: 100%; margin: auto; }
+      .announcement-grid { grid-template-columns: 1fr; }
       .episode-grid { grid-template-columns: repeat(2, 1fr); }
       .about-grid { grid-template-columns: 1fr; gap: 28px; }
     }
@@ -197,6 +193,13 @@
       .hero { padding: 60px 0 64px; }
       .hero-card { min-height: 350px; }
       .hero-card-title { font-size: 61px; }
+      .announcement { padding: 21px 0; }
+      .announcement-copy { padding: 9px 0; }
+      .countdown-unit { min-width: 61px; }
+      .countdown-unit strong { font-size: 21px; }
+      .carousel-slide { min-height: 245px; padding: 23px 23px 70px; }
+      .carousel-controls { right: 17px; bottom: 17px; }
+      .carousel-dots { left: 23px; bottom: 31px; }
       .section { padding: 65px 0; }
       .section-head { display: block; }
       .section-head p { margin-top: 14px; }
@@ -211,23 +214,20 @@
       .contact-grid { grid-template-columns: 1fr; }
       .footer-links { width: 100%; justify-content: space-between; }
     }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .carousel-track { transition: none; }
+      .button, .episode { transition: none; }
+    }
   </style>
 </head>
 <body>
   <header>
     <div class="wrap nav">
-      <a class="brand" href="#home" aria-label="PED-Talk home">
-        <img src="./icons/ped-talk-icon-512.png" alt="">
-        <span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span>
-      </a>
+      <a class="brand" href="#home" aria-label="PED-Talk home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a>
       <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false">☰</button>
       <nav id="navLinks" aria-label="Primary navigation">
-        <a href="#featured">Featured</a>
-        <a href="#episodes">Episodes</a>
-        <a href="#about">About</a>
-        <a href="#contact">Contact</a>
-        <a href="#subscribe">Subscribe</a>
-        <a class="nav-listen" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+        <a href="#featured">Featured</a><a href="#episodes">Episodes</a><a href="#about">About</a><a href="#contact">Contact</a><a href="#subscribe">Subscribe</a><a class="nav-listen" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Listen on Spotify ↗</a>
       </nav>
     </div>
   </header>
@@ -235,251 +235,94 @@
   <main>
     <section class="hero" id="home">
       <div class="wrap hero-grid">
-        <div>
-          <div class="eyebrow">Anagkazo Media presents</div>
-          <h1>Real conversations.<br><em>Brighter days.</em></h1>
-          <p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p>
-          <div class="actions">
-            <a class="button" href="#featured">▶ Start listening</a>
-            <a class="button ghost" href="#about">Discover PED-Talk</a>
-          </div>
-          <div class="hero-note">New conversations for the journey ahead</div>
-          <div class="install-prompt" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><button class="button" id="installButton" type="button">Install the app</button></div>
-        </div>
-        <div class="hero-card" aria-label="PED-Talk podcast artwork">
-          <div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div>
-          <div class="hero-card-center">
-            <div class="orb" aria-hidden="true"></div>
-            <div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div>
-            <h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2>
-          </div>
-          <div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div>
+        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><button class="button" id="installButton" type="button">Install the app</button></div></div>
+        <div class="hero-card" aria-label="PED-Talk podcast artwork"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></div>
+      </div>
+    </section>
+
+    <section class="announcement" aria-labelledby="announcementTitle">
+      <div class="wrap announcement-grid">
+        <div class="announcement-copy"><div class="eyebrow dark">Latest episode</div><h2 id="announcementTitle">A new conversation is waiting.</h2><p>Keep moving forward with PED-Talk. Explore the latest release, then make space for the next honest conversation.</p><div class="countdown" id="yearCountdown" aria-label="Countdown to the end of the year"><div class="countdown-unit"><strong data-countdown="days">—</strong><span>Days</span></div><div class="countdown-unit"><strong data-countdown="hours">—</strong><span>Hours</span></div><div class="countdown-unit"><strong data-countdown="minutes">—</strong><span>Minutes</span></div><div class="countdown-unit"><strong data-countdown="seconds">—</strong><span>Seconds</span></div></div></div>
+        <div class="carousel" id="episodeCarousel" aria-label="Latest PED-Talk episodes" tabindex="0">
+          <div class="carousel-track" id="carouselTrack"><div class="carousel-slide"><div class="status">Loading latest episodes...</div></div></div>
+          <div class="carousel-dots" id="carouselDots" aria-label="Choose an episode"></div>
+          <div class="carousel-controls"><button type="button" id="carouselPrev" aria-label="Previous episode">←</button><button type="button" id="carouselNext" aria-label="Next episode">→</button></div>
         </div>
       </div>
     </section>
 
-    <section class="section" id="featured">
-      <div class="wrap">
-        <div class="section-head">
-          <div><div class="eyebrow dark">Start here</div><h2>One conversation<br>can change a day.</h2></div>
-          <p>Listen to the latest PED-Talk release, then explore the library for more conversations that meet you where you are.</p>
-        </div>
-        <div id="featuredEpisode" class="feature"><p class="status">Loading featured episode...</p></div>
-      </div>
-    </section>
-
-    <section class="section library" id="episodes">
-      <div class="wrap">
-        <div class="section-head">
-          <div><div class="eyebrow dark">The PED-Talk library</div><h2>Listen. Reflect. Grow.</h2></div>
-          <p>Episodes for the real parts of life — from relationships and character to faith, purpose and personal growth.</p>
-        </div>
-        <div id="podcast-episodes" class="episode-grid"><p class="status">Loading episodes...</p></div>
-        <p id="updateStatus" class="status" aria-live="polite"></p>
-      </div>
-    </section>
-
-    <section class="section healing" id="healing">
-      <div class="wrap healing-grid">
-        <div class="healing-copy">
-          <div class="eyebrow">The heart behind the sound</div>
-          <h2>Our sounds are meant to heal.</h2>
-          <p>Anagkazo Media recognises the responsibility that comes with being heard. PED-Talk is made to support emotional health, create room for honest reflection and remind our listeners that they do not have to carry every season alone.</p>
-          <div class="healing-note">Listen slowly. Feel honestly. Take the next step with hope.</div>
-        </div>
-        <figure class="healing-art">
-          <img src="./assets/ped-talk-healing-story.jpg" alt="A quiet, anonymous moment of supportive conversation between two Black people" loading="lazy">
-          <figcaption class="healing-caption">A story of being heard, held and helped forward.</figcaption>
-        </figure>
-      </div>
-    </section>
-
-    <section class="section about-section" id="about">
-      <div class="wrap about-grid">
-        <div><div class="eyebrow dark">Who we are</div><h2>More than a podcast. A place to grow.</h2></div>
-        <div class="about-copy">
-          <p>PED-Talk — Personal Education Daily — creates room for meaningful conversations about the things that shape our everyday lives.</p>
-          <p>From relationships and family to friendship, faith, youth and personal development, our aim is simple: to help people see a brighter day.</p>
-          <div class="topic-list" aria-label="PED-Talk topics"><span class="topic">Relationships</span><span class="topic">Family</span><span class="topic">Friends</span><span class="topic">Faith</span><span class="topic">Personal growth</span><span class="topic">Youth & education</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section subscription" id="subscribe">
-      <div class="wrap subscription-grid">
-        <div><div class="eyebrow dark">Coming soon</div><h2>Stay close to the conversation.</h2><p>Subscriptions will make it easier to follow new releases, receive thoughtful updates and build a daily listening rhythm. This feature is currently on standby while we prepare it properly.</p></div>
-        <button class="standby" type="button" disabled aria-disabled="true">Subscriptions on standby</button>
-      </div>
-    </section>
-
-    <section class="section contact" id="contact">
-      <div class="wrap contact-grid">
-        <div><div class="eyebrow">Anagkazo Media</div><h2>Have a story, idea or partnership in mind?</h2><p>Keep the conversation going. Follow PED-Talk on Spotify, share an episode with someone who needs it, or connect with the team behind the show.</p></div>
-        <a class="button dark" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Follow PED-Talk ↗</a>
-      </div>
-    </section>
+    <section class="section" id="featured"><div class="wrap"><div class="section-head"><div><div class="eyebrow dark">Start here</div><h2>One conversation<br>can change a day.</h2></div><p>Listen to the latest PED-Talk release, then explore the library for more conversations that meet you where you are.</p></div><div id="featuredEpisode" class="feature"><p class="status">Loading featured episode...</p></div></div></section>
+    <section class="section library" id="episodes"><div class="wrap"><div class="section-head"><div><div class="eyebrow dark">The PED-Talk library</div><h2>Listen. Reflect. Grow.</h2></div><p>Episodes for the real parts of life — from relationships and character to faith, purpose and personal growth.</p></div><div id="podcast-episodes" class="episode-grid"><p class="status">Loading episodes...</p></div><p id="updateStatus" class="status" aria-live="polite"></p></div></section>
+    <section class="section healing" id="healing"><div class="wrap healing-grid"><div class="healing-copy"><div class="eyebrow">The heart behind the sound</div><h2>Our sounds are meant to heal.</h2><p>Anagkazo Media recognises the responsibility that comes with being heard. PED-Talk is made to support emotional health, create room for honest reflection and remind our listeners that they do not have to carry every season alone.</p><div class="healing-note">Listen slowly. Feel honestly. Take the next step with hope.</div></div><figure class="healing-art"><img src="./assets/ped-talk-healing-story.jpg" alt="A quiet, anonymous moment of supportive conversation between two Black people" loading="lazy"><figcaption class="healing-caption">A story of being heard, held and helped forward.</figcaption></figure></div></section>
+    <section class="section about-section" id="about"><div class="wrap about-grid"><div><div class="eyebrow dark">Who we are</div><h2>More than a podcast. A place to grow.</h2></div><div class="about-copy"><p>PED-Talk — Personal Education Daily — creates room for meaningful conversations about the things that shape our everyday lives.</p><p>From relationships and family to friendship, faith, youth and personal development, our aim is simple: to help people see a brighter day.</p><div class="topic-list" aria-label="PED-Talk topics"><span class="topic">Relationships</span><span class="topic">Family</span><span class="topic">Friends</span><span class="topic">Faith</span><span class="topic">Personal growth</span><span class="topic">Youth & education</span></div></div></div></section>
+    <section class="section subscription" id="subscribe"><div class="wrap subscription-grid"><div><div class="eyebrow dark">Coming soon</div><h2>Stay close to the conversation.</h2><p>Subscriptions will make it easier to follow new releases, receive thoughtful updates and build a daily listening rhythm. This feature is currently on standby while we prepare it properly.</p></div><button class="standby" type="button" disabled aria-disabled="true">Subscriptions on standby</button></div></section>
+    <section class="section contact" id="contact"><div class="wrap contact-grid"><div><div class="eyebrow">Anagkazo Media</div><h2>Have a story, idea or partnership in mind?</h2><p>Keep the conversation going. Follow PED-Talk on Spotify, share an episode with someone who needs it, or connect with the team behind the show.</p></div><a class="button dark" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Follow PED-Talk ↗</a></div></section>
   </main>
 
-  <footer>
-    <div class="wrap">
-      <div class="footer-row">
-        <a class="brand" href="#home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a>
-        <div class="footer-links"><a href="#about">About</a><a href="#healing">Healing</a><a href="#contact">Contact</a><a href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Spotify ↗</a></div>
-      </div>
-      <p>© <span id="year"></span> Anagkazo Media. All rights reserved. Built for brighter days.</p>
-    </div>
-  </footer>
+  <footer><div class="wrap"><div class="footer-row"><a class="brand" href="#home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a><div class="footer-links"><a href="#about">About</a><a href="#healing">Healing</a><a href="#contact">Contact</a><a href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Spotify ↗</a></div></div><p>© <span id="year"></span> Anagkazo Media. All rights reserved. Built for brighter days.</p></div></footer>
 
   <script>
     const FEED_URL = "./episodes.json";
     let deferredInstallPrompt;
+    let carouselIndex = 0;
+    let carouselTimer;
+    let carouselEpisodes = [];
+    let touchStartX = 0;
     const container = document.getElementById("podcast-episodes");
     const featured = document.getElementById("featuredEpisode");
+    const carousel = document.getElementById("episodeCarousel");
+    const carouselTrack = document.getElementById("carouselTrack");
+    const carouselDots = document.getElementById("carouselDots");
 
-    function cleanDescription(value) {
-      const el = document.createElement("div");
-      el.innerHTML = value || "";
-      return (el.textContent || "").trim();
+    function cleanDescription(value) { const el = document.createElement("div"); el.innerHTML = value || ""; return (el.textContent || "").trim(); }
+    function makePlayer(episode) { const player = document.createElement("audio"); player.controls = true; player.preload = "none"; player.src = episode.audio; player.setAttribute("aria-label", `Play ${episode.title || "PED-Talk episode"}`); return player; }
+    function makeArtwork(episode, className = "") { const img = document.createElement("img"); img.src = episode.image || ""; img.alt = `${episode.title || "PED-Talk"} episode artwork`; img.loading = "lazy"; if (className) img.className = className; img.onerror = () => { img.style.display = "none"; }; return img; }
+    function episodeNumber(episode, index, total) { const match = String(episode.title || "").match(/S\d+E(\d+)/i); return match ? `EPISODE ${match[1].padStart(2, "0")}` : `EPISODE ${total - index}`; }
+
+    function renderCarousel(episodes) {
+      carouselEpisodes = episodes.slice(0, 6);
+      if (!carouselEpisodes.length) { carouselTrack.innerHTML = '<div class="carousel-slide"><div class="status">New conversations will appear here soon.</div></div>'; carouselDots.replaceChildren(); return; }
+      carouselTrack.replaceChildren(); carouselDots.replaceChildren();
+      carouselEpisodes.forEach((episode, index) => {
+        const slide = document.createElement("article"); slide.className = "carousel-slide"; slide.setAttribute("aria-roledescription", "slide"); slide.setAttribute("aria-label", `${index + 1} of ${carouselEpisodes.length}`);
+        const meta = document.createElement("div"); meta.className = "episode-meta"; meta.textContent = `PED-TALK · ${episodeNumber(episode, index, episodes.length)}`; slide.appendChild(meta);
+        const title = document.createElement("h3"); title.textContent = episode.title || "Latest PED-Talk episode"; slide.appendChild(title);
+        const description = document.createElement("p"); description.textContent = cleanDescription(episode.description).slice(0, 150); slide.appendChild(description);
+        const link = document.createElement("a"); link.href = `episode.html?episode=${index}`; link.textContent = "View episode →"; slide.appendChild(link);
+        carouselTrack.appendChild(slide);
+        const dot = document.createElement("button"); dot.type = "button"; dot.setAttribute("aria-label", `Show episode ${index + 1}`); dot.addEventListener("click", () => goToSlide(index)); carouselDots.appendChild(dot);
+      });
+      carouselIndex = 0; updateCarousel(); startCarousel();
     }
+    function updateCarousel() { carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`; [...carouselDots.children].forEach((dot, index) => { dot.classList.toggle("active", index === carouselIndex); dot.setAttribute("aria-current", index === carouselIndex ? "true" : "false"); }); }
+    function goToSlide(index) { if (!carouselEpisodes.length) return; carouselIndex = (index + carouselEpisodes.length) % carouselEpisodes.length; updateCarousel(); startCarousel(); }
+    function startCarousel() { clearInterval(carouselTimer); if (carouselEpisodes.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) carouselTimer = setInterval(() => goToSlide(carouselIndex + 1), 5500); }
+    document.getElementById("carouselPrev").addEventListener("click", () => goToSlide(carouselIndex - 1));
+    document.getElementById("carouselNext").addEventListener("click", () => goToSlide(carouselIndex + 1));
+    carousel.addEventListener("mouseenter", () => clearInterval(carouselTimer)); carousel.addEventListener("mouseleave", startCarousel); carousel.addEventListener("focusin", () => clearInterval(carouselTimer)); carousel.addEventListener("focusout", startCarousel);
+    carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearInterval(carouselTimer); }, { passive: true });
+    carousel.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - touchStartX; if (Math.abs(distance) > 45) goToSlide(carouselIndex + (distance < 0 ? 1 : -1)); else startCarousel(); }, { passive: true });
+    carousel.addEventListener("keydown", event => { if (event.key === "ArrowLeft") goToSlide(carouselIndex - 1); if (event.key === "ArrowRight") goToSlide(carouselIndex + 1); });
 
-    function makePlayer(episode) {
-      const player = document.createElement("audio");
-      player.controls = true;
-      player.preload = "none";
-      player.src = episode.audio;
-      player.setAttribute("aria-label", `Play ${episode.title || "PED-Talk episode"}`);
-      return player;
-    }
-
-    function makeArtwork(episode, className = "") {
-      const img = document.createElement("img");
-      img.src = episode.image || "";
-      img.alt = `${episode.title || "PED-Talk"} episode artwork`;
-      img.loading = "lazy";
-      if (className) img.className = className;
-      img.onerror = () => { img.style.display = "none"; };
-      return img;
-    }
-
-    function episodeNumber(episode, index, total) {
-      const match = String(episode.title || "").match(/S\d+E(\d+)/i);
-      return match ? `EPISODE ${match[1].padStart(2, "0")}` : `EPISODE ${total - index}`;
+    function updateCountdown() {
+      const now = new Date(); const end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999); const distance = Math.max(0, end - now);
+      const values = { days: Math.floor(distance / 86400000), hours: Math.floor(distance / 3600000) % 24, minutes: Math.floor(distance / 60000) % 60, seconds: Math.floor(distance / 1000) % 60 };
+      Object.entries(values).forEach(([unit, value]) => { const node = document.querySelector(`[data-countdown="${unit}"]`); if (node) node.textContent = String(value).padStart(2, "0"); });
     }
 
     function displayEpisodes(episodes) {
-      container.replaceChildren();
-      if (!episodes.length) { container.textContent = "New episodes will appear here soon."; return; }
-
-      episodes.forEach((episode, index) => {
-        const card = document.createElement("article");
-        card.className = "episode";
-        if (episode.image) card.appendChild(makeArtwork(episode));
-        const label = document.createElement("div");
-        label.className = "episode-meta";
-        label.textContent = `PED-TALK · ${episodeNumber(episode, index, episodes.length)}`;
-        card.appendChild(label);
-        const title = document.createElement("h3");
-        title.textContent = episode.title || "PED-Talk Episode";
-        card.appendChild(title);
-        const description = document.createElement("p");
-        description.textContent = cleanDescription(episode.description).slice(0, 220);
-        card.appendChild(description);
-        if (episode.audio) card.appendChild(makePlayer(episode));
-        if (episode.link) {
-          const link = document.createElement("a");
-          link.className = "text-link";
-          link.href = `episode.html?episode=${index}`;
-          link.textContent = "Read episode page →";
-          card.appendChild(link);
-        }
-        container.appendChild(card);
-      });
-
-      const first = episodes[0];
-      featured.replaceChildren();
-      const artwork = document.createElement("div");
-      artwork.className = "feature-art";
-      const artworkLabel = document.createElement("div");
-      artworkLabel.className = "feature-art-label";
-      artworkLabel.innerHTML = `<span>Latest release</span><span>${episodeNumber(first, 0, episodes.length)}</span>`;
-      artwork.appendChild(artworkLabel);
-      if (first.image) artwork.appendChild(makeArtwork(first));
-      featured.appendChild(artwork);
-
-      const details = document.createElement("div");
-      details.className = "feature-info";
-      const tag = document.createElement("div");
-      tag.className = "eyebrow";
-      tag.textContent = "The newest conversation";
-      details.appendChild(tag);
-      const title = document.createElement("h3");
-      title.textContent = first.title || "Latest PED-Talk Episode";
-      details.appendChild(title);
-      const description = document.createElement("p");
-      description.textContent = cleanDescription(first.description);
-      details.appendChild(description);
-      if (first.audio) details.appendChild(makePlayer(first));
-      if (first.link) {
-        const link = document.createElement("a");
-        link.className = "text-link";
-        link.href = first.link;
-        link.target = "_blank";
-        link.rel = "noopener";
-        link.textContent = "Open episode on Spotify ↗";
-        details.appendChild(link);
-      }
-      featured.appendChild(details);
+      container.replaceChildren(); if (!episodes.length) { container.textContent = "New episodes will appear here soon."; return; }
+      episodes.forEach((episode, index) => { const card = document.createElement("article"); card.className = "episode"; if (episode.image) card.appendChild(makeArtwork(episode)); const label = document.createElement("div"); label.className = "episode-meta"; label.textContent = `PED-TALK · ${episodeNumber(episode, index, episodes.length)}`; card.appendChild(label); const title = document.createElement("h3"); title.textContent = episode.title || "PED-Talk Episode"; card.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(episode.description).slice(0, 220); card.appendChild(description); if (episode.audio) card.appendChild(makePlayer(episode)); if (episode.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = `episode.html?episode=${index}`; link.textContent = "Read episode page →"; card.appendChild(link); } container.appendChild(card); });
+      const first = episodes[0]; featured.replaceChildren(); const artwork = document.createElement("div"); artwork.className = "feature-art"; const artworkLabel = document.createElement("div"); artworkLabel.className = "feature-art-label"; artworkLabel.innerHTML = `<span>Latest release</span><span>${episodeNumber(first, 0, episodes.length)}</span>`; artwork.appendChild(artworkLabel); if (first.image) artwork.appendChild(makeArtwork(first)); featured.appendChild(artwork);
+      const details = document.createElement("div"); details.className = "feature-info"; const tag = document.createElement("div"); tag.className = "eyebrow"; tag.textContent = "The newest conversation"; details.appendChild(tag); const title = document.createElement("h3"); title.textContent = first.title || "Latest PED-Talk Episode"; details.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(first.description); details.appendChild(description); if (first.audio) details.appendChild(makePlayer(first)); if (first.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = first.link; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Open episode on Spotify ↗"; details.appendChild(link); } featured.appendChild(details);
     }
 
-    async function loadEpisodes() {
-      try {
-        const response = await fetch(`${FEED_URL}?v=${Date.now()}`);
-        if (!response.ok) throw new Error("Catalogue unavailable");
-        const data = await response.json();
-        displayEpisodes(data.episodes || []);
-        document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`;
-      } catch (error) {
-        container.textContent = "We couldn't load episodes right now. Please try again later.";
-        featured.textContent = "Featured episode unavailable.";
-        console.error(error);
-      }
-    }
-
-    window.addEventListener("beforeinstallprompt", (event) => {
-      event.preventDefault();
-      deferredInstallPrompt = event;
-      document.getElementById("installPrompt").classList.add("visible");
-    });
-
-    document.getElementById("installButton").addEventListener("click", async () => {
-      if (!deferredInstallPrompt) return;
-      deferredInstallPrompt.prompt();
-      await deferredInstallPrompt.userChoice;
-      deferredInstallPrompt = null;
-      document.getElementById("installPrompt").classList.remove("visible");
-    });
-
-    const menuBtn = document.getElementById("menuBtn");
-    const navLinks = document.getElementById("navLinks");
-    menuBtn.addEventListener("click", () => {
-      const isOpen = navLinks.classList.toggle("open");
-      menuBtn.textContent = isOpen ? "✕" : "☰";
-      menuBtn.setAttribute("aria-expanded", String(isOpen));
-      menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
-    });
-    navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => {
-      navLinks.classList.remove("open");
-      menuBtn.textContent = "☰";
-      menuBtn.setAttribute("aria-expanded", "false");
-      menuBtn.setAttribute("aria-label", "Open menu");
-    }));
-    document.getElementById("year").textContent = new Date().getFullYear();
-    loadEpisodes();
+    async function loadEpisodes() { try { const response = await fetch(`${FEED_URL}?v=${Date.now()}`); if (!response.ok) throw new Error("Catalogue unavailable"); const data = await response.json(); const episodes = data.episodes || []; displayEpisodes(episodes); renderCarousel(episodes); document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`; } catch (error) { container.textContent = "We couldn't load episodes right now. Please try again later."; featured.textContent = "Featured episode unavailable."; console.error(error); } }
+    window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); deferredInstallPrompt = event; document.getElementById("installPrompt").classList.add("visible"); });
+    document.getElementById("installButton").addEventListener("click", async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; document.getElementById("installPrompt").classList.remove("visible"); });
+    const menuBtn = document.getElementById("menuBtn"); const navLinks = document.getElementById("navLinks"); menuBtn.addEventListener("click", () => { const isOpen = navLinks.classList.toggle("open"); menuBtn.textContent = isOpen ? "✕" : "☰"; menuBtn.setAttribute("aria-expanded", String(isOpen)); menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu"); }); navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => { navLinks.classList.remove("open"); menuBtn.textContent = "☰"; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "Open menu"); }));
+    document.getElementById("year").textContent = new Date().getFullYear(); updateCountdown(); setInterval(updateCountdown, 1000); loadEpisodes();
   </script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(error => console.error("Service worker registration failed:", error)));
-    }
-  </script>
+  <script>if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(error => console.error("Service worker registration failed:", error)));</script>
 </body>
 </html>
