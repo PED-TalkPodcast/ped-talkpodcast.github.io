@@ -1,14 +1,16 @@
-const CACHE_NAME = "ped-talk-v4";
+const CACHE_NAME = "ped-talk-v5";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 const FILES_TO_CACHE = [
   BASE,
   `${BASE}index.html`,
   `${BASE}episode.html`,
+  `${BASE}bible.html`,
   `${BASE}scripture.html`,
   `${BASE}episodes.json`,
   `${BASE}manifest.json`,
-  `${BASE}assets/ped-talk-healing-story.jpg`
+  `${BASE}assets/ped-talk-healing-story.jpg`,
+  `${BASE}data/web-bible.json`
 ];
 
 self.addEventListener("install", event => {
