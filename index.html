@@ -74,6 +74,14 @@
     nav a:hover { color: var(--lime); }
     .nav-listen { padding: 9px 15px; border-radius: 999px; background: var(--lime); color: var(--ink); }
     .menu { display: none; border: 1px solid var(--line); background: transparent; color: var(--white); border-radius: 9px; padding: 7px 11px; font-size: 19px; }
+    .season-bar { display: none; position: relative; z-index: 45; padding: 11px 0; background: var(--lime); color: var(--ink); border-bottom: 1px solid rgba(11,36,26,.2); }
+    .season-bar.visible { display: block; }
+    .season-inner { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+    .season-message { font-size: 12px; font-weight: 850; letter-spacing: .04em; }
+    .season-countdown { display: flex; align-items: center; gap: 8px; }
+    .season-countdown strong { font-size: 18px; line-height: 1; letter-spacing: -.04em; }
+    .season-countdown span { font-size: 9px; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .season-countdown .divider { opacity: .45; font-size: 16px; }
     .hero { overflow: hidden; position: relative; padding: 76px 0 82px; background: var(--ink); color: var(--white); }
     .hero::after { content: ""; position: absolute; width: 540px; height: 540px; right: -180px; top: -250px; border-radius: 50%; background: radial-gradient(circle, rgba(200,231,142,.27), transparent 67%); pointer-events: none; }
     .hero-grid { position: relative; z-index: 1; display: grid; grid-template-columns: minmax(0, 1.03fr) minmax(360px, .97fr); align-items: center; gap: 76px; }
@@ -193,6 +201,9 @@
       .hero { padding: 60px 0 64px; }
       .hero-card { min-height: 350px; }
       .hero-card-title { font-size: 61px; }
+      .season-inner { align-items: flex-start; flex-direction: column; gap: 7px; }
+      .season-countdown { gap: 6px; }
+      .season-countdown strong { font-size: 16px; }
       .announcement { padding: 21px 0; }
       .announcement-copy { padding: 9px 0; }
       .countdown-unit { min-width: 61px; }
@@ -227,10 +238,22 @@
       <a class="brand" href="#home" aria-label="PED-Talk home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a>
       <button class="menu" id="menuBtn" type="button" aria-label="Open menu" aria-controls="navLinks" aria-expanded="false">☰</button>
       <nav id="navLinks" aria-label="Primary navigation">
-        <a href="#featured">Featured</a><a href="#episodes">Episodes</a><a href="#about">About</a><a href="#contact">Contact</a><a href="#subscribe">Subscribe</a><a class="nav-listen" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Listen on Spotify ↗</a>
+        <a href="#featured">Featured</a><a href="#episodes">Episodes</a><a href="#about">About</a><a href="./scripture.html">Scripture</a><a href="#contact">Contact</a><a href="#subscribe">Subscribe</a><a class="nav-listen" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Listen on Spotify ↗</a>
       </nav>
     </div>
   </header>
+
+  <aside class="season-bar" id="seasonBar" aria-label="PED-Talk year-end countdown">
+    <div class="wrap season-inner">
+      <div class="season-message">A brighter year is ahead — countdown to year-end</div>
+      <div class="season-countdown" id="topCountdown" aria-live="polite">
+        <strong data-top-countdown="days">—</strong><span>Days</span><span class="divider">:</span>
+        <strong data-top-countdown="hours">—</strong><span>Hours</span><span class="divider">:</span>
+        <strong data-top-countdown="minutes">—</strong><span>Minutes</span><span class="divider">:</span>
+        <strong data-top-countdown="seconds">—</strong><span>Seconds</span>
+      </div>
+    </div>
+  </aside>
 
   <main>
     <section class="hero" id="home">
@@ -242,7 +265,7 @@
 
     <section class="announcement" aria-labelledby="announcementTitle">
       <div class="wrap announcement-grid">
-        <div class="announcement-copy"><div class="eyebrow dark">Latest episode</div><h2 id="announcementTitle">A new conversation is waiting.</h2><p>Keep moving forward with PED-Talk. Explore the latest release, then make space for the next honest conversation.</p><div class="countdown" id="yearCountdown" aria-label="Countdown to the end of the year"><div class="countdown-unit"><strong data-countdown="days">—</strong><span>Days</span></div><div class="countdown-unit"><strong data-countdown="hours">—</strong><span>Hours</span></div><div class="countdown-unit"><strong data-countdown="minutes">—</strong><span>Minutes</span></div><div class="countdown-unit"><strong data-countdown="seconds">—</strong><span>Seconds</span></div></div></div>
+        <div class="announcement-copy"><div class="eyebrow dark">Latest episode</div><h2 id="announcementTitle">A new conversation is waiting.</h2><p>Keep moving forward with PED-Talk. Explore the latest release, then make space for the next honest conversation.</p></div>
         <div class="carousel" id="episodeCarousel" aria-label="Latest PED-Talk episodes" tabindex="0">
           <div class="carousel-track" id="carouselTrack"><div class="carousel-slide"><div class="status">Loading latest episodes...</div></div></div>
           <div class="carousel-dots" id="carouselDots" aria-label="Choose an episode"></div>
@@ -259,7 +282,7 @@
     <section class="section contact" id="contact"><div class="wrap contact-grid"><div><div class="eyebrow">Anagkazo Media</div><h2>Have a story, idea or partnership in mind?</h2><p>Keep the conversation going. Follow PED-Talk on Spotify, share an episode with someone who needs it, or connect with the team behind the show.</p></div><a class="button dark" href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Follow PED-Talk ↗</a></div></section>
   </main>
 
-  <footer><div class="wrap"><div class="footer-row"><a class="brand" href="#home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a><div class="footer-links"><a href="#about">About</a><a href="#healing">Healing</a><a href="#contact">Contact</a><a href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Spotify ↗</a></div></div><p>© <span id="year"></span> Anagkazo Media. All rights reserved. Built for brighter days.</p></div></footer>
+  <footer><div class="wrap"><div class="footer-row"><a class="brand" href="#home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a><div class="footer-links"><a href="#about">About</a><a href="#healing">Healing</a><a href="./scripture.html">Scripture</a><a href="#contact">Contact</a><a href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Spotify ↗</a></div></div><p>© <span id="year"></span> Anagkazo Media. All rights reserved. Built for brighter days.</p></div></footer>
 
   <script>
     const FEED_URL = "./episodes.json";
@@ -305,9 +328,15 @@
     carousel.addEventListener("keydown", event => { if (event.key === "ArrowLeft") goToSlide(carouselIndex - 1); if (event.key === "ArrowRight") goToSlide(carouselIndex + 1); });
 
     function updateCountdown() {
-      const now = new Date(); const end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999); const distance = Math.max(0, end - now);
+      const now = new Date();
+      const activation = new Date(now.getFullYear(), 9, 30, 0, 0, 0, 0);
+      const end = new Date(now.getFullYear(), 11, 31, 23, 59, 59, 999);
+      const active = now >= activation && now <= end;
+      document.getElementById("seasonBar").classList.toggle("visible", active);
+      if (!active) return;
+      const distance = Math.max(0, end - now);
       const values = { days: Math.floor(distance / 86400000), hours: Math.floor(distance / 3600000) % 24, minutes: Math.floor(distance / 60000) % 60, seconds: Math.floor(distance / 1000) % 60 };
-      Object.entries(values).forEach(([unit, value]) => { const node = document.querySelector(`[data-countdown="${unit}"]`); if (node) node.textContent = String(value).padStart(2, "0"); });
+      Object.entries(values).forEach(([unit, value]) => { const node = document.querySelector(`[data-top-countdown="${unit}"]`); if (node) node.textContent = String(value).padStart(2, "0"); });
     }
 
     function displayEpisodes(episodes) {
