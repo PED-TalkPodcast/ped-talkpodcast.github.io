@@ -1,4 +1,4 @@
-const CACHE_NAME = "ped-talk-v65";
+const CACHE_NAME = "ped-talk-v66";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 // Install must never fail because one optional asset is unavailable.
