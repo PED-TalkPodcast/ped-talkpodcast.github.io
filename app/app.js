@@ -130,6 +130,7 @@ function resetBibleFlow(){
  document.getElementById('bibleVerses').innerHTML='<p class="loading">Choose a book and chapter to begin reading.</p>';
 }
 function openBibleReference(reference){
+ document.getElementById('bibleSearchResults').hidden=true;
  const parts=String(reference||'').split(':'),name=parts[0]||'John';
  const meta=bibleBooks.find(book=>book[0]===name||book[1].toLowerCase()===name.toLowerCase());
  if(!meta){resetBibleFlow();return;}
