@@ -137,6 +137,11 @@ document.getElementById('openHope').addEventListener('click',()=>{
  document.getElementById('modalGiftReference').textContent=giftReference.textContent;
  hopeModal.hidden=false;document.body.classList.add('modal-open');renderHopeComments();
 });
+const hopeCard=document.querySelector('.hope-card');
+hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
+hopeCard.addEventListener('click',event=>{if(event.target.closest('button,a'))return;document.getElementById('openHope').click();});
+hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();document.getElementById('openHope').click();}});
+document.querySelectorAll('#hopeModal [data-open-bible]').forEach(button=>button.addEventListener('click',closeHope));
 function closeHope(){hopeModal.hidden=true;document.body.classList.remove('modal-open');}
 document.getElementById('closeHope').addEventListener('click',closeHope);
 hopeModal.addEventListener('click',event=>{if(event.target===hopeModal)closeHope();});
