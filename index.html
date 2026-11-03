@@ -302,8 +302,10 @@
 
     /* Installed PWA: a dedicated app home, independent of the public website */
     #pwaApp { display:none; min-height:100vh; background:#f5f3ec; color:#0b241a; }
-    .pwa-app #pwaApp { display:block; }
-    .pwa-app > header, .pwa-app > .season-bar, .pwa-app > main, .pwa-app > footer { display:none !important; }
+    .pwa-app #pwaApp { display:block !important; }
+    .pwa-app > :not(#pwaApp):not(script) { display:none !important; }
+    body.pwa-app { min-height:100vh; background:#f5f3ec !important; overflow-x:hidden; }
+    .pwa-app #pwaApp, .pwa-app #pwaApp * { box-sizing:border-box; }
     .app-topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#0b241a; color:#c8e78e; font-size:9px; font-weight:850; letter-spacing:.16em; }
     .app-brand { display:flex; align-items:center; gap:9px; color:#fffdf8; font-size:17px; letter-spacing:-.04em; }
     .app-brand img { width:34px; height:34px; object-fit:contain; border-radius:9px; }
@@ -351,6 +353,7 @@
   </style>
 </head>
 <body>
+  <script>if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || new URLSearchParams(window.location.search).get("app") === "1") document.body.classList.add("pwa-app");</script>
 
   <div id="pwaApp" aria-label="PED-Talk app">
     <header class="app-topbar"><a class="app-brand" href="#appHome"><img src="./icons/ped-talk-icon-512.png" alt=""> PED-Talk</a><span>BY ANAGKAZO MEDIA</span></header>
@@ -429,7 +432,7 @@
   <script>
     const FEED_URL = "./episodes.json";
 
-    const installedPWA = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    const installedPWA = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || new URLSearchParams(window.location.search).get("app") === "1";
     if (installedPWA) document.body.classList.add("pwa-app");
     let appActiveCategory = "All";
     function appCategoryFor(episode) {
