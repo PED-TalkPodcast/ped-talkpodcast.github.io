@@ -2,20 +2,29 @@
   "updated": "2026-11-03",
   "episodes": [
     {
+      "number": 6,
       "title": "Bigger Together",
       "subtitle": "With Maro"
     },
     {
+      "number": 7,
       "title": "Successful Servant",
       "subtitle": "With Maro"
     },
     {
+      "number": 8,
       "title": "Our New Partner",
       "subtitle": "With Isaac Amoateng"
     },
     {
+      "number": 9,
       "title": "Angels Can Preach the Gospel",
       "subtitle": "Acts 10 · Cornelius"
+    },
+    {
+      "number": 10,
+      "title": "Relationship Talk",
+      "subtitle": ""
     }
   ]
 }
