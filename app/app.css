@@ -144,3 +144,5 @@ main{max-width:920px;margin:auto;padding:0 22px}.welcome{position:relative;overf
 .book-category small{font-size:8px;letter-spacing:.12em;text-transform:uppercase;color:#9fc2e2;font-weight:800}
 body.modal-open{overflow:hidden}
 @media(max-width:520px){.hope-modal{padding:10px}.hope-modal-panel{padding:28px 17px 18px;max-height:calc(100vh - 20px)}.book-categories{grid-template-columns:1fr}.book-category{min-height:140px}}
+
+.hope-card{cursor:pointer}.hope-card button{position:relative;z-index:1}
