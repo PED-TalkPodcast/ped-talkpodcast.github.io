@@ -116,17 +116,10 @@
     .hero-story-kicker { color: var(--lime); font-size: 10px; font-weight: 850; letter-spacing: .18em; text-transform: uppercase; }
     .hero-story-copy h3 { max-width: 360px; margin: 9px 0 8px; color: var(--white); font-size: clamp(31px, 4vw, 49px); line-height: .94; letter-spacing: -.065em; }
     .hero-story-copy p { max-width: 380px; margin: 0; color: #c5d7ca; font-size: 13px; }
-    .hero-slide--upcoming { padding: 0; background: #17120f url('./assets/up-next-template.jpg') center/100% 100% no-repeat; }
+    .hero-slide--upcoming { padding: 0; background: #17120f; }
+    .hero-slide--upcoming::before { display: none; }
     .hero-slide--upcoming::after { display: none; }
-    .hero-upcoming-list { position: absolute; inset: 0; z-index: 3; pointer-events: none; }
-    .hero-upcoming-item { position: absolute; left: 23.3%; width: 53%; height: 5.7%; display: flex; align-items: center; gap: 3%; }
-    .hero-upcoming-item:nth-child(1) { top: 37.85%; }
-    .hero-upcoming-item:nth-child(2) { top: 47.05%; }
-    .hero-upcoming-item:nth-child(3) { top: 56.25%; }
-    .hero-upcoming-item:nth-child(4) { top: 65.45%; }
-    .hero-upcoming-item:nth-child(5) { top: 74.65%; }
-    .hero-upcoming-item strong { flex: 0 0 26%; height: 100%; display: flex; align-items: center; justify-content: center; border-radius: 999px; background: #a9d36f; color: #172016; font-size: clamp(8px, 1.45vw, 13px); font-weight: 900; letter-spacing: .025em; white-space: nowrap; }
-    .hero-upcoming-item span { flex: 1; min-width: 0; height: 100%; display: flex; align-items: center; overflow: hidden; padding: 0 5px; background: rgba(28,20,16,.97); color: #fff3df; font-size: clamp(7px, 1.45vw, 13px); font-weight: 850; letter-spacing: .015em; line-height: 1; text-transform: uppercase; white-space: nowrap; }
+    .hero-upcoming-image { display: block; width: 100%; height: 100%; object-fit: fill; }
     .hero-slide--world { display: grid; place-items: center; background: #061329 url('./assets/across-every-room-blue.jpg') center/cover no-repeat; }
     .hero-slide--world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,12,31,.04) 15%, rgba(3,12,31,.18) 45%, rgba(3,12,31,.9) 100%); }
     .hero-slide--world .hero-story-copy { bottom: 31px; text-align: center; }
@@ -407,7 +400,7 @@
           <div class="hero-track" id="heroTrack">
             <article class="hero-slide hero-slide--podcast"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></article>
             <article class="hero-slide hero-slide--voice"><div class="hero-story-copy"><div class="hero-story-kicker">02 · Voice of Healing</div><h3>There is power in being heard.</h3><p>Stories, sound and stillness for the moments that need a gentler place to land.</p></div></article>
-            <article class="hero-slide hero-slide--upcoming" aria-label="Upcoming PED-Talk episodes"><div class="hero-upcoming-list" id="heroUpcomingList" aria-live="polite"></div></article>
+            <article class="hero-slide hero-slide--upcoming" aria-label="Upcoming PED-Talk episodes"><img class="hero-upcoming-image" id="heroUpcomingImage" alt="PED-Talk upcoming episodes artwork" src="./assets/up-next-template.jpg"></article>
             <article class="hero-slide hero-slide--world"><div class="hero-story-copy"><div class="hero-story-kicker">04 · Across every room</div><h3>One sound. A world of brighter days.</h3><p>Wherever you are listening from, you are welcome here.</p></div></article>
           </div>
         </div>
@@ -595,19 +588,67 @@
     }
     function applyEpisodeFilters() { const season = document.getElementById("seasonFilter").value; const filtered = allEpisodes.filter(episode => (season === "all" || (episode.season || "Season 1") === season) && (activeCategory === "all" || (episode.categories || []).includes(activeCategory))); displayEpisodes(filtered); }
     function renderHeroUpcoming(upcoming) {
-      const list = document.getElementById("heroUpcomingList");
-      if (!list) return;
-      list.replaceChildren();
-      (upcoming || []).slice(0, 5).forEach(episode => {
-        const item = document.createElement("div");
-        item.className = "hero-upcoming-item";
-        const number = document.createElement("strong");
-        number.textContent = "EP " + String(Number(episode.number) || "").padStart(2, "0");
-        const title = document.createElement("span");
-        title.textContent = [episode.title, episode.subtitle].filter(Boolean).join(" · ");
-        item.append(number, title);
-        list.appendChild(item);
-      });
+      const output = document.getElementById("heroUpcomingImage");
+      if (!output) return;
+      const template = new Image();
+      template.onload = () => {
+        const canvas = document.createElement("canvas");
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(template, 0, 0, 1024, 1024);
+        const rows = (upcoming || []).slice(0, 5);
+        const rowY = [379, 466, 553, 640, 727];
+        const roundedRect = (x, y, w, h, r) => {
+          ctx.beginPath();
+          ctx.moveTo(x + r, y);
+          ctx.lineTo(x + w - r, y);
+          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+          ctx.lineTo(x + w, y + h - r);
+          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+          ctx.lineTo(x + r, y + h);
+          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+          ctx.lineTo(x, y + r);
+          ctx.quadraticCurveTo(x, y, x + r, y);
+          ctx.closePath();
+        };
+        rows.forEach((episode, index) => {
+          const y = rowY[index];
+          const number = Number(episode.number);
+          const title = String(episode.title || "UPCOMING EPISODE").toUpperCase();
+          // Rebuild the complete row directly in the image pixels, replacing the baked-in lettering.
+          roundedRect(240, y, 544, 73, 37);
+          ctx.fillStyle = "#211a15";
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "#e9dfce";
+          ctx.stroke();
+          ctx.save();
+          roundedRect(240, y, 143, 73, 36);
+          ctx.clip();
+          ctx.fillStyle = "#b8e64f";
+          ctx.fillRect(240, y, 143, 73);
+          ctx.restore();
+          ctx.fillStyle = "#10130c";
+          ctx.font = "900 29px Arial, sans-serif";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("EP " + String(number).padStart(2, "0"), 311, y + 37);
+          ctx.fillStyle = "#fff1dc";
+          ctx.textAlign = "left";
+          let fontSize = 26;
+          ctx.font = "900 " + fontSize + "px Arial, sans-serif";
+          while (ctx.measureText(title).width > 335 && fontSize > 15) {
+            fontSize -= 1;
+            ctx.font = "900 " + fontSize + "px Arial, sans-serif";
+          }
+          ctx.fillText(title, 414, y + 38);
+        });
+        output.src = canvas.toDataURL("image/jpeg", 0.94);
+        output.alt = "PED-Talk upcoming episodes: " + rows.map(e => "Episode " + e.number + ", " + e.title).join("; ");
+      };
+      template.onerror = () => { output.alt = "PED-Talk upcoming episodes artwork"; };
+      template.src = "./assets/up-next-template.jpg";
     }
     function displayEpisodes(episodes) {
       container.replaceChildren(); if (!episodes.length) { container.innerHTML = '<p class="status">No episodes match this season and category yet.</p>'; return; }
