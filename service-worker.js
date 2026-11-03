@@ -1,4 +1,4 @@
-const CACHE_NAME = "ped-talk-v33";
+const CACHE_NAME = "ped-talk-v34";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 const FILES_TO_CACHE = [
@@ -20,7 +20,8 @@ const FILES_TO_CACHE = [
   `${BASE}assets/up-next-template.jpg`,
   `${BASE}assets/gift-of-hope-sky.svg`,
   `${BASE}assets/gift-of-hope-sky.jpg`,
-  `${BASE}data/web-bible.json`
+  `${BASE}upcoming.json`,
+  `${BASE}data/web/books/John.json`
 ];
 
 self.addEventListener("install", event => {
