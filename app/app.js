@@ -59,8 +59,6 @@ if(showcase){
   window.clearInterval(slideTimer);
   slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),6500);
  }
- document.getElementById('showcasePrev').addEventListener('click',()=>showShowcaseSlide(slideIndex-1));
- document.getElementById('showcaseNext').addEventListener('click',()=>showShowcaseSlide(slideIndex+1));
  dots.forEach((dot,i)=>dot.addEventListener('click',()=>showShowcaseSlide(i)));
  showcase.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;window.clearInterval(slideTimer);},{passive:true});
  showcase.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>40)showShowcaseSlide(slideIndex+(delta<0?1:-1));else showShowcaseSlide(slideIndex);},{passive:true});
@@ -140,6 +138,7 @@ function fillBibleBooks(){
  document.getElementById('booksStageTitle').textContent=testament==='OT'?'Old Testament':'New Testament';
 }
 function setBibleStage(stage){
+ document.body.classList.remove('scripture-reading');
  const showTestaments=stage==='testamentStage';
  const heading=document.querySelector('.bible-picker-heading');
  const tiles=document.getElementById('testamentTiles');
@@ -155,8 +154,12 @@ function resetBibleFlow(){
  document.getElementById('bibleTitle').textContent='Scripture';
  document.getElementById('bibleVerses').innerHTML='<p class="loading">Choose a book and chapter to begin reading.</p>';
 }
+function clearBibleSearch(){
+ const input=document.getElementById('bibleSearch'),results=document.getElementById('bibleSearchResults');
+ if(input)input.value='';if(results){results.hidden=true;results.replaceChildren();}
+}
 function openBibleReference(reference){
- document.getElementById('bibleSearchResults').hidden=true;
+ clearBibleSearch();
  const parts=String(reference||'').split(':'),name=parts[0]||'John';
  const meta=bibleBooks.find(book=>book[0]===name||book[1].toLowerCase()===name.toLowerCase());
  if(!meta){resetBibleFlow();return;}
@@ -174,6 +177,7 @@ function fillBibleChapters(){
 let bibleLoadToken=0;
 function escapeBibleHTML(value=''){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
 async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
+ clearBibleSearch();
  const meta=bibleBooks.find(book=>book[0]===code);if(!meta)return;
  const token=++bibleLoadToken;activeBibleBook=code;
  const title=document.getElementById('bibleTitle'),verses=document.getElementById('bibleVerses');
@@ -203,8 +207,9 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
   }));
   document.querySelector('.bible-picker-heading').hidden=true;document.getElementById('testamentTiles').hidden=true;document.getElementById('booksStage').hidden=true;
   document.getElementById('chaptersStage').hidden=openReader;document.getElementById('bibleReader').hidden=!openReader;
+  document.body.classList.toggle('scripture-reading',openReader);
   if(verseToFocus){
-   document.getElementById('bibleReader').hidden=false;document.getElementById('chaptersStage').hidden=true;
+   document.getElementById('bibleReader').hidden=false;document.getElementById('chaptersStage').hidden=true;document.body.classList.add('scripture-reading');
    requestAnimationFrame(()=>{const target=document.getElementById('bible-verse-'+Number(verseToFocus));target?.classList.add('verse-selected');target?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+Number(verseToFocus);});
   }else document.getElementById('bibleSelectedVerse').textContent='Select a verse to highlight it';
  }catch(error){
@@ -268,13 +273,23 @@ async function searchInBible(){
   out.querySelectorAll('[data-ref]').forEach(btn=>btn.addEventListener('click',()=>{
    const parts=btn.dataset.ref.split(':');const meta=bibleBooks.find(b=>b[0]===parts[0]);
    document.getElementById('bibleTestament').value=meta[2];fillBibleBooks();bibleBookSelect.value=meta[0];
-   loadBibleBook(meta[0],Number(parts[1]),Number(parts[2]));
+   clearBibleSearch();loadBibleBook(meta[0],Number(parts[1]),Number(parts[2]),true);
   }));
  }catch(error){out.textContent='Search could not finish. Please check your connection and try again.';console.error(error);}
 }
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
 resetBibleFlow();
+const bibleModeButton=document.getElementById('bibleModeToggle'),bibleModeIcon=document.getElementById('bibleModeIcon');
+function setBibleMode(mode){
+ const dark=mode==='dark';document.body.classList.toggle('bible-dark',dark);
+ if(bibleModeIcon)bibleModeIcon.textContent=dark?'☾':'☼';
+ if(bibleModeButton){bibleModeButton.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');bibleModeButton.title=dark?'Switch to light mode':'Switch to dark mode';}
+ try{localStorage.setItem('ped-talk-bible-mode',mode);}catch(error){}
+}
+let savedBibleMode='light';try{savedBibleMode=localStorage.getItem('ped-talk-bible-mode')||'light';}catch(error){}
+setBibleMode(savedBibleMode==='dark'?'dark':'light');
+bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classList.contains('bible-dark')?'light':'dark'));
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 
 // Gift of Hope expanded reading tile and community actions.
