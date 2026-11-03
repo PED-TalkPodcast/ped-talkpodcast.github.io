@@ -4,7 +4,7 @@
  <radialGradient id="glow"><stop stop-color="#9aaec4" stop-opacity=".34"/><stop offset=".42" stop-color="#496b91" stop-opacity=".22"/><stop offset="1" stop-color="#071426" stop-opacity="0"/></radialGradient>
  <filter id="clouds" x="-20%" y="-30%" width="140%" height="160%">
   <feTurbulence type="fractalNoise" baseFrequency=".006 .018" numOctaves="2" seed="18" result="noise">
-   <animate attributeName="baseFrequency" dur="90s" values=".005 .014;.008 .021;.005 .014" calcMode="linear" repeatCount="indefinite"/>
+   <animate attributeName="baseFrequency" dur="64s" values=".005 .014;.006 .016;.007 .018;.006 .016;.005 .014" keyTimes="0;.25;.5;.75;1" calcMode="linear" repeatCount="indefinite"/>
   </feTurbulence>
   <feColorMatrix in="noise" type="saturate" values="0" result="mono"/>
   <feComponentTransfer in="mono"><feFuncR type="gamma" amplitude="1.4" exponent="1.8" offset="-.25"/><feFuncG type="gamma" amplitude="1.5" exponent="1.8" offset="-.28"/><feFuncB type="gamma" amplitude="1.7" exponent="1.7" offset="-.3"/><feFuncA type="table" tableValues="0 .55"/></feComponentTransfer>
