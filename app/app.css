@@ -442,33 +442,39 @@ body.bible-dark .bible-highlight-palette button.active{border-color:#e5edf2}
 #bibleReader .bible-verse.verse-highlighted[data-highlight="purple"] .verse-text{background:rgba(185,164,232,.42)!important}
 
 
-/* v67: scripture stays clean; colours appear only as tap-to-save controls. */
-#bibleReader .bible-verse.verse-selected .verse-text,#bibleReader .bible-verse.verse-highlighted .verse-text{background:transparent!important;box-shadow:none!important}
-#bibleReader .bible-verse.verse-selected,#bibleReader .bible-verse.verse-highlighted{background:transparent!important;box-shadow:none!important;outline:none!important}
-.bible-highlight-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:34px;margin:2px 0 8px}
-.bible-highlight-palette{display:flex;align-items:center;gap:8px;padding:0;border:0}
-.bible-highlight-palette[hidden],.bible-highlights-panel[hidden]{display:none!important}
-.bible-highlight-palette>span{font-size:9px}
-.bible-highlight-palette button{width:26px;height:26px}
-.bible-highlights-toggle{display:inline-flex;align-items:center;gap:7px;margin-left:auto;padding:7px 10px;border:1px solid #dfe5e8;border-radius:18px;background:#f7f9fa;color:#344451;font:700 10px 'DM Sans',sans-serif;white-space:nowrap}
-.bible-highlights-toggle span{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:#e6edf1;color:#344451;font-size:9px}
-.bible-highlights-panel{margin:4px 0 12px;padding:12px;border:1px solid #e3e8eb;border-radius:12px;background:#f8fafb}
-.bible-highlights-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
-.bible-highlights-head h4{margin:0;color:#28343d;font-size:13px}
-.bible-highlights-head>button{width:28px;height:28px;border:0;border-radius:50%;background:#e9eef1;color:#33414b;font-size:19px}
-.bible-saved-highlight{display:flex;align-items:stretch;gap:6px;padding:9px 0;border-top:1px solid #e5eaed}
-.bible-saved-highlight-open{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:5px;border:0;background:transparent;text-align:left}
-.saved-highlight-ref{color:#283a45;font-size:11px;font-weight:800}
-.saved-highlight-text{color:#52616b;font:13px/1.45 Georgia,serif}
-.bible-saved-highlight-open small{display:flex;align-items:center;gap:5px;color:#77838b;font-size:9px}
-.saved-highlight-dot{display:inline-block;width:8px;height:8px;border-radius:50%}
-.saved-highlight-dot.pink{background:#ef9dbd}.saved-highlight-dot.green{background:#a9cf8c}.saved-highlight-dot.blue{background:#91c5ed}.saved-highlight-dot.purple{background:#b9a4e8}
-.bible-saved-highlight-delete{align-self:center;width:28px;height:28px;border:0;border-radius:50%;background:#edf1f3;color:#697780;font-size:16px}
-.bible-highlights-empty{margin:5px 0;color:#7b8790;font-size:11px;line-height:1.5}
-body.bible-dark .bible-highlights-panel{border-color:#34434e;background:#17232c}
-body.bible-dark .bible-highlights-head h4,body.bible-dark .saved-highlight-ref{color:#e5edf2}
-body.bible-dark .saved-highlight-text{color:#bdc8cf}
-body.bible-dark .bible-highlights-head>button,body.bible-dark .bible-saved-highlight-delete{background:#263640;color:#e5edf2}
-body.bible-dark .bible-saved-highlight{border-color:#34434e}
-body.bible-dark .bible-highlights-toggle{border-color:#34434e;background:#1c2933;color:#e9edf0}
-body.bible-dark .bible-highlights-toggle span{background:#34434e;color:#e9edf0}
+/* v68: selection is dotted; saved brush strokes persist; controls stay compact. */
+#bibleReader .bible-verse{display:inline!important;cursor:pointer!important;outline:none!important}
+#bibleReader .bible-verse .verse-text{display:inline!important;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+#bibleReader .bible-verse.verse-selected .verse-text{border-bottom:2px dotted #8ba2b1!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+#bibleReader .bible-verse.verse-highlighted .verse-text{padding:0 .035em;border-radius:.12em;background:linear-gradient(transparent 48%,var(--brush-color,rgba(239,157,189,.55)) 48%,var(--brush-color,rgba(239,157,189,.55)) 91%,transparent 91%)!important;box-shadow:none!important}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="pink"]{--brush-color:rgba(239,157,189,.62)}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="green"]{--brush-color:rgba(169,207,140,.62)}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="blue"]{--brush-color:rgba(145,197,237,.62)}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="purple"]{--brush-color:rgba(185,164,232,.62)}
+.bible-highlight-tools{display:flex;align-items:center;justify-content:space-between;gap:9px;flex-wrap:wrap;margin:5px 0 10px;min-height:32px}
+.bible-selection-actions,.bible-collection-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.bible-selection-actions[hidden],.bible-highlight-palette[hidden],.bible-highlights-panel[hidden],.bible-selection-actions[hidden]{display:none!important}
+.bible-selection-actions>span{font-size:9px;color:#8b9aa5;white-space:nowrap}
+.bible-selection-actions>button{border:1px solid #d7e0e5;border-radius:16px;padding:6px 11px;background:#edf3f6;color:#30424f;font:700 10px 'DM Sans',sans-serif}
+.bible-highlight-palette{display:flex;align-items:center;gap:6px;padding:0;border:0}
+.bible-highlight-palette>span{font-size:9px;color:#78838c;white-space:nowrap}
+.bible-highlight-palette button{display:grid;place-items:center;width:25px;height:25px;padding:0;border:1px solid #dce1e5;border-radius:50%;background:#fff}
+.bible-highlight-palette button i{display:block;width:14px;height:14px;border-radius:50%}
+.bible-highlight-palette button[data-highlight-color="pink"] i{background:#ef9dbd}
+.bible-highlight-palette button[data-highlight-color="green"] i{background:#a9cf8c}
+.bible-highlight-palette button[data-highlight-color="blue"] i{background:#91c5ed}
+.bible-highlight-palette button[data-highlight-color="purple"] i{background:#b9a4e8}
+.bible-highlights-toggle{padding:6px 9px;font-size:9px}
+.bible-highlights-panel{max-height:42vh;overflow:auto}
+#bibleReader .bible-pager{display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;align-items:center!important;gap:8px!important;padding:9px 0 calc(7px + env(safe-area-inset-bottom))!important}
+#bibleReader .bible-pager button{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;max-width:116px!important;min-height:29px!important;height:29px!important;padding:0 8px!important;border:1px solid rgba(169,200,229,.25)!important;border-radius:15px!important;background:#173d60!important;color:#d5e7f7!important;font:600 9px/1 'DM Sans',sans-serif!important;white-space:nowrap!important;box-shadow:none!important}
+#bibleReader .bible-pager button span{display:inline!important;padding:0!important;margin:0!important;font:inherit!important;white-space:nowrap!important;text-align:center!important}
+#bibleReader .bible-pager #biblePosition{justify-self:center!important;font-size:8px!important;line-height:1.2!important;text-align:center!important;white-space:nowrap!important}
+@media(max-width:420px){.bible-highlight-tools{align-items:flex-start}.bible-collection-actions{width:100%;justify-content:flex-end}#bibleReader .bible-pager button{max-width:108px!important;min-height:28px!important;height:28px!important;padding:0 7px!important;font-size:8px!important}}
+/* Gift of Hope: a tiled, slow linear drift makes the sky travel continuously without a visible reset seam. */
+.hope-card{isolation:isolate;background:#06172a!important}
+.hope-card::before{content:"";position:absolute;z-index:-2;inset:-1px;background-image:url('../assets/gift-of-hope-sky.svg');background-repeat:repeat-x;background-size:200% 100%;background-position:0 50%;animation:hopeSkyDrift 110s linear infinite;will-change:background-position}
+.hope-card::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(4,13,27,.28),rgba(5,19,37,.82));pointer-events:none}
+.hope-card>*{position:relative;z-index:1}
+@keyframes hopeSkyDrift{from{background-position:0 50%}to{background-position:100% 50%}}
+@media(prefers-reduced-motion:reduce){.hope-card::before{animation:none!important}}
