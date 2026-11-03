@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071b31">
 <meta name="description" content="PED-Talk — a quiet place for hope, scripture and conversations that help us grow.">
-<link rel="manifest" href="../manifest.json">
+<link rel="manifest" href="./manifest.json">
 <link rel="icon" href="../icons/ped-talk-icon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="./app.css">
 <title>PED-Talk App</title>
 </head>
 <body>
 <header class="topbar"><a class="brand" href="./"><img src="../icons/ped-talk-icon.svg" alt=""> <span>PED-TALK<small>ANAGKAZO MEDIA</small></span></a><span class="live-dot">A brighter day</span></header>
-<main>
+<main id="homeView">
 <section class="welcome"><p class="eyebrow">A MOMENT OF HOPE</p><h1>Gift of<br><em>Hope.</em></h1><p class="intro">A quiet moment to pause, breathe, and let the Word renew your heart.</p>
 <div class="verse-card"><span class="verse-label">TODAY'S SCRIPTURE</span><blockquote id="giftVerse">“For God so loved the world, that he gave his one and only Son…”</blockquote><p id="giftReference">John 3:16 · World English Bible</p><a class="text-link" href="../bible.html#john-3-16">Read in the Bible <span>↗</span></a></div>
 </section>
@@ -22,6 +22,7 @@
 </section>
 <section class="bible-promo"><div><p class="eyebrow">THE WORD, WITH YOU</p><h2>Explore the Bible.</h2><p>Read scripture, find a passage, and spend a little more time in the Word.</p><a class="button-link" href="../bible.html">Open the Bible <span>→</span></a></div><div class="bible-mark">“</div></section>
 </main>
-<nav class="bottom-nav"><a class="selected" href="./"><span>⌂</span>Home</a><a href="#episodes"><span>▦</span>Episodes</a><a href="../bible.html"><span>✧</span>Bible</a></nav>
+<section id="bibleView" class="bible-view" hidden><iframe id="bibleFrame" title="PED-Talk Bible reader" src="../bible.html"></iframe></section>
+<nav class="bottom-nav"><button class="selected" data-view="home"><span>⌂</span>Home</button><button data-view="episodes"><span>▦</span>Episodes</button><button data-view="bible"><span>✧</span>Bible</button></nav>
 <script src="./app.js" defer></script>
 </body></html>
