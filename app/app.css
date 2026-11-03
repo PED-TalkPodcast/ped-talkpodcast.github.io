@@ -181,3 +181,19 @@ body.modal-open{overflow:hidden}
 .hope-modal-panel{animation:pedHopeOpen .46s cubic-bezier(.18,.9,.25,1) both}
 @keyframes pedHopeOpen{0%{opacity:0;transform:translate3d(0,24px,0) scale(.975);filter:blur(3px)}70%{opacity:1;transform:translate3d(0,-3px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
 @media(prefers-reduced-motion:reduce){.view-enter,.hope-modal-panel{animation:none!important}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
+
+/* Refined navigation: crisp outline icons, no tap-square or focus flash */
+.bottom-nav{gap:clamp(12px,7vw,70px);padding-left:16px;padding-right:16px}
+.bottom-nav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;min-width:58px;min-height:54px;padding:5px 8px;border:0!important;border-radius:0!important;outline:none;background:transparent!important;box-shadow:none!important;color:#8fa6bc}
+.bottom-nav button svg{display:block;width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round;transition:transform .22s cubic-bezier(.2,.85,.25,1),color .22s ease}
+.bottom-nav button span{display:block;font:600 9px 'DM Sans',sans-serif;letter-spacing:.015em;margin:0}
+.bottom-nav button.selected{color:#d5e7f7}
+.bottom-nav button:active{transform:none!important;background:transparent!important;box-shadow:none!important}
+.bottom-nav button:active svg{transform:translateY(-2px) scale(1.08)}
+.bottom-nav button:focus{outline:none!important;box-shadow:none!important}
+.bottom-nav button:focus-visible{outline:2px solid rgba(169,200,229,.65)!important;outline-offset:4px;border-radius:8px!important}
+.bottom-nav button{-webkit-tap-highlight-color:transparent;appearance:none}
+.hope-heading .hope-expand{display:none!important}
+.hope-card{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.hope-card:focus{outline:none}
+.hope-card:focus-visible{outline:2px solid rgba(169,200,229,.7);outline-offset:4px}
