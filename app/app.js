@@ -1,42 +1,14 @@
-const appUpcomingImage=document.getElementById('appUpcomingImage');
+const appUpcomingList=document.getElementById('appUpcomingList');
 async function renderAppUpcoming(){
- if(!appUpcomingImage)return;
+ if(!appUpcomingList)return;
  try{
   const response=await fetch('../upcoming.json',{cache:'no-store'});
   if(!response.ok)throw new Error('Upcoming schedule unavailable');
   const schedule=await response.json();
   const rows=(schedule.episodes||[]).slice(0,5);
-  const template=new Image();
-  template.onload=()=>{
-   const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1024;
-   const ctx=canvas.getContext('2d');ctx.drawImage(template,0,0,1024,1024);
-   const rowY=[379,466,553,640,727];
-   const roundedRect=(x,y,w,h,r)=>{
-    ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-    ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-    ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-    ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
-   };
-   rows.forEach((episode,index)=>{
-    const y=rowY[index],tileY=y+4,tileHeight=65;
-    const title=String(episode.title||'UPCOMING EPISODE').toUpperCase();
-    roundedRect(240,y,544,73,37);ctx.fillStyle='#17120f';ctx.fill();
-    roundedRect(240,tileY,544,tileHeight,33);ctx.fillStyle='#211a15';ctx.fill();
-    ctx.lineWidth=2;ctx.strokeStyle='#e9dfce';ctx.stroke();
-    ctx.save();roundedRect(240,tileY,143,tileHeight,32);ctx.clip();
-    ctx.fillStyle='#b8e64f';ctx.fillRect(240,tileY,143,tileHeight);ctx.restore();
-    ctx.fillStyle='#10130c';ctx.font='900 27px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-    ctx.fillText('EP '+String(Number(episode.number)).padStart(2,'0'),311,tileY+tileHeight/2);
-    ctx.fillStyle='#fff1dc';ctx.textAlign='left';let fontSize=25;ctx.font='900 '+fontSize+'px Arial,sans-serif';
-    while(ctx.measureText(title).width>335&&fontSize>15){fontSize--;ctx.font='900 '+fontSize+'px Arial,sans-serif';}
-    ctx.fillText(title,414,tileY+tileHeight/2);
-   });
-   appUpcomingImage.src=canvas.toDataURL('image/jpeg',0.94);
-   appUpcomingImage.alt='PED-Talk upcoming episodes: '+rows.map(e=>'Episode '+e.number+', '+e.title).join('; ');
-  };
-  template.onerror=()=>{appUpcomingImage.alt='PED-Talk upcoming episodes artwork';};
-  template.src='../assets/up-next-template.jpg';
- }catch(error){console.warn(error);}
+  document.getElementById('upcomingCount').textContent=rows.length+' upcoming';
+  appUpcomingList.innerHTML=rows.map(episode=>'<div class="upcoming-row"><span class="upcoming-episode">EP '+String(Number(episode.number)).padStart(2,'0')+'</span><span class="upcoming-title">'+String(episode.title||'Upcoming episode').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</span></div>').join('')||'<p class="empty">New conversations are on the way.</p>';
+ }catch(error){appUpcomingList.innerHTML='<p class="empty">Upcoming episodes could not load just now.</p>';console.warn(error);}
 }
 renderAppUpcoming();
 const groupRoot=document.getElementById('episodeGroups');
