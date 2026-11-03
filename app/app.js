@@ -96,6 +96,21 @@ function bibleVerseNumber(verse,index){return verse?.number??verse?.verse??verse
 function bibleVerseText(verse){const value=verse?.text??verse?.content??verse?.value??verse?.verseText??'';return typeof value==='string'?value:String(value??'');}
 const bibleBookSelect=document.getElementById('bibleBook');
 const bibleChapterSelect=document.getElementById('bibleChapter');
+const booksView=document.getElementById('booksView');
+let viewTransitionToken=0;
+function showView(view,reference=null){
+ const target=['home','episodes','bible','books','hope'].includes(view)?view:'home';
+ const previous=[homeView,episodesView,bibleView,booksView,hopeModal].find(el=>!el.hidden);
+ const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
+ [homeView,episodesView,bibleView,booksView,hopeModal].forEach(el=>{el.hidden=el!==next;el.classList.remove('view-enter');});
+ document.body.classList.remove('modal-open');
+ document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===target));
+ const token=++viewTransitionToken;
+ requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
+ window.scrollTo({top:0,behavior:'smooth'});
+ if(target==='bible'){if(reference)openBibleReference(reference);else resetBibleFlow();}
+}
+
 function fillBibleBooks(){
  const testament=document.getElementById('bibleTestament').value,list=bibleBooks.filter(book=>book[2]===testament);
  bibleBookSelect.innerHTML=list.map(book=>'<option value="'+book[0]+'">'+book[1]+'</option>').join('');
