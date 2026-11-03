@@ -201,6 +201,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
   const selectVerse=element=>{
    const verse=element.closest('.bible-verse');if(!verse)return;
    verses.querySelectorAll('.bible-verse').forEach(item=>item.classList.toggle('verse-selected',item===verse));
+   verse.classList.add('verse-highlighted');
    verse.dataset.highlight=activeBibleHighlight;
    document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+verse.dataset.verse;
   };
@@ -213,7 +214,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
   document.body.classList.toggle('scripture-reading',openReader);
   if(verseToFocus){
    document.getElementById('bibleReader').hidden=false;document.getElementById('chaptersStage').hidden=true;document.body.classList.add('scripture-reading');
-   requestAnimationFrame(()=>{const target=document.getElementById('bible-verse-'+Number(verseToFocus));target?.classList.add('verse-selected');target?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+Number(verseToFocus);});
+   requestAnimationFrame(()=>{const target=document.getElementById('bible-verse-'+Number(verseToFocus));target?.classList.add('verse-selected','verse-highlighted');if(target)target.dataset.highlight=activeBibleHighlight;target?.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+Number(verseToFocus);});
   }else document.getElementById('bibleSelectedVerse').textContent='Select a verse to highlight it';
  }catch(error){
   if(token!==bibleLoadToken)return;
@@ -293,7 +294,7 @@ bibleHighlightPalette?.addEventListener('click',event=>{
   const active=button===choice;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
  });
  const selected=document.querySelector('#bibleVerses .bible-verse.verse-selected');
- if(selected)selected.dataset.highlight=activeBibleHighlight;
+ if(selected){selected.classList.add('verse-highlighted');selected.dataset.highlight=activeBibleHighlight;}
 });
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
