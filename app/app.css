@@ -344,3 +344,45 @@ body.bible-dark #bibleReader .bible-reader-actions,body.bible-dark #bibleReader 
 .anagkazo-copy{z-index:2;text-shadow:0 2px 15px rgba(0,0,0,.28)}
 /* Dots-only slide navigation; timed movement and touch swiping remain active. */
 .app-showcase-controls{min-height:36px}
+
+
+/* Final reading polish: inline verse flow, clean icon placement and balanced paging. */
+#bibleReader .bible-reader-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 0 17px}
+#bibleReader .bible-reader-top>div{min-width:0;flex:1}
+#bibleReader .bible-mode-toggle{width:44px;height:44px;flex:0 0 44px;display:grid;place-items:center;margin:0 1px 0 auto;padding:0;border:1px solid #e1e5e8;border-radius:50%;background:#f7f9fa;color:#344451;box-shadow:0 2px 8px rgba(22,35,45,.06);transition:background .2s ease,transform .2s ease,border-color .2s ease}
+#bibleReader .bible-mode-toggle:active{transform:scale(.94)}
+#bibleReader .bible-mode-toggle svg{display:block;width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+#bibleReader .bible-reader-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 0 12px}
+#bibleReader .bible-reader-actions .bible-back{display:inline-flex;align-items:center;justify-content:center;min-height:38px;padding:0 14px;border-radius:20px;font-size:11px;line-height:1}
+#bibleReader .bible-reader-actions #bibleSelectedVerse{flex:1;text-align:right;line-height:1.4}
+#bibleReader .bible-verses{display:block;padding:14px 0 28px;font:400 19px/1.95 Georgia,'Times New Roman',serif;letter-spacing:.002em;text-align:left}
+#bibleReader .bible-verse{display:inline;position:static;width:auto;margin:0;padding:0;border:0!important;border-radius:0!important;background:transparent!important;color:inherit;box-shadow:none!important;font:inherit;line-height:inherit;vertical-align:baseline;white-space:normal}
+#bibleReader .bible-verse>span{display:inline;position:relative;top:-.35em;margin:0 .2em 0 0;color:#7c8994;font:700 .58em/1 Georgia,serif;padding:0}
+#bibleReader .bible-verse p{display:inline;margin:0;color:#252a2e;font:inherit;line-height:inherit}
+#bibleReader .bible-verse::after{content:" "}
+#bibleReader .bible-verse.verse-selected{background:rgba(183,213,138,.26)!important;box-shadow:none!important;border-radius:3px!important}
+#bibleReader .bible-verse:focus-visible{outline:1px solid #8ba66c;outline-offset:2px}
+#bibleReader .bible-pager{position:sticky;bottom:calc(-28px - env(safe-area-inset-bottom));display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;padding:14px 0 calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e8e8e8}
+#bibleReader .bible-pager button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:44px;padding:0 13px;border:1px solid #e0e5e8;border-radius:24px;background:#f7f9fa;color:#344451;font:600 11px/1.2 'DM Sans',sans-serif;white-space:nowrap;transition:background .2s ease,transform .2s ease,border-color .2s ease}
+#bibleReader .bible-pager button:active{transform:scale(.97);background:#eef3e8}
+#bibleReader .bible-pager button svg{width:16px;height:16px;flex:0 0 16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#bibleReader .bible-pager button:disabled{opacity:.35}
+#bibleReader .bible-pager #biblePosition{font-size:9px;white-space:nowrap;text-align:center}
+body.bible-dark #bibleReader .bible-mode-toggle{border-color:#3b4a55;background:#1b2933;color:#e6edf2;box-shadow:none}
+body.bible-dark #bibleReader .bible-verse>span{color:#aebbc5}
+body.bible-dark #bibleReader .bible-verse p{color:#e9edf0}
+body.bible-dark #bibleReader .bible-verse.verse-selected{background:rgba(183,213,138,.2)!important}
+body.bible-dark #bibleReader .bible-pager button{border-color:#34434e;background:#1b2933;color:#e9edf0}
+body.bible-dark #bibleReader .bible-pager button:active{background:#263a35}
+#appShowcase .app-showcase-controls,#appShowcase .app-showcase-dots{display:none!important}
+#appShowcase .app-showcase-track{transition:transform 1.05s cubic-bezier(.22,.72,.2,1);will-change:transform}
+#appShowcase .app-showcase-slide{backface-visibility:hidden}
+@media(max-width:420px){
+ #bibleReader .bible-reader-top{padding-top:13px}
+ #bibleReader .bible-reader-top h3{font-size:26px}
+ #bibleReader .bible-verses{font-size:18px;line-height:1.9}
+ #bibleReader .bible-pager{gap:6px}
+ #bibleReader .bible-pager button{gap:5px;padding:0 9px;font-size:10px}
+ #bibleReader .bible-pager button svg{width:14px;height:14px;flex-basis:14px}
+}
+@media(prefers-reduced-motion:reduce){#appShowcase .app-showcase-track{transition:none!important}}
