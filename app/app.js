@@ -201,12 +201,13 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
   const selectVerse=element=>{
    const verse=element.closest('.bible-verse');if(!verse)return;
    verses.querySelectorAll('.bible-verse').forEach(item=>item.classList.toggle('verse-selected',item===verse));
+   verse.dataset.highlight=activeBibleHighlight;
    document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+verse.dataset.verse;
   };
-  verses.addEventListener('click',event=>selectVerse(event.target));
-  verses.addEventListener('keydown',event=>{
+  verses.onclick=event=>selectVerse(event.target);
+  verses.onkeydown=event=>{
    if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('bible-verse')){event.preventDefault();selectVerse(event.target);}
-  });
+  };
   document.querySelector('.bible-picker-heading').hidden=true;document.getElementById('testamentTiles').hidden=true;document.getElementById('booksStage').hidden=true;
   document.getElementById('chaptersStage').hidden=openReader;document.getElementById('bibleReader').hidden=!openReader;
   document.body.classList.toggle('scripture-reading',openReader);
@@ -282,6 +283,18 @@ async function searchInBible(){
   }));
  }catch(error){out.textContent='Search could not finish. Please check your connection and try again.';console.error(error);}
 }
+// One active highlight colour at a time; applying a new colour replaces the old one.
+let activeBibleHighlight='pink';
+const bibleHighlightPalette=document.getElementById('bibleHighlightPalette');
+bibleHighlightPalette?.addEventListener('click',event=>{
+ const choice=event.target.closest('[data-highlight-color]');if(!choice)return;
+ activeBibleHighlight=choice.dataset.highlightColor;
+ bibleHighlightPalette.querySelectorAll('[data-highlight-color]').forEach(button=>{
+  const active=button===choice;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));
+ });
+ const selected=document.querySelector('#bibleVerses .bible-verse.verse-selected');
+ if(selected)selected.dataset.highlight=activeBibleHighlight;
+});
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
 resetBibleFlow();
