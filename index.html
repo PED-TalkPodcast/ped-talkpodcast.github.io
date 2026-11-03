@@ -143,10 +143,57 @@
     .carousel-slide h3 { max-width: 590px; margin: 0 0 8px; font-size: clamp(23px, 3vw, 34px); line-height: 1.03; letter-spacing: -.05em; }
     .carousel-slide p { max-width: 620px; margin: 0; color: #bfd1c2; font-size: 13px; }
     .carousel-slide a { width: fit-content; margin-top: 14px; color: var(--lime); font-size: 12px; font-weight: 800; }
-    .christmas-slide { background: radial-gradient(circle at 90% 10%, rgba(200,231,142,.24), transparent 35%), linear-gradient(135deg, #7d1f2a, #17372a 72%); }
-    .christmas-slide .episode-meta { color: #f7d28b; }
-    .christmas-slide h3 { color: #fff8e9; }
-    .christmas-slide p { color: #f3dcd0; font-family: Georgia, serif; font-size: 16px; }
+    .christmas-slide {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: linear-gradient(125deg, #071b32, #123c43, #174b36, #0a2638);
+  background-size: 220% 220%;
+  animation: hopeFlow 42s ease-in-out infinite alternate;
+}
+
+.christmas-slide::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 22% 35%, rgba(75,145,170,.24), transparent 48%),
+    radial-gradient(ellipse at 78% 65%, rgba(115,174,119,.22), transparent 46%);
+  filter: blur(18px);
+  animation: hopeGlow 54s ease-in-out infinite alternate;
+}
+
+.christmas-slide > * {
+  position: relative;
+  z-index: 1;
+}
+
+.christmas-slide .episode-meta { color: #c8e78e; }
+.christmas-slide h3 { color: #f5fbf5; }
+.christmas-slide p {
+  color: #d2e3df;
+  font-family: Georgia, serif;
+  font-size: 16px;
+}
+
+@keyframes hopeFlow {
+  0% { background-position: 0% 45%; }
+  100% { background-position: 100% 55%; }
+}
+
+@keyframes hopeGlow {
+  0% { transform: translate3d(-2%, 1%, 0) scale(.98); opacity: .72; }
+  100% { transform: translate3d(2%, -1%, 0) scale(1.04); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .christmas-slide,
+  .christmas-slide::before {
+    animation: none;
+  }
+}
     .library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 0 0 25px; padding: 16px; border: 1px solid var(--line-dark); border-radius: 18px; background: rgba(255,253,248,.58); }
     .season-select { display: grid; gap: 6px; min-width: 170px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
     .season-select select { padding: 10px 12px; border: 1px solid var(--line-dark); border-radius: 10px; background: var(--white); color: var(--ink); font: inherit; font-size: 13px; letter-spacing: normal; text-transform: none; }
