@@ -103,6 +103,29 @@
     .hero-card-title span { color: var(--lime); }
     .hero-wave { display: flex; align-items: center; justify-content: center; gap: 5px; height: 58px; margin: 18px 0; }
     .hero-wave i { display: block; width: 4px; height: var(--h); border-radius: 8px; background: var(--lime); opacity: .85; }
+    .hero-showcase { position: relative; min-height: 430px; overflow: hidden; border: 1px solid rgba(200,231,142,.42); border-radius: 28px; background: #102d20; box-shadow: var(--shadow); transform: rotate(1.2deg); }
+    .hero-track { display: flex; width: 100%; height: 100%; min-height: 430px; transition: transform .8s cubic-bezier(.2,.75,.25,1); touch-action: pan-y; }
+    .hero-slide { position: relative; flex: 0 0 100%; min-height: 430px; overflow: hidden; }
+    .hero-slide::before { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(255,255,255,.16); border-radius: 19px; pointer-events: none; z-index: 2; }
+    .hero-slide--podcast { display: flex; flex-direction: column; justify-content: space-between; padding: 25px; background: linear-gradient(145deg, #39754e 0%, #1d4d33 51%, #102d20 100%); }
+    .hero-slide--podcast .hero-card-top, .hero-slide--podcast .hero-card-bottom { position: relative; z-index: 3; display: flex; justify-content: space-between; color: #d4e8d0; font-size: 10px; font-weight: 750; letter-spacing: .15em; text-transform: uppercase; }
+    .hero-slide--podcast .hero-card-center { position: relative; z-index: 3; }
+    .hero-slide--voice { background: #071a2a url('./assets/voice-of-healing.jpg') center/cover no-repeat; }
+    .hero-slide--voice::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(5,19,30,.95) 0%, rgba(5,19,30,.76) 35%, rgba(5,19,30,.04) 82%); }
+    .hero-slide--voice .hero-story-copy, .hero-slide--upcoming .hero-story-copy, .hero-slide--world .hero-story-copy { position: absolute; z-index: 3; left: 33px; right: 28px; bottom: 32px; }
+    .hero-story-kicker { color: var(--lime); font-size: 10px; font-weight: 850; letter-spacing: .18em; text-transform: uppercase; }
+    .hero-story-copy h3 { max-width: 360px; margin: 9px 0 8px; color: var(--white); font-size: clamp(31px, 4vw, 49px); line-height: .94; letter-spacing: -.065em; }
+    .hero-story-copy p { max-width: 380px; margin: 0; color: #c5d7ca; font-size: 13px; }
+    .hero-slide--upcoming { padding: 33px; background: radial-gradient(circle at 90% 15%, rgba(200,231,142,.22), transparent 30%), linear-gradient(145deg, #204f38, #0b241a); }
+    .hero-upcoming-list { display: grid; gap: 9px; margin-top: 17px; max-width: 390px; }
+    .hero-upcoming-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.15); border-radius: 12px; background: rgba(255,255,255,.06); color: #dcebdc; font-size: 12px; }
+    .hero-upcoming-item strong { color: var(--lime); font-size: 10px; letter-spacing: .08em; }
+    .hero-slide--world { display: grid; place-items: center; background: radial-gradient(circle at 50% 35%, rgba(200,231,142,.42), transparent 31%), linear-gradient(145deg, #19472f, #071a2a); }
+    .hero-world { position: absolute; top: 42px; font-size: clamp(128px, 15vw, 190px); line-height: 1; filter: drop-shadow(0 0 30px rgba(200,231,142,.32)); animation: worldFloat 5s ease-in-out infinite; }
+    .hero-slide--world .hero-story-copy { bottom: 31px; text-align: center; }
+    .hero-slide--world .hero-story-copy h3, .hero-slide--world .hero-story-copy p { margin-left: auto; margin-right: auto; }
+    @keyframes worldFloat { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-10px) rotate(3deg); } }
+    @media (prefers-reduced-motion: reduce) { .hero-track { transition: none; } .hero-world { animation: none; } }
 
     .announcement { padding: 28px 0; background: var(--lime-soft); border-bottom: 1px solid rgba(11,36,26,.12); }
     .announcement-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: 22px; align-items: stretch; }
@@ -212,6 +235,10 @@
       .menu { display: block; }
       .hero { padding: 60px 0 64px; }
       .hero-card { min-height: 350px; }
+      .hero-showcase, .hero-track, .hero-slide { min-height: 350px; }
+      .hero-slide--voice .hero-story-copy, .hero-slide--upcoming .hero-story-copy, .hero-slide--world .hero-story-copy { left: 23px; right: 23px; bottom: 27px; }
+      .hero-slide--upcoming { padding: 23px; }
+      .hero-world { top: 30px; font-size: 128px; }
       .hero-card-title { font-size: 61px; }
       .season-inner { align-items: flex-start; flex-direction: column; gap: 7px; }
       .season-countdown { gap: 6px; }
@@ -271,7 +298,14 @@
     <section class="hero" id="home">
       <div class="wrap hero-grid">
         <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><button class="button" id="installButton" type="button">Install the app</button></div></div>
-        <div class="hero-card" aria-label="PED-Talk podcast artwork"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></div>
+        <div class="hero-showcase" id="heroShowcase" aria-label="PED-Talk visual story">
+          <div class="hero-track" id="heroTrack">
+            <article class="hero-slide hero-slide--podcast"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></article>
+            <article class="hero-slide hero-slide--voice"><div class="hero-story-copy"><div class="hero-story-kicker">02 · Voice of Healing</div><h3>There is power in being heard.</h3><p>Stories, sound and stillness for the moments that need a gentler place to land.</p></div></article>
+            <article class="hero-slide hero-slide--upcoming"><div class="hero-story-copy"><div class="hero-story-kicker">03 · Coming next</div><h3>Upcoming conversations.</h3><div class="hero-upcoming-list" id="heroUpcomingList"><div class="hero-upcoming-item"><strong>SOON</strong><span>New PED-Talk stories are on the way.</span></div></div></div></article>
+            <article class="hero-slide hero-slide--world"><div class="hero-world" aria-hidden="true">🌎</div><div class="hero-story-copy"><div class="hero-story-kicker">04 · Across every room</div><h3>One sound. A world of brighter days.</h3><p>Wherever you are listening from, you are welcome here.</p></div></article>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -308,6 +342,17 @@
     const carousel = document.getElementById("episodeCarousel");
     const carouselTrack = document.getElementById("carouselTrack");
     const carouselDots = document.getElementById("carouselDots");
+    const heroShowcase = document.getElementById("heroShowcase");
+    const heroTrack = document.getElementById("heroTrack");
+    let heroIndex = 0; let heroTimer; let heroTouchStartX = 0;
+
+    function updateHeroStory() { heroTrack.style.transform = `translateX(-${heroIndex * 100}%)`; }
+    function goToHeroStory(index) { heroIndex = (index + 4) % 4; updateHeroStory(); startHeroStory(); }
+    function startHeroStory() { clearInterval(heroTimer); if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) heroTimer = setInterval(() => goToHeroStory(heroIndex + 1), 6000); }
+    heroShowcase.addEventListener("mouseenter", () => clearInterval(heroTimer)); heroShowcase.addEventListener("mouseleave", startHeroStory); heroShowcase.addEventListener("focusin", () => clearInterval(heroTimer)); heroShowcase.addEventListener("focusout", startHeroStory);
+    heroShowcase.addEventListener("touchstart", event => { heroTouchStartX = event.changedTouches[0].screenX; clearInterval(heroTimer); }, { passive: true });
+    heroShowcase.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - heroTouchStartX; if (Math.abs(distance) > 45) goToHeroStory(heroIndex + (distance < 0 ? 1 : -1)); else startHeroStory(); }, { passive: true });
+    updateHeroStory(); startHeroStory();
 
     function cleanDescription(value) { const el = document.createElement("div"); el.innerHTML = value || ""; return (el.textContent || "").trim(); }
     function makePlayer(episode) { const player = document.createElement("audio"); player.controls = true; player.preload = "none"; player.src = episode.audio; player.setAttribute("aria-label", `Play ${episode.title || "PED-Talk episode"}`); return player; }
@@ -367,13 +412,14 @@
       const categories = [...new Set(episodes.flatMap(e => e.categories || []))].sort(); const filters = document.getElementById("categoryFilters"); filters.innerHTML = ['All', ...categories].map(category => `<button class="category-filter${category === "All" ? " active" : ""}" type="button" data-category="${category === "All" ? "all" : category}">${category}</button>`).join(""); filters.querySelectorAll("button").forEach(button => button.addEventListener("click", () => { activeCategory = button.dataset.category; filters.querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); applyEpisodeFilters(); })); seasonFilter.addEventListener("change", applyEpisodeFilters);
     }
     function applyEpisodeFilters() { const season = document.getElementById("seasonFilter").value; const filtered = allEpisodes.filter(episode => (season === "all" || (episode.season || "Season 1") === season) && (activeCategory === "all" || (episode.categories || []).includes(activeCategory))); displayEpisodes(filtered); }
+    function renderHeroUpcoming(episodes) { const list = document.getElementById("heroUpcomingList"); if (!list || !episodes.length) return; list.replaceChildren(); episodes.slice(0, 3).forEach((episode, index) => { const item = document.createElement("div"); item.className = "hero-upcoming-item"; const number = document.createElement("strong"); number.textContent = episode.title?.match(/S\d+E\d+/i)?.[0] || `NEXT ${index + 1}`; const title = document.createElement("span"); title.textContent = episode.title || "PED-Talk conversation"; item.append(number, title); list.appendChild(item); }); }
     function displayEpisodes(episodes) {
       container.replaceChildren(); if (!episodes.length) { container.innerHTML = '<p class="status">No episodes match this season and category yet.</p>'; return; }
       episodes.forEach((episode, index) => { const card = document.createElement("article"); card.className = "episode"; if (episode.image) card.appendChild(makeArtwork(episode)); const label = document.createElement("div"); label.className = "episode-meta"; label.textContent = `PED-TALK · ${episode.season || "Season 1"} · ${episodeNumber(episode, index, episodes.length)}`; card.appendChild(label); const title = document.createElement("h3"); title.textContent = episode.title || "PED-Talk Episode"; card.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(episode.description).slice(0, 220); card.appendChild(description); if (episode.categories?.length) { const tags = document.createElement("div"); tags.className = "episode-tags"; episode.categories.forEach(category => { const tag = document.createElement("span"); tag.className = "episode-tag"; tag.textContent = category; tags.appendChild(tag); }); card.appendChild(tags); } if (episode.audio) card.appendChild(makePlayer(episode)); if (episode.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = `episode.html?episode=${episode.catalogIndex ?? index}`; link.textContent = "Read episode page →"; card.appendChild(link); } container.appendChild(card); });
       const first = allEpisodes[0]; featured.replaceChildren(); const artwork = document.createElement("div"); artwork.className = "feature-art"; const artworkLabel = document.createElement("div"); artworkLabel.className = "feature-art-label"; artworkLabel.innerHTML = `<span>Latest release</span><span>${episodeNumber(first, 0, allEpisodes.length)}</span>`; artwork.appendChild(artworkLabel); if (first.image) artwork.appendChild(makeArtwork(first)); featured.appendChild(artwork);
       const details = document.createElement("div"); details.className = "feature-info"; const tag = document.createElement("div"); tag.className = "eyebrow"; tag.textContent = `${first.season || "Season 1"} · ${first.categories?.join(" · ") || "PED-Talk"}`; details.appendChild(tag); const title = document.createElement("h3"); title.textContent = first.title || "Latest PED-Talk Episode"; details.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(first.description); details.appendChild(description); if (first.audio) details.appendChild(makePlayer(first)); if (first.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = first.link; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Open episode on Spotify ↗"; details.appendChild(link); } featured.appendChild(details);
     }
-    async function loadEpisodes() { try { const response = await fetch(`${FEED_URL}?v=${Date.now()}`); if (!response.ok) throw new Error("Catalogue unavailable"); const data = await response.json(); allEpisodes = (data.episodes || []).map((episode, index) => ({ ...episode, catalogIndex: index })); renderLibraryFilters(allEpisodes); displayEpisodes(allEpisodes); renderCarousel(allEpisodes); document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`; } catch (error) { container.textContent = "We couldn't load episodes right now. Please try again later."; featured.textContent = "Featured episode unavailable."; console.error(error); } }
+    async function loadEpisodes() { try { const response = await fetch(`${FEED_URL}?v=${Date.now()}`); if (!response.ok) throw new Error("Catalogue unavailable"); const data = await response.json(); allEpisodes = (data.episodes || []).map((episode, index) => ({ ...episode, catalogIndex: index })); renderHeroUpcoming(allEpisodes); renderLibraryFilters(allEpisodes); displayEpisodes(allEpisodes); renderCarousel(allEpisodes); document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`; } catch (error) { container.textContent = "We couldn't load episodes right now. Please try again later."; featured.textContent = "Featured episode unavailable."; console.error(error); } }
     window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); deferredInstallPrompt = event; document.getElementById("installPrompt").classList.add("visible"); });
     document.getElementById("installButton").addEventListener("click", async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; document.getElementById("installPrompt").classList.remove("visible"); });
     const menuBtn = document.getElementById("menuBtn"); const navLinks = document.getElementById("navLinks"); menuBtn.addEventListener("click", () => { const isOpen = navLinks.classList.toggle("open"); menuBtn.textContent = isOpen ? "✕" : "☰"; menuBtn.setAttribute("aria-expanded", String(isOpen)); menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu"); }); navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => { navLinks.classList.remove("open"); menuBtn.textContent = "☰"; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "Open menu"); }));
