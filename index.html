@@ -417,7 +417,7 @@
     }
     function updateCarousel() { carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`; [...carouselDots.children].forEach((dot, index) => { dot.classList.toggle("active", index === carouselIndex); dot.setAttribute("aria-current", index === carouselIndex ? "true" : "false"); }); }
     function goToSlide(index) { if (!carouselEpisodes.length) return; carouselIndex = (index + carouselEpisodes.length) % carouselEpisodes.length; updateCarousel(); startCarousel(); }
-    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1 && !document.hidden) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 30000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
+    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 30000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
     document.getElementById("carouselPrev").addEventListener("click", () => goToSlide(carouselIndex - 1));
     document.getElementById("carouselNext").addEventListener("click", () => goToSlide(carouselIndex + 1));
     document.addEventListener("visibilitychange", () => { if (!document.hidden) startCarousel(); });
