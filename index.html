@@ -147,73 +147,41 @@
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      background: #020711 url("assets/gift-of-hope-sky.jpg") center center / cover no-repeat;
-      animation: hopeDrift 38s ease-in-out infinite alternate;
-      will-change: background-position;
+      background: #f5f0df;
+      color: #30302d;
     }
-
-    .christmas-slide::before {
-      content: "";
-      position: absolute;
-      inset: -8%;
-      z-index: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(ellipse at 50% 58%, rgba(143, 166, 195, .12), transparent 55%),
-        linear-gradient(180deg, rgba(0, 3, 10, .12), rgba(0, 3, 10, .28));
-      filter: blur(18px);
-      animation: hopeCloudGlow 24s ease-in-out infinite alternate;
-    }
-
-    @keyframes hopeDrift {
-      0% { background-position: 48% 48%; }
-      100% { background-position: 53% 52%; }
-    }
-
-    @keyframes hopeCloudGlow {
-      0% { transform: translate3d(-1.5%, -1%, 0) scale(1); opacity: .72; }
-      100% { transform: translate3d(1.5%, 1%, 0) scale(1.04); opacity: 1; }
-    }
-
-    .christmas-slide::after {
-      content: "";
+    .hope-landscape {
       position: absolute;
       inset: 0;
       z-index: 0;
+      overflow: hidden;
       pointer-events: none;
-      opacity: .76;
-      background-image:
-        radial-gradient(1.2px 1.2px at 8% 18%, rgba(255,255,255,.98) 98%, transparent),
-        radial-gradient(1px 1px at 19% 72%, rgba(235,244,255,.9) 98%, transparent),
-        radial-gradient(1.4px 1.4px at 31% 36%, rgba(255,255,255,.96) 98%, transparent),
-        radial-gradient(1px 1px at 43% 84%, rgba(238,246,255,.86) 98%, transparent),
-        radial-gradient(1.2px 1.2px at 57% 16%, rgba(255,255,255,.96) 98%, transparent),
-        radial-gradient(1px 1px at 68% 58%, rgba(235,244,255,.9) 98%, transparent),
-        radial-gradient(1.4px 1.4px at 79% 29%, rgba(255,255,255,.98) 98%, transparent),
-        radial-gradient(1px 1px at 91% 78%, rgba(238,246,255,.86) 98%, transparent),
-        radial-gradient(1.2px 1.2px at 96% 12%, rgba(255,255,255,.96) 98%, transparent);
-      background-size: 100% 100%;
-      animation: starTwinkle 6s ease-in-out infinite alternate;
     }
-
-    @keyframes starTwinkle {
-      0% { opacity: .48; }
-      50% { opacity: .95; }
-      100% { opacity: .68; }
+    .hope-landscape svg { display: block; width: 100%; height: 100%; }
+    .hope-landscape .drifting-cloud {
+      animation: hopeCloudDrift 42s ease-in-out infinite alternate;
+      transform-origin: center;
     }
-
-    .christmas-slide > * {
+    .hope-landscape .slow-cloud {
+      animation: hopeCloudDrift 58s ease-in-out infinite alternate-reverse;
+      transform-origin: center;
+    }
+    @keyframes hopeCloudDrift {
+      0% { transform: translateX(-18px) translateY(0); }
+      100% { transform: translateX(24px) translateY(5px); }
+    }
+    .christmas-slide > :not(.hope-landscape) {
       position: relative;
       z-index: 1;
     }
-
-    .christmas-slide .episode-meta { color: #a9caff; }
-    .christmas-slide h3 { color: #ffffff; }
-    .christmas-slide a { color: #a9caff; }
+    .christmas-slide .episode-meta { color: #77715f; }
+    .christmas-slide h3 { color: #292a28; text-shadow: 0 1px 14px rgba(255,253,242,.7); }
+    .christmas-slide a { color: #52634d; }
     .christmas-slide p {
-      color: #dce9ff;
+      color: #494941;
       font-family: Georgia, serif;
       font-size: 16px;
+      text-shadow: 0 1px 12px rgba(255,253,242,.85);
     }
     .library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 0 0 25px; padding: 16px; border: 1px solid var(--line-dark); border-radius: 18px; background: rgba(255,253,248,.58); }
     .season-select { display: grid; gap: 6px; min-width: 170px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
@@ -438,6 +406,32 @@
       slides.forEach((item, index) => {
         const slide = document.createElement("article"); slide.className = `carousel-slide${item.christmas ? " christmas-slide" : ""}`; slide.setAttribute("aria-roledescription", "slide"); slide.setAttribute("aria-label", `${index + 1} of ${slides.length}`);
         if (item.christmas) {
+          const landscape = document.createElement("div");
+          landscape.className = "hope-landscape";
+          landscape.setAttribute("aria-hidden", "true");
+          landscape.innerHTML = `<svg viewBox="0 0 1200 440" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="hopeSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff9e9"/><stop offset=".58" stop-color="#f4efdE"/><stop offset="1" stop-color="#e8e4d8"/></linearGradient>
+              <radialGradient id="hopeSun"><stop offset="0" stop-color="#fff9d9" stop-opacity=".95"/><stop offset=".45" stop-color="#f5e8b8" stop-opacity=".48"/><stop offset="1" stop-color="#f5e8b8" stop-opacity="0"/></radialGradient>
+              <linearGradient id="farPeaks" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#a9a9a1"/><stop offset="1" stop-color="#c9c6b9"/></linearGradient>
+              <linearGradient id="midPeaks" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#747873"/><stop offset="1" stop-color="#a5a398"/></linearGradient>
+              <linearGradient id="nearPeaks" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#414744"/><stop offset="1" stop-color="#77776d"/></linearGradient>
+              <filter id="paperGrain"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="2" seed="8"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .11"/></feComponentTransfer></filter>
+              <filter id="softMist"><feGaussianBlur stdDeviation="17"/></filter>
+            </defs>
+            <rect width="1200" height="440" fill="url(#hopeSky)"/>
+            <ellipse cx="615" cy="110" rx="390" ry="190" fill="url(#hopeSun)"/>
+            <g class="slow-cloud" fill="#fffdf4" opacity=".48" filter="url(#softMist)"><ellipse cx="240" cy="125" rx="250" ry="35"/><ellipse cx="820" cy="145" rx="330" ry="42"/><ellipse cx="560" cy="70" rx="280" ry="28"/></g>
+            <path d="M0 260 L115 190 190 228 305 145 390 223 505 132 610 222 735 150 825 221 930 166 1040 228 1135 175 1200 218 V440 H0Z" fill="url(#farPeaks)" opacity=".74"/>
+            <path d="M0 300 L120 248 215 280 340 190 425 266 545 164 655 270 765 190 860 274 980 205 1085 270 1200 220 V440 H0Z" fill="#d4d0c3" opacity=".68"/>
+            <g class="drifting-cloud" fill="#f8f4e8" opacity=".72" filter="url(#softMist)"><ellipse cx="300" cy="295" rx="330" ry="26"/><ellipse cx="780" cy="300" rx="390" ry="32"/></g>
+            <path d="M0 360 L95 300 170 330 290 235 385 325 510 210 625 324 750 230 850 325 970 245 1080 326 1165 270 1200 294 V440 H0Z" fill="url(#midPeaks)"/>
+            <path d="M0 400 L130 338 230 370 355 286 455 370 580 270 690 372 820 290 930 370 1050 300 1150 360 1200 340 V440 H0Z" fill="url(#nearPeaks)"/>
+            <path d="M290 235 L385 325 340 303 315 285 290 235 265 270Z M510 210 L625 324 573 290 548 260 510 210 484 250Z M750 230 L850 325 808 292 780 260 750 230 725 265Z" fill="#e8e5d9" opacity=".72"/>
+            <path d="M0 366 Q210 335 380 370 T760 365 T1200 350" fill="none" stroke="#e9e5d9" stroke-width="20" opacity=".38" filter="url(#softMist)"/>
+            <rect width="1200" height="440" filter="url(#paperGrain)" opacity=".48"/>
+          </svg>`;
+          slide.appendChild(landscape);
           const meta = document.createElement("div"); meta.className = "episode-meta"; meta.textContent = "PED-TALK · CHRISTMAS SPECIAL"; slide.appendChild(meta);
           const title = document.createElement("h3"); title.textContent = "The gift of hope."; slide.appendChild(title);
           const verse = document.createElement("p"); verse.textContent = '“For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life.”'; slide.appendChild(verse);
