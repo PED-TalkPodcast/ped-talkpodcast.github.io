@@ -144,56 +144,57 @@
     .carousel-slide p { max-width: 620px; margin: 0; color: #bfd1c2; font-size: 13px; }
     .carousel-slide a { width: fit-content; margin-top: 14px; color: var(--lime); font-size: 12px; font-weight: 800; }
     .christmas-slide {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-  background: linear-gradient(125deg, #071b32, #123c43, #174b36, #0a2638);
-  background-size: 220% 220%;
-  animation: hopeFlow 42s ease-in-out infinite alternate;
-}
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      background: linear-gradient(125deg, #25103f, #4b174f, #172f68, #30123f);
+      background-size: 220% 220%;
+      animation: hopeFlow 42s ease-in-out infinite alternate;
+    }
 
-.christmas-slide::before {
-  content: "";
-  position: absolute;
-  inset: -35%;
-  z-index: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse at 22% 35%, rgba(75,145,170,.24), transparent 48%),
-    radial-gradient(ellipse at 78% 65%, rgba(115,174,119,.22), transparent 46%);
-  filter: blur(18px);
-  animation: hopeGlow 54s ease-in-out infinite alternate;
-}
+    .christmas-slide::before {
+      content: "";
+      position: absolute;
+      inset: -35%;
+      z-index: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse at 22% 35%, rgba(196,76,117,.28), transparent 48%),
+        radial-gradient(ellipse at 78% 65%, rgba(91,116,207,.28), transparent 46%),
+        radial-gradient(ellipse at 50% 50%, rgba(132,82,190,.20), transparent 55%);
+      filter: blur(18px);
+      animation: hopeGlow 54s ease-in-out infinite alternate;
+    }
 
-.christmas-slide > * {
-  position: relative;
-  z-index: 1;
-}
+    .christmas-slide > * {
+      position: relative;
+      z-index: 1;
+    }
 
-.christmas-slide .episode-meta { color: #c8e78e; }
-.christmas-slide h3 { color: #f5fbf5; }
-.christmas-slide p {
-  color: #d2e3df;
-  font-family: Georgia, serif;
-  font-size: 16px;
-}
+    .christmas-slide .episode-meta { color: #e5b6d9; }
+    .christmas-slide h3 { color: #fff8ff; }
+    .christmas-slide p {
+      color: #e0d9f2;
+      font-family: Georgia, serif;
+      font-size: 16px;
+    }
 
-@keyframes hopeFlow {
-  0% { background-position: 0% 45%; }
-  100% { background-position: 100% 55%; }
-}
+    @keyframes hopeFlow {
+      0% { background-position: 0% 45%; }
+      100% { background-position: 100% 55%; }
+    }
 
-@keyframes hopeGlow {
-  0% { transform: translate3d(-2%, 1%, 0) scale(.98); opacity: .72; }
-  100% { transform: translate3d(2%, -1%, 0) scale(1.04); opacity: 1; }
-}
+    @keyframes hopeGlow {
+      0% { transform: translate3d(-2%, 1%, 0) scale(.98); opacity: .72; }
+      100% { transform: translate3d(2%, -1%, 0) scale(1.04); opacity: 1; }
+    }
 
-@media (prefers-reduced-motion: reduce) {
-  .christmas-slide,
-  .christmas-slide::before {
-    animation: none;
-  }
-}
+    @media (prefers-reduced-motion: reduce) {
+      .christmas-slide,
+      .christmas-slide::before {
+        animation: none;
+      }
+    }
     .library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 0 0 25px; padding: 16px; border: 1px solid var(--line-dark); border-radius: 18px; background: rgba(255,253,248,.58); }
     .season-select { display: grid; gap: 6px; min-width: 170px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
     .season-select select { padding: 10px 12px; border: 1px solid var(--line-dark); border-radius: 10px; background: var(--white); color: var(--ink); font: inherit; font-size: 13px; letter-spacing: normal; text-transform: none; }
@@ -433,11 +434,11 @@
     }
     function updateCarousel() { carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`; [...carouselDots.children].forEach((dot, index) => { dot.classList.toggle("active", index === carouselIndex); dot.setAttribute("aria-current", index === carouselIndex ? "true" : "false"); }); }
     function goToSlide(index) { if (!carouselEpisodes.length) return; carouselIndex = (index + carouselEpisodes.length) % carouselEpisodes.length; updateCarousel(); startCarousel(); }
-    function startCarousel() { clearInterval(carouselTimer); if (carouselEpisodes.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) carouselTimer = setInterval(() => goToSlide(carouselIndex + 1), 5500); }
+    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 30000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
     document.getElementById("carouselPrev").addEventListener("click", () => goToSlide(carouselIndex - 1));
     document.getElementById("carouselNext").addEventListener("click", () => goToSlide(carouselIndex + 1));
-    carousel.addEventListener("mouseenter", () => clearInterval(carouselTimer)); carousel.addEventListener("mouseleave", startCarousel); carousel.addEventListener("focusin", () => clearInterval(carouselTimer)); carousel.addEventListener("focusout", startCarousel);
-    carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearInterval(carouselTimer); }, { passive: true });
+    carousel.addEventListener("mouseenter", () => clearTimeout(carouselTimer)); carousel.addEventListener("mouseleave", startCarousel); carousel.addEventListener("focusin", () => clearTimeout(carouselTimer)); carousel.addEventListener("focusout", startCarousel);
+    carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearTimeout(carouselTimer); }, { passive: true });
     carousel.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - touchStartX; if (Math.abs(distance) > 45) goToSlide(carouselIndex + (distance < 0 ? 1 : -1)); else startCarousel(); }, { passive: true });
     carousel.addEventListener("keydown", event => { if (event.key === "ArrowLeft") goToSlide(carouselIndex - 1); if (event.key === "ArrowRight") goToSlide(carouselIndex + 1); });
 
