@@ -48,31 +48,45 @@ async function renderAppUpcoming(){
 }
 renderAppUpcoming();
 const groupRoot=document.getElementById('episodeGroups');
-let allEpisodes=[];let activeCategory='All';
-function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\s+/g,' ').trim()}
+const archiveRoot=document.getElementById('archiveEpisodeGroups');
+let allEpisodes=[];let activeCategory='All';let archiveCategory='All';
+function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\\s+/g,' ').trim()}
 function categoryFor(ep){const text=(ep.title+' '+plainText(ep.description)).toLowerCase();if(/relationship|marriage|dating|couple|family|partner/.test(text))return'Relationships';if(/friend|friendship|companionship|together/.test(text))return'Friendship';if(/love|loving|beloved|compassion/.test(text))return'Love';return'Leadership'}
-function seasonFor(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?'Season '+parseInt(match[1],10):'Season 1'}
-function episodeNumber(ep){const match=(ep.title||'').match(/S\d+E(\d+)/i);return match?parseInt(match[1],10):null}
-function episodeSeason(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?parseInt(match[1],10):null}
-function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\d+E\d+$/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
-function render(){
- const filtered=allEpisodes.filter(ep=>activeCategory==='All'||categoryFor(ep)===activeCategory);
- if(!filtered.length){groupRoot.innerHTML='<p class="empty">No episodes in this category yet. More conversations are on the way.</p>';return}
- const groups={};filtered.forEach(ep=>(groups[seasonFor(ep)]??=[]).push(ep));
- groupRoot.innerHTML=Object.entries(groups).map(([season,eps])=>{
-  const seasonNum=episodeSeason(eps[0])||1;
-  const seasonLabel='SEASON '+String(seasonNum).padStart(2,'0');
-  return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">'+season+'</h3></div><span class="season-count">'+eps.length+' conversations</span></div><div class="episode-grid">'+eps.map(ep=>{
+function episodeSeason(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?parseInt(match[1],10):1}
+function episodeNumber(ep){const match=(ep.title||'').match(/S\\d+E(\\d+)/i);return match?parseInt(match[1],10):null}
+function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\\d+E\\d+/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
+function sortedEpisodes(list){return [...list].sort((a,b)=>episodeSeason(b)-episodeSeason(a)||(episodeNumber(b)||0)-(episodeNumber(a)||0)||String(b.published||'').localeCompare(String(a.published||'')))}
+function renderEpisodeGroups(root,list,emptyMessage){
+ if(!root)return;
+ if(!list.length){root.innerHTML='<p class="empty">'+emptyMessage+'</p>';return}
+ const groups=new Map();
+ sortedEpisodes(list).forEach(ep=>{const season=episodeSeason(ep);if(!groups.has(season))groups.set(season,[]);groups.get(season).push(ep)});
+ root.innerHTML=[...groups.entries()].sort((a,b)=>b[0]-a[0]).map(([season,eps])=>{
+  const seasonLabel='SEASON '+String(season).padStart(2,'0');
+  return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
    const number=episodeNumber(ep),desc=plainText(ep.description),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
    return '<article class="episode"><div class="episode-art"><img loading="lazy" src="'+(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></div><div class="episode-info"><p class="tag">'+meta+'</p><h3>'+title+'</h3><p class="desc">'+desc+'</p>'+(ep.audio?'<audio controls preload="none" src="'+ep.audio+'"></audio>':'')+(ep.link?'<a class="episode-more" href="'+ep.link+'" target="_blank" rel="noopener">Episode details ↗</a>':'')+'</div></article>'
   }).join('')+'</div></section>'
- }).join('')+'<section class="playlist-coming"><p class="eyebrow">ANAGKAZO MEDIA</p><h3>More conversations, beyond episodes.</h3><p>Curated Anagkazo Media playlists are being prepared and will appear here soon.</p><span>PLAYLISTS · COMING SOON</span></section>'
+ }).join('');
 }
-document.getElementById('filters').addEventListener('click',event=>{const button=event.target.closest('button[data-category]');if(!button)return;activeCategory=button.dataset.category;document.querySelectorAll('.filter').forEach(item=>item.classList.toggle('active',item===button));render()});
-fetch('../episodes.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('Could not load episodes');return response.json()}).then(data=>{allEpisodes=data.episodes||[];render()}).catch(()=>{groupRoot.innerHTML='<p class="empty">Your episode library could not load just now. Please check your connection and try again.</p>'});
+function renderHomeSeason(){
+ const currentSeason=allEpisodes.reduce((max,ep)=>Math.max(max,episodeSeason(ep)),1);
+ const current=allEpisodes.filter(ep=>episodeSeason(ep)===currentSeason&& (activeCategory==='All'||categoryFor(ep)===activeCategory));
+ const heading=document.getElementById('currentSeasonHeading');
+ if(heading)heading.textContent='Season '+currentSeason;
+ renderEpisodeGroups(groupRoot,current,'No episodes in this season and category yet.');
+}
+function renderArchive(){
+ const filtered=allEpisodes.filter(ep=>archiveCategory==='All'||categoryFor(ep)===archiveCategory);
+ renderEpisodeGroups(archiveRoot,filtered,'No archived episodes in this category yet.');
+}
+function render(){renderHomeSeason();renderArchive()}
+document.getElementById('archiveFilters').addEventListener('click',event=>{const button=event.target.closest('button[data-category]');if(!button)return;archiveCategory=button.dataset.category;document.querySelectorAll('#archiveFilters .filter').forEach(item=>item.classList.toggle('active',item===button));renderArchive()});
+fetch('../episodes.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('Could not load episodes');return response.json()}).then(data=>{allEpisodes=data.episodes||[];render()}).catch(()=>{groupRoot.innerHTML='<p class="empty">Your episode library could not load just now. Please check your connection and try again.</p>';archiveRoot.innerHTML='<p class="empty">The season archive could not load just now. Please try again.</p>'});
 
 const homeView=document.getElementById('homeView');
+const episodesView=document.getElementById('episodesView');
 const bibleView=document.getElementById('bibleView');
 const bibleBooks=[
 ["GEN","Genesis","OT"],["EXO","Exodus","OT"],["LEV","Leviticus","OT"],["NUM","Numbers","OT"],["DEU","Deuteronomy","OT"],["JOS","Joshua","OT"],["JDG","Judges","OT"],["RUT","Ruth","OT"],["1SA","1 Samuel","OT"],["2SA","2 Samuel","OT"],["1KI","1 Kings","OT"],["2KI","2 Kings","OT"],["1CH","1 Chronicles","OT"],["2CH","2 Chronicles","OT"],["EZR","Ezra","OT"],["NEH","Nehemiah","OT"],["EST","Esther","OT"],["JOB","Job","OT"],["PSA","Psalms","OT"],["PRO","Proverbs","OT"],["ECC","Ecclesiastes","OT"],["SNG","Song of Solomon","OT"],["ISA","Isaiah","OT"],["JER","Jeremiah","OT"],["LAM","Lamentations","OT"],["EZK","Ezekiel","OT"],["DAN","Daniel","OT"],["HOS","Hosea","OT"],["JOL","Joel","OT"],["AMO","Amos","OT"],["OBA","Obadiah","OT"],["JON","Jonah","OT"],["MIC","Micah","OT"],["NAM","Nahum","OT"],["HAB","Habakkuk","OT"],["ZEP","Zephaniah","OT"],["HAG","Haggai","OT"],["ZEC","Zechariah","OT"],["MAL","Malachi","OT"],["MAT","Matthew","NT"],["MRK","Mark","NT"],["LUK","Luke","NT"],["JHN","John","NT"],["ACT","Acts","NT"],["ROM","Romans","NT"],["1CO","1 Corinthians","NT"],["2CO","2 Corinthians","NT"],["GAL","Galatians","NT"],["EPH","Ephesians","NT"],["PHP","Philippians","NT"],["COL","Colossians","NT"],["1TH","1 Thessalonians","NT"],["2TH","2 Thessalonians","NT"],["1TI","1 Timothy","NT"],["2TI","2 Timothy","NT"],["TIT","Titus","NT"],["PHM","Philemon","NT"],["HEB","Hebrews","NT"],["JAS","James","NT"],["1PE","1 Peter","NT"],["2PE","2 Peter","NT"],["1JN","1 John","NT"],["2JN","2 John","NT"],["3JN","3 John","NT"],["JUD","Jude","NT"],["REV","Revelation","NT"]];
@@ -90,9 +104,9 @@ const booksView=document.getElementById('booksView');
 let viewTransitionToken=0;
 function showView(view,reference=null){
  const target=['home','episodes','bible','books','hope'].includes(view)?view:'home';
- const previous=[homeView,bibleView,booksView,hopeModal].find(el=>!el.hidden);
- const next=target==='bible'?bibleView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
- [homeView,bibleView,booksView,hopeModal].forEach(el=>{el.hidden=el!==next;el.classList.remove('view-enter');});
+ const previous=[homeView,episodesView,bibleView,booksView,hopeModal].find(el=>!el.hidden);
+ const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
+ [homeView,episodesView,bibleView,booksView,hopeModal].forEach(el=>{el.hidden=el!==next;el.classList.remove('view-enter');});
  document.body.classList.remove('modal-open');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===target||(target==='episodes'&&button.dataset.view==='episodes')));
  const token=++viewTransitionToken;
@@ -103,11 +117,7 @@ function showView(view,reference=null){
   next.classList.add('view-enter');
   window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);
  });
- if(target==='episodes'){
-  requestAnimationFrame(()=>document.getElementById('episodes').scrollIntoView({behavior:'smooth',block:'start'}));
- }else{
-  window.scrollTo({top:0,behavior:'smooth'});
- }
+ window.scrollTo({top:0,behavior:'smooth'});
  if(target==='bible'){
   const parts=reference?reference.split(':'):[];
   const bookName=parts[0]||activeBibleBook||'John';
