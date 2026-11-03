@@ -386,3 +386,16 @@ body.bible-dark #bibleReader .bible-pager button:active{background:#263a35}
  #bibleReader .bible-pager button svg{width:14px;height:14px;flex-basis:14px}
 }
 @media(prefers-reduced-motion:reduce){#appShowcase .app-showcase-track{transition:none!important}}
+
+/* v65: verses are flowing inline text, not inline-block buttons. */
+#bibleReader .bible-verse{display:inline!important;width:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:inherit!important;font:inherit!important;line-height:inherit!important;vertical-align:baseline!important;white-space:normal!important;cursor:pointer}
+#bibleReader .bible-verse .verse-number{display:inline!important;position:relative;top:-.35em;margin:0 .22em 0 0;color:#7c8994;font:700 .58em/1 Georgia,'Times New Roman',serif;vertical-align:baseline}
+#bibleReader .bible-verse .verse-text{display:inline!important;font:inherit!important;line-height:inherit!important}
+#bibleReader .bible-verse::after{content:" "}
+#bibleReader .bible-verse.verse-selected .verse-text{background:rgba(183,213,138,.26);border-radius:3px}
+#bibleReader .bible-verse:focus-visible{outline:1px solid #8ba66c;outline-offset:2px}
+#bibleReader .bible-pager{gap:7px;padding-top:9px;padding-bottom:calc(7px + env(safe-area-inset-bottom))}
+#bibleReader .bible-pager button{min-height:36px;padding:0 9px;font-size:10px;border-radius:19px}
+#bibleReader .bible-pager #biblePosition{font-size:8px}
+@media(max-width:420px){#bibleReader .bible-pager button{min-height:34px;padding:0 7px;font-size:9px}}
+#bibleSearchResults[hidden]{display:none!important}
