@@ -15,10 +15,10 @@ const groupRoot=document.getElementById('episodeGroups');
 let allEpisodes=[];let activeCategory='All';
 function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\s+/g,' ').trim()}
 function categoryFor(ep){const text=(ep.title+' '+plainText(ep.description)).toLowerCase();if(/relationship|marriage|dating|couple|family|partner/.test(text))return'Relationships';if(/friend|friendship|companionship|together/.test(text))return'Friendship';if(/love|loving|beloved|compassion/.test(text))return'Love';return'Leadership'}
-function seasonFor(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?'Season '+parseInt(match[1],10):'More conversations'}
-function episodeNumber(ep){const match=(ep.title||'').match(/S\\d+E(\\d+)/i);return match?parseInt(match[1],10):null}
-function episodeSeason(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?parseInt(match[1],10):null}
-function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\\d+E\\d+$/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
+function seasonFor(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?'Season '+parseInt(match[1],10):'More conversations'}
+function episodeNumber(ep){const match=(ep.title||'').match(/S\d+E(\d+)/i);return match?parseInt(match[1],10):null}
+function episodeSeason(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?parseInt(match[1],10):null}
+function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\d+E\d+$/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
 function render(){
  const filtered=allEpisodes.filter(ep=>activeCategory==='All'||categoryFor(ep)===activeCategory);
  if(!filtered.length){groupRoot.innerHTML='<p class="empty">No episodes in this category yet. More conversations are on the way.</p>';return}
