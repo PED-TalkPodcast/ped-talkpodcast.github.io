@@ -147,22 +147,22 @@
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      background: linear-gradient(125deg, #25103f, #4b174f, #172f68, #30123f);
-      background-size: 220% 220%;
+      background: linear-gradient(115deg, #e11d48 0%, #7c3aed 48%, #2563eb 100%);
+      background-size: 300% 300%;
       animation: hopeFlow 42s ease-in-out infinite alternate;
     }
 
     .christmas-slide::before {
       content: "";
       position: absolute;
-      inset: -35%;
+      inset: -30%;
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 22% 35%, rgba(196,76,117,.28), transparent 48%),
-        radial-gradient(ellipse at 78% 65%, rgba(91,116,207,.28), transparent 46%),
-        radial-gradient(ellipse at 50% 50%, rgba(132,82,190,.20), transparent 55%);
-      filter: blur(18px);
+        radial-gradient(ellipse at 18% 35%, rgba(255, 65, 105, .62), transparent 46%),
+        radial-gradient(ellipse at 78% 62%, rgba(48, 112, 255, .58), transparent 48%),
+        radial-gradient(ellipse at 52% 48%, rgba(174, 65, 255, .52), transparent 52%);
+      filter: blur(22px);
       animation: hopeGlow 54s ease-in-out infinite alternate;
     }
 
@@ -171,29 +171,12 @@
       z-index: 1;
     }
 
-    .christmas-slide .episode-meta { color: #e5b6d9; }
-    .christmas-slide h3 { color: #fff8ff; }
+    .christmas-slide .episode-meta { color: #ffe1ef; }
+    .christmas-slide h3 { color: #ffffff; }
     .christmas-slide p {
-      color: #e0d9f2;
+      color: #f4eaff;
       font-family: Georgia, serif;
       font-size: 16px;
-    }
-
-    @keyframes hopeFlow {
-      0% { background-position: 0% 45%; }
-      100% { background-position: 100% 55%; }
-    }
-
-    @keyframes hopeGlow {
-      0% { transform: translate3d(-2%, 1%, 0) scale(.98); opacity: .72; }
-      100% { transform: translate3d(2%, -1%, 0) scale(1.04); opacity: 1; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .christmas-slide,
-      .christmas-slide::before {
-        animation: none;
-      }
     }
     .library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 0 0 25px; padding: 16px; border: 1px solid var(--line-dark); border-radius: 18px; background: rgba(255,253,248,.58); }
     .season-select { display: grid; gap: 6px; min-width: 170px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
