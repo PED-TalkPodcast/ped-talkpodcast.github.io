@@ -102,7 +102,7 @@ function fillBibleBooks(){
  bibleBookSelect.innerHTML=list.map(b=>'<option value="'+b[0]+'">'+b[1]+'</option>').join('');
  if(!list.some(b=>b[0]===activeBibleBook))activeBibleBook=list[0][0];
  bibleBookSelect.value=activeBibleBook;
- document.getElementById('bibleBookTiles').innerHTML=list.map(b=>'<button type="button" class="bible-book-tile'+(b[0]===activeBibleBook?' active':'')+'" data-book="'+b[0]+'"><span>'+b[1]+'</span><small>'+b[0]+'</small></button>').join('');
+ document.getElementById('bibleBookTiles').innerHTML=list.map(b=>'<button type="button" class="bible-book-tile'+(b[0]===activeBibleBook?' active':'')+'" data-book="'+b[0]+'" aria-pressed="'+(b[0]===activeBibleBook)+'"><span>'+b[1]+'</span><small>'+b[0]+'</small></button>').join('');
  document.querySelectorAll('[data-testament]').forEach(button=>button.classList.toggle('active',button.dataset.testament===testament));
  document.getElementById('bookPickerHint').textContent='Explore the books of the '+(testament==='OT'?'Old':'New')+' Testament';
  document.getElementById('chapterPickerHint').textContent='Choose a chapter in '+(bibleBooks.find(b=>b[0]===activeBibleBook)?.[1]||'your selected book');
@@ -111,11 +111,60 @@ function fillBibleChapters(){
  if(!activeBibleData)return;
  bibleChapterSelect.innerHTML=activeBibleData.chapters.map(ch=>'<option value="'+ch.chapter+'">Chapter '+ch.chapter+'</option>').join('');
  bibleChapterSelect.value=String(activeBibleChapter);
- document.getElementById('bibleChapterTiles').innerHTML=activeBibleData.chapters.map(ch=>'<button type="button" class="bible-chapter-tile'+(ch.chapter===Number(activeBibleChapter)?' active':'')+'" data-chapter="'+ch.chapter+'">'+ch.chapter+'</button>').join('');
+ document.getElementById('bibleChapterTiles').innerHTML=activeBibleData.chapters.map(ch=>'<button type="button" class="bible-chapter-tile'+(ch.chapter===Number(activeBibleChapter)?' active':'')+'" data-chapter="'+ch.chapter+'" aria-pressed="'+(ch.chapter===Number(activeBibleChapter))+'">'+ch.chapter+'</button>').join('');
  document.getElementById('chapterPickerHint').textContent=activeBibleData.chapters.length+' chapters in '+(bibleBooks.find(b=>b[0]===activeBibleBook)?.[1]||'this book');
 }
-async function loadBibleBook(code,chapter=1,verseToFocus=null){const meta=bibleBooks.find(b=>b[0]===code);if(!meta)return;activeBibleBook=code;activeBibleChapter=chapter;document.getElementById('bibleTitle').textContent='Loading '+meta[1]+'…';document.getElementById('bibleVerses').innerHTML='<p class="loading">Preparing scripture…</p>';try{if(!bibleCache[code]){const response=await fetch('../data/web/books/'+encodeURIComponent(bibleFileByCode[meta[0]])+'.json',{cache:'no-store'});if(!response.ok)throw new Error('Book not available');bibleCache[code]=await response.json();}activeBibleData=bibleCache[code];const chapterData=activeBibleData.chapters.find(ch=>ch.chapter===Number(chapter))||activeBibleData.chapters[0];activeBibleChapter=chapterData.chapter;fillBibleBooks();fillBibleChapters();bibleChapterSelect.value=String(activeBibleChapter);document.getElementById('bibleTitle').textContent=meta[1]+' '+activeBibleChapter;document.getElementById('biblePosition').textContent='Chapter '+activeBibleChapter+' of '+activeBibleData.chapters.length;document.getElementById('biblePrev').disabled=activeBibleChapter===1;document.getElementById('bibleNext').disabled=activeBibleChapter===activeBibleData.chapters.length;if(!Array.isArray(chapterData.verses))throw new Error('This chapter has no readable verse list');
-document.getElementById('bibleVerses').innerHTML=chapterData.verses.map((v,index)=>{const number=bibleVerseNumber(v,index);const text=bibleVerseText(v);return '<div class="bible-verse" id="bible-verse-'+number+'"><span>'+number+'</span><p>'+text+'</p></div>';}).join('');if(verseToFocus){setTimeout(()=>document.getElementById('bible-verse-'+verseToFocus)?.scrollIntoView({behavior:'smooth',block:'center'}),100);}}catch(error){document.getElementById('bibleTitle').textContent=meta[1]+' unavailable';document.getElementById('bibleVerses').innerHTML='<p class="loading">This book could not load. Please check your connection and try again.</p>';console.error(error);}}
+let bibleLoadToken=0;
+function escapeBibleHTML(value=''){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
+async function loadBibleBook(code,chapter=1,verseToFocus=null){
+ const meta=bibleBooks.find(book=>book[0]===code);
+ if(!meta)return;
+ const token=++bibleLoadToken;
+ activeBibleBook=code;
+ const title=document.getElementById('bibleTitle');
+ const verses=document.getElementById('bibleVerses');
+ const chapterGrid=document.getElementById('bibleChapterTiles');
+ title.textContent='Loading '+meta[1]+'…';
+ verses.innerHTML='<p class="loading">Preparing scripture…</p>';
+ chapterGrid.innerHTML='<p class="chapter-loading">Loading chapters…</p>';
+ document.getElementById('biblePrev').disabled=true;
+ document.getElementById('bibleNext').disabled=true;
+ try{
+  if(!bibleCache[code]){
+   const response=await fetch('../data/web/books/'+encodeURIComponent(bibleFileByCode[code])+'.json',{cache:'no-store'});
+   if(!response.ok)throw new Error('Book not available');
+   const data=await response.json();
+   if(!Array.isArray(data.chapters)||!data.chapters.length)throw new Error('Book has no chapters');
+   bibleCache[code]=data;
+  }
+  if(token!==bibleLoadToken)return;
+  activeBibleData=bibleCache[code];
+  const chapterData=activeBibleData.chapters.find(item=>Number(item.chapter)===Number(chapter))||activeBibleData.chapters[0];
+  activeBibleChapter=Number(chapterData.chapter);
+  fillBibleBooks();
+  fillBibleChapters();
+  bibleChapterSelect.value=String(activeBibleChapter);
+  title.textContent=meta[1]+' '+activeBibleChapter;
+  document.getElementById('biblePosition').textContent='Chapter '+activeBibleChapter+' of '+activeBibleData.chapters.length;
+  document.getElementById('biblePrev').disabled=activeBibleChapter<=1;
+  document.getElementById('bibleNext').disabled=activeBibleChapter>=activeBibleData.chapters.length;
+  if(!Array.isArray(chapterData.verses))throw new Error('This chapter has no readable verse list');
+  verses.innerHTML=chapterData.verses.map((verse,index)=>{
+   const number=escapeBibleHTML(bibleVerseNumber(verse,index));
+   const text=escapeBibleHTML(bibleVerseText(verse));
+   return '<div class="bible-verse" id="bible-verse-'+number+'"><span>'+number+'</span><p>'+text+'</p></div>';
+  }).join('');
+  if(verseToFocus){
+   requestAnimationFrame(()=>document.getElementById('bible-verse-'+Number(verseToFocus))?.scrollIntoView({behavior:'smooth',block:'center'}));
+  }
+ }catch(error){
+  if(token!==bibleLoadToken)return;
+  title.textContent=meta[1]+' unavailable';
+  verses.innerHTML='<p class="loading">This book could not load. Please check your connection and try again.</p>';
+  chapterGrid.innerHTML='<p class="chapter-loading">Chapter list unavailable.</p>';
+  console.error(error);
+ }
+}
 const booksView=document.getElementById('booksView');
 let viewTransitionToken=0;
 function showView(view,reference=null){
