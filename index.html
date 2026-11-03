@@ -616,33 +616,38 @@
           const y = rowY[index];
           const number = Number(episode.number);
           const title = String(episode.title || "UPCOMING EPISODE").toUpperCase();
-          // Rebuild the complete row directly in the image pixels, replacing the baked-in lettering.
+          // Keep the original row footprint, but inset the visible tile to create a clearer gap.
           roundedRect(240, y, 544, 73, 37);
+          ctx.fillStyle = "#17120f";
+          ctx.fill();
+          const tileY = y + 4;
+          const tileHeight = 65;
+          roundedRect(240, tileY, 544, tileHeight, 33);
           ctx.fillStyle = "#211a15";
           ctx.fill();
           ctx.lineWidth = 2;
           ctx.strokeStyle = "#e9dfce";
           ctx.stroke();
           ctx.save();
-          roundedRect(240, y, 143, 73, 36);
+          roundedRect(240, tileY, 143, tileHeight, 32);
           ctx.clip();
           ctx.fillStyle = "#b8e64f";
-          ctx.fillRect(240, y, 143, 73);
+          ctx.fillRect(240, tileY, 143, tileHeight);
           ctx.restore();
           ctx.fillStyle = "#10130c";
-          ctx.font = "900 29px Arial, sans-serif";
+          ctx.font = "900 27px Arial, sans-serif";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          ctx.fillText("EP " + String(number).padStart(2, "0"), 311, y + 37);
+          ctx.fillText("EP " + String(number).padStart(2, "0"), 311, tileY + tileHeight / 2);
           ctx.fillStyle = "#fff1dc";
           ctx.textAlign = "left";
-          let fontSize = 26;
+          let fontSize = 25;
           ctx.font = "900 " + fontSize + "px Arial, sans-serif";
           while (ctx.measureText(title).width > 335 && fontSize > 15) {
             fontSize -= 1;
             ctx.font = "900 " + fontSize + "px Arial, sans-serif";
           }
-          ctx.fillText(title, 414, y + 38);
+          ctx.fillText(title, 414, tileY + tileHeight / 2);
         });
         output.src = canvas.toDataURL("image/jpeg", 0.94);
         output.alt = "PED-Talk upcoming episodes: " + rows.map(e => "Episode " + e.number + ", " + e.title).join("; ");
