@@ -197,3 +197,15 @@ body.modal-open{overflow:hidden}
 .hope-card{cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
 .hope-card:focus{outline:none}
 .hope-card:focus-visible{outline:2px solid rgba(169,200,229,.7);outline-offset:4px}
+
+/* Dedicated season archive page and current-season home rail */
+.episodes-view{max-width:920px;min-height:calc(100vh - 70px);margin:0 auto;padding:24px 20px 120px}
+.episodes-view[hidden]{display:none!important}
+.episodes-view .season{margin-top:22px}
+.episodes-view .season-heading{padding-bottom:10px;border-bottom:1px solid rgba(255,255,255,.09)}
+.archive-link{border:0;background:transparent;padding:8px 0;font:700 11px 'DM Sans',sans-serif;white-space:nowrap;cursor:pointer}
+.current-season-section .season-heading{margin-top:6px}
+.current-season-section .season{margin-top:12px}
+.episodes-view .episode-grid{scroll-behavior:smooth;scrollbar-width:none}
+.episodes-view .episode-grid::-webkit-scrollbar{display:none}
+@media(max-width:520px){.episodes-view{padding:20px 14px 120px}.episodes-view .bible-head{display:block}}
