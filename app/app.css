@@ -40,3 +40,19 @@ main{max-width:920px;margin:auto;padding:0 22px}.welcome{position:relative;overf
 .upcoming-artwork{overflow:hidden;border:1px solid rgba(211,230,247,.18);border-radius:19px;background:#17120f;box-shadow:0 16px 38px rgba(0,0,0,.22)}
 .upcoming-artwork img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain}
 @media(min-width:650px){.upcoming-artwork{max-width:590px;margin:0 auto}}
+
+.today-scripture{margin:0 0 24px;padding:2px 3px 0}
+.today-scripture blockquote{font:500 20px/1.4 'Playfair Display',Georgia,serif;color:#f0f5fa;margin:8px 0}
+.today-scripture p{font-size:10px;color:#aabaca;margin:0 0 10px}
+.upcoming-section{padding:0 0 30px}
+.upcoming-card{padding:17px 17px 12px;border:1px solid rgba(169,200,229,.18);border-radius:17px;background:linear-gradient(135deg,rgba(23,61,96,.72),rgba(10,34,59,.94))}
+.upcoming-card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.upcoming-card-head .eyebrow{margin-bottom:5px}
+.upcoming-card-head h2{font-size:19px;letter-spacing:-.04em;margin:0}
+.upcoming-count{font-size:9px;color:#a9c8e5;white-space:nowrap}
+.upcoming-list{display:grid;gap:0}
+.upcoming-row{display:flex;align-items:center;gap:11px;min-width:0;padding:9px 0;border-top:1px solid rgba(255,255,255,.09)}
+.upcoming-episode{flex:0 0 54px;color:#b9d4eb;font-size:9px;font-weight:800;letter-spacing:.04em}
+.upcoming-title{min-width:0;color:#edf4fa;font-size:11px;font-weight:700;line-height:1.35}
+@media(min-width:650px){.welcome{min-height:300px}.upcoming-card{max-width:600px}}
+@media(max-width:390px){.welcome{min-height:210px}.today-scripture blockquote{font-size:18px}}
