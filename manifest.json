@@ -3,7 +3,7 @@
   "name": "PED-Talk Podcast",
   "short_name": "PED-Talk",
   "description": "Real conversations. Brighter days. Healing sounds and honest conversations from PED-Talk by Anagkazo Media.",
-  "start_url": "./",
+  "start_url": "./?app=1",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
