@@ -304,3 +304,43 @@ body.modal-open{overflow:hidden}
 .app-showcase-dots button{width:6px;height:6px;padding:0;border:0;border-radius:8px;background:#55718a;transition:width .25s ease,background .25s ease}
 .app-showcase-dots button.active{width:21px;background:#b7d58a}
 @media(max-width:420px){.app-showcase-slide{aspect-ratio:.98/1}.app-showcase-upcoming{padding:7px}.app-showcase-upcoming .upcoming-card{padding:9px}.app-showcase-upcoming .upcoming-artwork img{max-height:290px}.app-showcase-anagkazo{padding:22px}.voice-copy{left:20px;bottom:25px}}
+
+
+/* Full-screen scripture reading page, defaulting to a clean white page. */
+body.scripture-reading{overflow:hidden}
+body.scripture-reading .topbar,body.scripture-reading .bottom-nav{display:none!important}
+#bibleReader:not([hidden]){position:fixed;inset:0;z-index:180;display:flex;flex-direction:column;overflow-y:auto;overscroll-behavior:contain;margin:0;padding:calc(22px + env(safe-area-inset-top)) max(22px,calc((100vw - 760px)/2)) calc(28px + env(safe-area-inset-bottom));border:0;border-radius:0;background:#fff;color:#20252b;box-shadow:none}
+#bibleReader .bible-reader-top{position:sticky;top:calc(-22px - env(safe-area-inset-top));z-index:4;align-items:center;padding:calc(12px + env(safe-area-inset-top)) 0 18px;background:#fff;border-bottom:1px solid #e8e8e8}
+#bibleReader .reader-kicker{margin:0 0 6px;color:#8a9299;font-size:9px;letter-spacing:.13em;font-weight:800}
+#bibleReader .bible-reader-top h3{color:#20252b;font:600 29px/1.15 Georgia,serif;letter-spacing:-.035em}
+.bible-mode-toggle{display:grid;place-items:center;width:42px;height:42px;flex:0 0 42px;border:1px solid #e0e3e5;border-radius:50%;background:#f7f8f8;color:#26313a;font-size:24px;cursor:pointer}
+#bibleReader .bible-reader-actions{align-items:center;padding:15px 0 8px}
+#bibleReader .bible-back{border-color:#e1e5e8;background:#f5f7f8;color:#27333c}
+#bibleReader #bibleSelectedVerse{color:#77818a}
+#bibleReader .bible-verses{padding:12px 0 22px}
+#bibleReader .bible-verse{gap:15px;padding:12px 7px;border-bottom:1px solid #f0f1f2;color:#252a2e}
+#bibleReader .bible-verse>span{color:#8a9299}
+#bibleReader .bible-verse p{color:#252a2e;font:400 19px/1.85 Georgia,'Times New Roman',serif}
+#bibleReader .bible-verse.verse-selected{background:#f1f5e9;box-shadow:inset 3px 0 #8eaa68}
+#bibleReader .bible-pager{position:sticky;bottom:calc(-28px - env(safe-area-inset-bottom));display:flex;justify-content:space-between;align-items:center;gap:10px;padding:16px 0 calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid #e8e8e8}
+#bibleReader .bible-pager button{border:1px solid #dfe4e7;border-radius:22px;padding:10px 15px;background:#f7f8f8;color:#303a42;font-weight:700}
+#bibleReader .bible-pager button:disabled{opacity:.35}
+#bibleReader .bible-pager span{color:#77818a;font-size:10px}
+body.bible-dark #bibleReader:not([hidden]),body.bible-dark #bibleReader .bible-reader-top,body.bible-dark #bibleReader .bible-pager{background:#101820;color:#e9edf0}
+body.bible-dark #bibleReader .bible-reader-top{border-color:#293640}
+body.bible-dark #bibleReader .reader-kicker,body.bible-dark #bibleReader #bibleSelectedVerse,body.bible-dark #bibleReader .bible-pager span{color:#aab7c1}
+body.bible-dark #bibleReader .bible-reader-top h3,body.bible-dark #bibleReader .bible-verse p{color:#e9edf0}
+body.bible-dark #bibleReader .bible-verse{border-color:#27343e}
+body.bible-dark #bibleReader .bible-verse>span{color:#a9c5dc}
+body.bible-dark #bibleReader .bible-verse.verse-selected{background:#263a35;box-shadow:inset 3px 0 #b7d58a}
+body.bible-dark #bibleReader .bible-back,body.bible-dark #bibleReader .bible-pager button,body.bible-dark .bible-mode-toggle{border-color:#34434e;background:#1c2933;color:#e9edf0}
+body.bible-dark #bibleReader .bible-reader-actions,body.bible-dark #bibleReader .bible-pager{border-color:#293640}
+@media(max-width:520px){#bibleReader:not([hidden]){padding-left:17px;padding-right:17px}#bibleReader .bible-verse p{font-size:18px;line-height:1.82}}
+/* Original vector media-house artwork for Anagkazo's second showcase slide. */
+.app-showcase-anagkazo{isolation:isolate}
+.anagkazo-artwork{position:absolute;inset:0 0 0 20%;opacity:.9;pointer-events:none}
+.anagkazo-artwork svg{width:100%;height:100%;display:block}
+.app-showcase-anagkazo:before{z-index:1}
+.anagkazo-copy{z-index:2;text-shadow:0 2px 15px rgba(0,0,0,.28)}
+/* Dots-only slide navigation; timed movement and touch swiping remain active. */
+.app-showcase-controls{min-height:36px}
