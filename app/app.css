@@ -440,3 +440,35 @@ body.bible-dark .bible-highlight-palette button.active{border-color:#e5edf2}
 #bibleReader .bible-verse.verse-highlighted[data-highlight="green"] .verse-text{background:rgba(169,207,140,.42)!important}
 #bibleReader .bible-verse.verse-highlighted[data-highlight="blue"] .verse-text{background:rgba(145,197,237,.42)!important}
 #bibleReader .bible-verse.verse-highlighted[data-highlight="purple"] .verse-text{background:rgba(185,164,232,.42)!important}
+
+
+/* v67: scripture stays clean; colours appear only as tap-to-save controls. */
+#bibleReader .bible-verse.verse-selected .verse-text,#bibleReader .bible-verse.verse-highlighted .verse-text{background:transparent!important;box-shadow:none!important}
+#bibleReader .bible-verse.verse-selected,#bibleReader .bible-verse.verse-highlighted{background:transparent!important;box-shadow:none!important;outline:none!important}
+.bible-highlight-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:34px;margin:2px 0 8px}
+.bible-highlight-palette{display:flex;align-items:center;gap:8px;padding:0;border:0}
+.bible-highlight-palette[hidden],.bible-highlights-panel[hidden]{display:none!important}
+.bible-highlight-palette>span{font-size:9px}
+.bible-highlight-palette button{width:26px;height:26px}
+.bible-highlights-toggle{display:inline-flex;align-items:center;gap:7px;margin-left:auto;padding:7px 10px;border:1px solid #dfe5e8;border-radius:18px;background:#f7f9fa;color:#344451;font:700 10px 'DM Sans',sans-serif;white-space:nowrap}
+.bible-highlights-toggle span{display:inline-grid;place-items:center;min-width:18px;height:18px;padding:0 4px;border-radius:10px;background:#e6edf1;color:#344451;font-size:9px}
+.bible-highlights-panel{margin:4px 0 12px;padding:12px;border:1px solid #e3e8eb;border-radius:12px;background:#f8fafb}
+.bible-highlights-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.bible-highlights-head h4{margin:0;color:#28343d;font-size:13px}
+.bible-highlights-head>button{width:28px;height:28px;border:0;border-radius:50%;background:#e9eef1;color:#33414b;font-size:19px}
+.bible-saved-highlight{display:flex;align-items:stretch;gap:6px;padding:9px 0;border-top:1px solid #e5eaed}
+.bible-saved-highlight-open{display:flex;flex:1;min-width:0;flex-direction:column;align-items:flex-start;gap:5px;border:0;background:transparent;text-align:left}
+.saved-highlight-ref{color:#283a45;font-size:11px;font-weight:800}
+.saved-highlight-text{color:#52616b;font:13px/1.45 Georgia,serif}
+.bible-saved-highlight-open small{display:flex;align-items:center;gap:5px;color:#77838b;font-size:9px}
+.saved-highlight-dot{display:inline-block;width:8px;height:8px;border-radius:50%}
+.saved-highlight-dot.pink{background:#ef9dbd}.saved-highlight-dot.green{background:#a9cf8c}.saved-highlight-dot.blue{background:#91c5ed}.saved-highlight-dot.purple{background:#b9a4e8}
+.bible-saved-highlight-delete{align-self:center;width:28px;height:28px;border:0;border-radius:50%;background:#edf1f3;color:#697780;font-size:16px}
+.bible-highlights-empty{margin:5px 0;color:#7b8790;font-size:11px;line-height:1.5}
+body.bible-dark .bible-highlights-panel{border-color:#34434e;background:#17232c}
+body.bible-dark .bible-highlights-head h4,body.bible-dark .saved-highlight-ref{color:#e5edf2}
+body.bible-dark .saved-highlight-text{color:#bdc8cf}
+body.bible-dark .bible-highlights-head>button,body.bible-dark .bible-saved-highlight-delete{background:#263640;color:#e5edf2}
+body.bible-dark .bible-saved-highlight{border-color:#34434e}
+body.bible-dark .bible-highlights-toggle{border-color:#34434e;background:#1c2933;color:#e9edf0}
+body.bible-dark .bible-highlights-toggle span{background:#34434e;color:#e9edf0}
