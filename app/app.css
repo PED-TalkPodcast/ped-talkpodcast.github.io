@@ -265,3 +265,42 @@ body.modal-open{overflow:hidden}
 
 /* Hide the testament heading and tiles together when another Bible stage is open. */
 .testament-tiles[hidden],.bible-picker-heading[hidden]{display:none!important}
+
+/* Global hidden-state protection: prevents hidden overlays from covering the app. */
+[hidden]{display:none!important}
+
+/* Three-panel PED-Talk / Anagkazo showcase. */
+.app-showcase{position:relative;overflow:hidden;border:1px solid rgba(169,200,229,.2);border-radius:19px;background:#071b31;box-shadow:0 16px 38px rgba(0,0,0,.2)}
+.app-showcase-track{display:flex;width:100%;transition:transform .72s cubic-bezier(.2,.75,.25,1);touch-action:pan-y}
+.app-showcase-slide{position:relative;flex:0 0 100%;min-width:0;min-height:0;aspect-ratio:1.12/1;overflow:hidden}
+.app-showcase-upcoming{display:flex;align-items:center;justify-content:center;padding:12px;background:radial-gradient(ellipse at 50% 45%,#183e61 0%,#0b223b 72%)}
+.app-showcase-upcoming .upcoming-card{width:100%;max-width:540px;padding:13px;border-radius:15px;background:linear-gradient(145deg,rgba(16,44,75,.95),rgba(7,27,49,.98));border:1px solid rgba(169,200,229,.2)}
+.app-showcase-upcoming .upcoming-card-head h2{font-size:clamp(15px,3.5vw,20px)}
+.app-showcase-upcoming .upcoming-artwork img{display:block;width:100%;height:auto;max-height:340px;object-fit:contain;border-radius:8px}
+.app-showcase-anagkazo{display:flex;align-items:center;justify-content:center;padding:28px;background:radial-gradient(ellipse at 72% 25%,rgba(116,168,91,.3),transparent 38%),linear-gradient(145deg,#153e2d 0%,#0b2b20 52%,#061a16 100%);color:#f3f8ee}
+.app-showcase-anagkazo:before{content:"";position:absolute;inset:14px;border:1px solid rgba(218,241,205,.19);border-radius:14px;pointer-events:none}
+.anagkazo-orbit{position:absolute;width:190px;height:190px;right:-25px;top:-30px;border:1px solid rgba(192,225,164,.22);border-radius:50%;display:grid;place-items:center;transform:rotate(-18deg)}
+.anagkazo-orbit:before,.anagkazo-orbit:after{content:"";position:absolute;inset:17px;border:1px solid rgba(192,225,164,.16);border-radius:50%}
+.anagkazo-orbit:after{inset:38px}
+.anagkazo-orbit span{font-size:75px;font-weight:900;letter-spacing:-.13em;color:rgba(201,231,174,.17);transform:rotate(18deg)}
+.anagkazo-copy{position:relative;z-index:1;width:100%;max-width:440px}
+.anagkazo-copy .eyebrow{color:#c2df9d}
+.anagkazo-copy h2{margin:0;font-size:clamp(34px,8vw,60px);line-height:.95;letter-spacing:-.075em;font-weight:900;color:#f5f8ed}
+.anagkazo-copy h2 span{color:#b7d58a}
+.anagkazo-descriptor{margin:14px 0 0;color:#c4d8bd;font-size:clamp(8px,2vw,10px);font-weight:800;letter-spacing:.14em}
+.anagkazo-rule{width:54px;height:3px;margin:22px 0 13px;border-radius:4px;background:linear-gradient(90deg,#b7d58a,#6d9c62)}
+.anagkazo-tagline{max-width:290px;margin:0;color:#d8e5d2;font-size:13px;line-height:1.6}
+.app-showcase-voice{background:#071a2a}
+.app-showcase-voice>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.voice-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(3,14,25,.9),rgba(3,14,25,.47) 55%,rgba(3,14,25,.05)),linear-gradient(0deg,rgba(3,14,25,.65),transparent 65%)}
+.voice-copy{position:absolute;z-index:2;left:25px;right:24px;bottom:30px}
+.voice-copy .eyebrow{color:#c2df9d}
+.voice-copy h2{max-width:350px;margin:0 0 10px;color:#fff;font-size:clamp(27px,6vw,43px);line-height:.98;letter-spacing:-.06em}
+.voice-copy p:last-child{max-width:330px;margin:0;color:#e0e8ed;font-size:12px;line-height:1.55}
+.showcase-index{position:absolute;z-index:3;top:22px;right:22px;color:rgba(245,248,237,.72);font-size:9px;font-weight:800;letter-spacing:.15em}
+.app-showcase-controls{display:flex;align-items:center;justify-content:center;gap:17px;padding:9px 12px 11px;background:#071b31}
+.app-showcase-controls>button{width:31px;height:31px;border:1px solid rgba(169,200,229,.25);border-radius:50%;background:rgba(255,255,255,.04);color:#d8e8f5;font-size:16px;cursor:pointer}
+.app-showcase-dots{display:flex;align-items:center;gap:7px}
+.app-showcase-dots button{width:6px;height:6px;padding:0;border:0;border-radius:8px;background:#55718a;transition:width .25s ease,background .25s ease}
+.app-showcase-dots button.active{width:21px;background:#b7d58a}
+@media(max-width:420px){.app-showcase-slide{aspect-ratio:.98/1}.app-showcase-upcoming{padding:7px}.app-showcase-upcoming .upcoming-card{padding:9px}.app-showcase-upcoming .upcoming-artwork img{max-height:290px}.app-showcase-anagkazo{padding:22px}.voice-copy{left:20px;bottom:25px}}
