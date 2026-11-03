@@ -433,3 +433,10 @@ body.bible-dark .bible-highlight-palette button.active{border-color:#e5edf2}
  .bible-highlight-palette{gap:9px;padding:7px 0 10px}
  .bible-highlight-palette button{width:26px;height:26px}
 }
+
+/* Keep multiple highlighted verses; selection focus is separate from highlight colour. */
+#bibleReader .bible-verse.verse-selected:focus-visible{outline:none}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="pink"] .verse-text{background:rgba(239,157,189,.42)!important}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="green"] .verse-text{background:rgba(169,207,140,.42)!important}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="blue"] .verse-text{background:rgba(145,197,237,.42)!important}
+#bibleReader .bible-verse.verse-highlighted[data-highlight="purple"] .verse-text{background:rgba(185,164,232,.42)!important}
