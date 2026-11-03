@@ -403,30 +403,33 @@
           landscape.className = "hope-landscape";
           landscape.setAttribute("aria-hidden", "true");
           landscape.innerHTML = `<svg viewBox="0 0 1200 440" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="hopeSky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdf2"/><stop offset=".48" stop-color="#f8f3df"/><stop offset="1" stop-color="#e9e6d9"/></linearGradient>
-              <radialGradient id="hopeGlow"><stop stop-color="#fff9d9" stop-opacity=".96"/><stop offset=".55" stop-color="#f1e4b8" stop-opacity=".42"/><stop offset="1" stop-color="#f1e4b8" stop-opacity="0"/></radialGradient>
-              <linearGradient id="distantWash" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#aaa99f"/><stop offset="1" stop-color="#d2cfc2"/></linearGradient>
-              <linearGradient id="middleWash" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#747872"/><stop offset="1" stop-color="#a8a79a"/></linearGradient>
-              <linearGradient id="foregroundWash" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#424944"/><stop offset="1" stop-color="#77796e"/></linearGradient>
-              <filter id="paperGrain"><feTurbulence type="fractalNoise" baseFrequency=".66" numOctaves="3" seed="12"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .16"/></feComponentTransfer></filter>
-              <filter id="watercolorBlur"><feGaussianBlur stdDeviation="10"/></filter>
-              <filter id="mistBlur"><feGaussianBlur stdDeviation="16"/></filter>
-            </defs>
-            <rect width="1200" height="440" fill="url(#hopeSky)"/>
-            <ellipse cx="610" cy="112" rx="430" ry="205" fill="url(#hopeGlow)"/>
-            <g class="slow-cloud" fill="#fffef7" opacity=".55" filter="url(#watercolorBlur)"><ellipse cx="210" cy="120" rx="240" ry="31"/><ellipse cx="570" cy="83" rx="290" ry="27"/><ellipse cx="930" cy="137" rx="270" ry="36"/></g>
-            <path d="M0 276 Q95 228 155 245 L285 151 375 224 490 139 590 230 720 157 824 236 947 168 1050 235 1145 184 1200 222 V440 H0Z" fill="url(#distantWash)" opacity=".72"/>
-            <path d="M0 292 Q180 255 275 273 Q390 195 490 259 Q585 191 700 265 Q820 202 930 270 Q1065 209 1200 264 V440 H0Z" fill="#d9d5c8" opacity=".48" filter="url(#watercolorBlur)"/>
-            <g class="drifting-cloud" fill="#fffdf3" opacity=".78" filter="url(#mistBlur)"><ellipse cx="280" cy="292" rx="340" ry="28"/><ellipse cx="780" cy="302" rx="390" ry="35"/></g>
-            <path d="M0 354 L105 295 180 329 305 220 402 321 530 190 642 321 765 218 872 324 1000 224 1100 320 1180 263 1200 280 V440 H0Z" fill="url(#middleWash)"/>
-            <path d="M0 365 Q180 333 300 357 Q470 315 600 354 Q770 317 900 353 Q1050 320 1200 347 V440 H0Z" fill="#a9a79a" opacity=".28"/>
-            <path d="M0 420 L130 347 235 382 360 277 460 377 590 253 700 376 830 286 938 379 1060 291 1160 365 1200 346 V440 H0Z" fill="url(#foregroundWash)"/>
-            <path d="M305 220 L402 321 365 298 338 268 305 220 282 257Z M530 190 L642 321 596 288 565 246 530 190 503 237Z M765 218 L872 324 830 292 798 255 765 218 739 254Z M1000 224 L1100 320 1058 293 1030 260 1000 224 977 259Z" fill="#e9e6d9" opacity=".74"/>
-            <g fill="none" stroke="#f4f0e3" stroke-width="3" opacity=".25"><path d="M90 373 L130 347 166 363 M360 277 L390 310 420 327 M590 253 L625 296 658 326 M830 286 L862 316 894 333"/></g>
-            <path d="M0 365 Q220 337 390 369 T760 365 T1200 351" fill="none" stroke="#f4f0e4" stroke-width="24" opacity=".42" filter="url(#mistBlur)"/>
-            <rect width="1200" height="440" filter="url(#paperGrain)" opacity=".52"/>
-          </svg>`;;
+<defs>
+ <linearGradient id="hopeSky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf4"/><stop offset=".55" stop-color="#f6f1e4"/><stop offset="1" stop-color="#e9e5d9"/></linearGradient>
+ <radialGradient id="hopeLight"><stop stop-color="#fff9e5" stop-opacity=".9"/><stop offset="1" stop-color="#fff9e5" stop-opacity="0"/></radialGradient>
+ <linearGradient id="farMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b9b8ad"/><stop offset="1" stop-color="#d5d1c4"/></linearGradient>
+ <linearGradient id="middleMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#858981"/><stop offset="1" stop-color="#b0aea1"/></linearGradient>
+ <linearGradient id="nearMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#515a54"/><stop offset="1" stop-color="#77796f"/></linearGradient>
+ <filter id="paperTexture"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="17"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .12"/></feComponentTransfer></filter>
+ <filter id="softWash"><feGaussianBlur stdDeviation="12"/></filter>
+ <filter id="valleyMist"><feGaussianBlur stdDeviation="17"/></filter>
+</defs>
+<rect width="1200" height="440" fill="url(#hopeSky)"/>
+<ellipse cx="620" cy="125" rx="490" ry="220" fill="url(#hopeLight)"/>
+<g fill="#fffdf6" opacity=".48" filter="url(#softWash)"><path d="M-40 150 Q150 85 330 142 T690 132 T1240 115 L1240 205 Q1000 175 820 198 T430 190 T-40 210Z"/></g>
+<!-- distant, softly washed ridges -->
+<path d="M0 292 L115 220 195 252 315 168 405 245 520 112 635 238 735 165 830 250 960 181 1050 246 1140 190 1200 226 V440 H0Z" fill="url(#farMountains)" opacity=".82"/>
+<path d="M0 308 Q180 260 330 292 T650 278 T950 286 T1200 270 V440 H0Z" fill="#d8d4c8" opacity=".45" filter="url(#softWash)"/>
+<!-- central high massif and overlapping shoulders -->
+<path d="M0 345 L130 270 230 310 350 205 450 292 585 92 700 270 795 190 900 294 1025 205 1120 280 1200 238 V440 H0Z" fill="url(#middleMountains)"/>
+<path d="M350 205 L450 292 415 270 386 235Z M585 92 L700 270 655 230 620 157 585 92 552 164Z M795 190 L900 294 858 260 825 220Z M1025 205 L1120 280 1080 254 1050 224Z" fill="#eeeade" opacity=".72"/>
+<!-- darker foreground ridge, irregular rather than repeated peaks -->
+<path d="M0 390 L115 325 205 360 330 275 425 355 555 238 675 354 790 275 900 365 1035 280 1135 350 1200 320 V440 H0Z" fill="url(#nearMountains)"/>
+<path d="M330 275 L425 355 390 330 360 299Z M555 238 L675 354 630 322 595 278Z M790 275 L900 365 858 334 820 299Z M1035 280 L1135 350 1090 326 1060 300Z" fill="#e8e4d8" opacity=".55"/>
+<!-- mist in the valleys -->
+<g fill="none" stroke="#f8f5eb" stroke-linecap="round" filter="url(#valleyMist)" opacity=".72"><path d="M-20 325 Q180 285 340 322 T660 315 T980 320 T1230 300" stroke-width="24"/><path d="M80 365 Q260 334 440 365 T800 355 T1190 350" stroke-width="18"/></g>
+<g fill="none" stroke="#f5f1e6" stroke-width="2.5" opacity=".28"><path d="M115 325 L155 300 190 318 M350 205 L390 248 430 278 M585 92 L620 157 660 224 M795 190 L835 238 875 270 M1035 280 L1070 309 1100 328"/></g>
+<rect width="1200" height="440" filter="url(#paperTexture)" opacity=".48"/>
+</svg>`;;
           slide.appendChild(landscape);
           const meta = document.createElement("div"); meta.className = "episode-meta"; meta.textContent = "PED-TALK · CHRISTMAS SPECIAL"; slide.appendChild(meta);
           const title = document.createElement("h3"); title.textContent = "The gift of hope."; slide.appendChild(title);
