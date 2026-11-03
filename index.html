@@ -170,6 +170,18 @@
       will-change: transform, opacity;
     }
 
+    @keyframes hopeFlow {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes hopeGlow {
+      0% { transform: translate3d(-5%, -3%, 0) scale(.96) rotate(0deg); opacity: .72; }
+      50% { transform: translate3d(5%, 4%, 0) scale(1.08) rotate(8deg); opacity: 1; }
+      100% { transform: translate3d(-2%, 5%, 0) scale(1.02) rotate(-5deg); opacity: .82; }
+    }
+
     .christmas-slide > * {
       position: relative;
       z-index: 1;
