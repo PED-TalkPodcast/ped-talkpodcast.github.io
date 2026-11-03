@@ -215,12 +215,8 @@ function resolveBibleReference(query){
 async function searchInBible(){
  const q=document.getElementById('bibleSearch').value.trim();const out=document.getElementById('bibleSearchResults');if(!q){out.hidden=true;return;}
  const ref=resolveBibleReference(q);
- if(ref){
-  out.hidden=false;out.textContent='Opening '+ref.meta[1]+' '+ref.chapter+(ref.verse?':'+ref.verse:'')+'…';
-  document.getElementById('bibleTestament').value=ref.meta[2];fillBibleBooks();bibleBookSelect.value=ref.meta[0];
-  await loadBibleBook(ref.meta[0],ref.chapter,ref.verse);return;
- }
- const needle=normalizeBibleText(q);if(needle.length<2){out.hidden=false;out.textContent='Enter at least two letters to search the Bible.';return;}
+  if(ref){out.hidden=false;out.textContent='Opening '+ref.meta[1]+' '+ref.chapter+(ref.verse?':'+ref.verse:'')+'…';openBibleReference(ref.meta[0]+':'+ref.chapter+(ref.verse?':'+ref.verse:''));return;}
+  const needle=normalizeBibleText(q);if(needle.length<2){out.hidden=false;out.textContent='Enter at least two letters to search the Bible.';return;}
  out.hidden=false;out.textContent='Searching all 66 books…';
  try{
   const books=await Promise.all(bibleBooks.map(async meta=>{
