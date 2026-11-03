@@ -146,3 +146,15 @@ body.modal-open{overflow:hidden}
 @media(max-width:520px){.hope-modal{padding:10px}.hope-modal-panel{padding:28px 17px 18px;max-height:calc(100vh - 20px)}.book-categories{grid-template-columns:1fr}.book-category{min-height:140px}}
 
 .hope-card{cursor:pointer}.hope-card button{position:relative;z-index:1}
+
+
+/* Gift of Hope is a dedicated reading screen, not a floating overlay */
+.hope-modal{position:relative;inset:auto;z-index:auto;min-height:calc(100vh - 160px);display:flex;align-items:flex-start;justify-content:center;padding:24px 16px 112px;background:transparent;backdrop-filter:none;overflow:visible}
+.hope-modal-panel{width:min(100%,720px);max-height:none;overflow:visible;margin:0 auto;padding:34px 26px 28px;box-shadow:none;background:linear-gradient(155deg,#173d60,#071b31 75%)}
+.hope-modal[hidden]{display:none!important}
+.hope-modal-panel .button-link{margin-top:18px}
+.books-view{display:block}
+.books-view[hidden]{display:none!important}
+.book-categories{padding-bottom:24px}
+.book-category{cursor:default}
+@media(max-width:520px){.hope-modal{padding:16px 12px 112px}.hope-modal-panel{padding:30px 18px 24px;max-height:none}}
