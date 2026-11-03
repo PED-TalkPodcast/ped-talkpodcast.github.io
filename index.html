@@ -116,12 +116,13 @@
     .hero-story-kicker { color: var(--lime); font-size: 10px; font-weight: 850; letter-spacing: .18em; text-transform: uppercase; }
     .hero-story-copy h3 { max-width: 360px; margin: 9px 0 8px; color: var(--white); font-size: clamp(31px, 4vw, 49px); line-height: .94; letter-spacing: -.065em; }
     .hero-story-copy p { max-width: 380px; margin: 0; color: #c5d7ca; font-size: 13px; }
-    .hero-slide--upcoming { padding: 33px; background: radial-gradient(circle at 90% 15%, rgba(200,231,142,.22), transparent 30%), linear-gradient(145deg, #204f38, #0b241a); }
+    .hero-slide--upcoming { padding: 33px; background: #17120f url('./assets/up-next-template.jpg') center/cover no-repeat; }
+    .hero-slide--upcoming::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,10,8,.82) 0%, rgba(12,10,8,.24) 48%, rgba(12,10,8,.1) 100%); }
     .hero-upcoming-list { display: grid; gap: 9px; margin-top: 17px; max-width: 390px; }
     .hero-upcoming-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.15); border-radius: 12px; background: rgba(255,255,255,.06); color: #dcebdc; font-size: 12px; }
     .hero-upcoming-item strong { color: var(--lime); font-size: 10px; letter-spacing: .08em; }
-    .hero-slide--world { display: grid; place-items: center; background: #24150f url('./assets/across-every-room.jpg') center/cover no-repeat; }
-    .hero-slide--world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(20,10,6,.1) 15%, rgba(20,10,6,.3) 45%, rgba(20,10,6,.94) 100%); }
+    .hero-slide--world { display: grid; place-items: center; background: #061329 url('./assets/across-every-room-blue.jpg') center/cover no-repeat; }
+    .hero-slide--world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,12,31,.04) 15%, rgba(3,12,31,.18) 45%, rgba(3,12,31,.9) 100%); }
     .hero-slide--world .hero-story-copy { bottom: 31px; text-align: center; }
     .hero-slide--world .hero-story-copy h3, .hero-slide--world .hero-story-copy p { margin-left: auto; margin-right: auto; }
     @media (prefers-reduced-motion: reduce) { .hero-track { transition: none; } }

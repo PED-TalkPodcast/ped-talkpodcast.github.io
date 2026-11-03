@@ -1,4 +1,4 @@
-const CACHE_NAME = "ped-talk-v9";
+const CACHE_NAME = "ped-talk-v10";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 const FILES_TO_CACHE = [
@@ -11,7 +11,8 @@ const FILES_TO_CACHE = [
   `${BASE}manifest.json`,
   `${BASE}assets/ped-talk-healing-story.jpg`,
   `${BASE}assets/voice-of-healing.jpg`,
-  `${BASE}assets/across-every-room.jpg`,
+  `${BASE}assets/across-every-room-blue.jpg`,
+  `${BASE}assets/up-next-template.jpg`,
   `${BASE}data/web-bible.json`
 ];
 
