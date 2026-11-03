@@ -14,7 +14,22 @@
 <header class="topbar"><a class="brand" href="./"><img src="../icons/ped-talk-icon.svg" alt=""> <span>PED-TALK<small>ANAGKAZO MEDIA</small></span></a><span class="live-dot">A brighter day</span></header>
 <main id="homeView">
 <section class="welcome hope-card" aria-label="Gift of Hope and today's scripture"><div class="hope-heading"><p class="eyebrow">A MOMENT OF HOPE</p><h1>Gift of<br><em>Hope.</em></h1></div><div class="hope-scripture"><span class="verse-label">TODAY\'S SCRIPTURE</span><blockquote id="giftVerse">“For God so loved the world, that he gave his one and only Son…”</blockquote><p id="giftReference">John 3:16 · World English Bible</p><button class="text-link scripture-open" type="button" data-open-bible="John:3:16">Read in the Bible <span>→</span></button></div></section>
-<section class="upcoming-section" aria-labelledby="upcomingTitle"><div class="upcoming-card"><div class="upcoming-card-head"><div><p class="eyebrow">COMING UP NEXT</p><h2 id="upcomingTitle">Upcoming episodes</h2></div><span class="upcoming-count" id="upcomingCount">5 episodes</span></div><div class="upcoming-artwork"><img id="appUpcomingGraphic" alt="Upcoming PED-Talk episode schedule" src="../assets/up-next-template.jpg"></div><div class="upcoming-list" id="appUpcomingList" hidden><p class="loading">Loading upcoming conversations…</p></div></div></section>
+<section class="upcoming-section" aria-label="PED-Talk featured slides">
+ <div class="app-showcase" id="appShowcase">
+  <div class="app-showcase-track" id="appShowcaseTrack">
+   <article class="app-showcase-slide app-showcase-upcoming" aria-label="Upcoming episodes">
+    <div class="upcoming-card"><div class="upcoming-card-head"><div><p class="eyebrow">COMING UP NEXT</p><h2 id="upcomingTitle">Upcoming episodes</h2></div><span class="upcoming-count" id="upcomingCount">5 episodes</span></div><div class="upcoming-artwork"><img id="appUpcomingGraphic" alt="Upcoming PED-Talk episode schedule" src="../assets/up-next-template.jpg"></div><div class="upcoming-list" id="appUpcomingList" hidden><p class="loading">Loading upcoming conversations…</p></div></div>
+   </article>
+   <article class="app-showcase-slide app-showcase-anagkazo" aria-label="Anagkazo Media">
+    <div class="anagkazo-orbit" aria-hidden="true"><span>ag</span></div><div class="anagkazo-copy"><p class="eyebrow">THE HOUSE BEHIND THE VOICE</p><h2>ANAGKAZO<span>.</span></h2><p class="anagkazo-descriptor">CHRISTIAN&nbsp; | &nbsp;BROADCASTING&nbsp; | &nbsp;MEDIA</p><div class="anagkazo-rule"></div><p class="anagkazo-tagline">Stories that help the world see a brighter day.</p></div><span class="showcase-index">02 / 03</span>
+   </article>
+   <article class="app-showcase-slide app-showcase-voice" aria-label="Voice of Healing">
+    <img src="../assets/voice-of-healing.jpg" alt="A person wearing headphones in a recording studio" loading="lazy"><div class="voice-shade"></div><div class="voice-copy"><p class="eyebrow">VOICE OF HEALING</p><h2>There is power in being heard.</h2><p>Stories, sound and stillness for the moments that need a gentler place to land.</p></div><span class="showcase-index">03 / 03</span>
+   </article>
+  </div>
+  <div class="app-showcase-controls"><button type="button" id="showcasePrev" aria-label="Previous slide">←</button><div class="app-showcase-dots" id="showcaseDots" aria-label="Choose a slide"><button type="button" class="active" aria-label="Show slide 1" aria-current="true"></button><button type="button" aria-label="Show slide 2"></button><button type="button" aria-label="Show slide 3"></button></div><button type="button" id="showcaseNext" aria-label="Next slide">→</button></div>
+ </div>
+</section>
 <section class="library current-season-section" id="currentSeason"><div class="section-head"><div><p class="eyebrow">LISTEN & GROW</p><h2 id="currentSeasonHeading">Current season</h2></div><button class="text-link archive-link" type="button" data-view="episodes">All seasons <span>→</span></button></div>
 <div id="episodeGroups"><p class="loading">Preparing your listening library…</p></div>
 </section>
