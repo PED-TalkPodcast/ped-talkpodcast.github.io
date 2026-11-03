@@ -1,4 +1,4 @@
-const CACHE_NAME = "ped-talk-v60";
+const CACHE_NAME = "ped-talk-v61";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 // Install must never fail because one optional asset is unavailable.
@@ -13,6 +13,7 @@ const CORE_FILES = [
   `${BASE}upcoming.json`,
   `${BASE}assets/gift-of-hope-sky.svg`,
   `${BASE}assets/up-next-template.jpg`,
+  `${BASE}assets/voice-of-healing.jpg`,
   `${BASE}icons/ped-talk-icon.svg`
 ];
 
