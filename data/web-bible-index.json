@@ -1,0 +1,336 @@
+{
+  "translation": "World English Bible",
+  "source": "World English Bible text, public domain; source data: TehShrike/world-english-bible",
+  "books": [
+    {
+      "code": "GEN",
+      "name": "Genesis",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "EXO",
+      "name": "Exodus",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "LEV",
+      "name": "Leviticus",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "NUM",
+      "name": "Numbers",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "DEU",
+      "name": "Deuteronomy",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JOS",
+      "name": "Joshua",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JDG",
+      "name": "Judges",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "RUT",
+      "name": "Ruth",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "1SA",
+      "name": "1 Samuel",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "2SA",
+      "name": "2 Samuel",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "1KI",
+      "name": "1 Kings",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "2KI",
+      "name": "2 Kings",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "1CH",
+      "name": "1 Chronicles",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "2CH",
+      "name": "2 Chronicles",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "EZR",
+      "name": "Ezra",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "NEH",
+      "name": "Nehemiah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "EST",
+      "name": "Esther",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JOB",
+      "name": "Job",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "PSA",
+      "name": "Psalms",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "PRO",
+      "name": "Proverbs",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "ECC",
+      "name": "Ecclesiastes",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "SNG",
+      "name": "Song of Solomon",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "ISA",
+      "name": "Isaiah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JER",
+      "name": "Jeremiah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "LAM",
+      "name": "Lamentations",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "EZK",
+      "name": "Ezekiel",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "DAN",
+      "name": "Daniel",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "HOS",
+      "name": "Hosea",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JOL",
+      "name": "Joel",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "AMO",
+      "name": "Amos",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "OBA",
+      "name": "Obadiah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "JON",
+      "name": "Jonah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "MIC",
+      "name": "Micah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "NAM",
+      "name": "Nahum",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "HAB",
+      "name": "Habakkuk",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "ZEP",
+      "name": "Zephaniah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "HAG",
+      "name": "Haggai",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "ZEC",
+      "name": "Zechariah",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "MAL",
+      "name": "Malachi",
+      "testament": "Old Testament"
+    },
+    {
+      "code": "MAT",
+      "name": "Matthew",
+      "testament": "New Testament"
+    },
+    {
+      "code": "MRK",
+      "name": "Mark",
+      "testament": "New Testament"
+    },
+    {
+      "code": "LUK",
+      "name": "Luke",
+      "testament": "New Testament"
+    },
+    {
+      "code": "JHN",
+      "name": "John",
+      "testament": "New Testament"
+    },
+    {
+      "code": "ACT",
+      "name": "Acts",
+      "testament": "New Testament"
+    },
+    {
+      "code": "ROM",
+      "name": "Romans",
+      "testament": "New Testament"
+    },
+    {
+      "code": "1CO",
+      "name": "1 Corinthians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "2CO",
+      "name": "2 Corinthians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "GAL",
+      "name": "Galatians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "EPH",
+      "name": "Ephesians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "PHP",
+      "name": "Philippians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "COL",
+      "name": "Colossians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "1TH",
+      "name": "1 Thessalonians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "2TH",
+      "name": "2 Thessalonians",
+      "testament": "New Testament"
+    },
+    {
+      "code": "1TI",
+      "name": "1 Timothy",
+      "testament": "New Testament"
+    },
+    {
+      "code": "2TI",
+      "name": "2 Timothy",
+      "testament": "New Testament"
+    },
+    {
+      "code": "TIT",
+      "name": "Titus",
+      "testament": "New Testament"
+    },
+    {
+      "code": "PHM",
+      "name": "Philemon",
+      "testament": "New Testament"
+    },
+    {
+      "code": "HEB",
+      "name": "Hebrews",
+      "testament": "New Testament"
+    },
+    {
+      "code": "JAS",
+      "name": "James",
+      "testament": "New Testament"
+    },
+    {
+      "code": "1PE",
+      "name": "1 Peter",
+      "testament": "New Testament"
+    },
+    {
+      "code": "2PE",
+      "name": "2 Peter",
+      "testament": "New Testament"
+    },
+    {
+      "code": "1JN",
+      "name": "1 John",
+      "testament": "New Testament"
+    },
+    {
+      "code": "2JN",
+      "name": "2 John",
+      "testament": "New Testament"
+    },
+    {
+      "code": "3JN",
+      "name": "3 John",
+      "testament": "New Testament"
+    },
+    {
+      "code": "JUD",
+      "name": "Jude",
+      "testament": "New Testament"
+    },
+    {
+      "code": "REV",
+      "name": "Revelation",
+      "testament": "New Testament"
+    }
+  ]
+}
