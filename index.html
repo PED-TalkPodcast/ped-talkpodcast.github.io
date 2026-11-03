@@ -417,10 +417,10 @@
     }
     function updateCarousel() { carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`; [...carouselDots.children].forEach((dot, index) => { dot.classList.toggle("active", index === carouselIndex); dot.setAttribute("aria-current", index === carouselIndex ? "true" : "false"); }); }
     function goToSlide(index) { if (!carouselEpisodes.length) return; carouselIndex = (index + carouselEpisodes.length) % carouselEpisodes.length; updateCarousel(); startCarousel(); }
-    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 30000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
+    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1 && !document.hidden) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 30000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
     document.getElementById("carouselPrev").addEventListener("click", () => goToSlide(carouselIndex - 1));
     document.getElementById("carouselNext").addEventListener("click", () => goToSlide(carouselIndex + 1));
-    carousel.addEventListener("mouseenter", () => clearTimeout(carouselTimer)); carousel.addEventListener("mouseleave", startCarousel); carousel.addEventListener("focusin", () => clearTimeout(carouselTimer)); carousel.addEventListener("focusout", startCarousel);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) startCarousel(); });
     carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearTimeout(carouselTimer); }, { passive: true });
     carousel.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - touchStartX; if (Math.abs(distance) > 45) goToSlide(carouselIndex + (distance < 0 ? 1 : -1)); else startCarousel(); }, { passive: true });
     carousel.addEventListener("keydown", event => { if (event.key === "ArrowLeft") goToSlide(carouselIndex - 1); if (event.key === "ArrowRight") goToSlide(carouselIndex + 1); });
