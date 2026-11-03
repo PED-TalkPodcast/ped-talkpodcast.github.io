@@ -50,16 +50,13 @@ renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
 if(showcase){
  const track=document.getElementById('appShowcaseTrack');
- const dots=[...document.querySelectorAll('#showcaseDots button')];
  let slideIndex=0,slideTimer=null,touchStart=0;
  function showShowcaseSlide(index){
   slideIndex=(index+3)%3;
   track.style.transform='translateX(-'+(slideIndex*100)+'%)';
-  dots.forEach((dot,i)=>{dot.classList.toggle('active',i===slideIndex);dot.setAttribute('aria-current',String(i===slideIndex));});
   window.clearInterval(slideTimer);
-  slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),6500);
+  slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),8000);
  }
- dots.forEach((dot,i)=>dot.addEventListener('click',()=>showShowcaseSlide(i)));
  showcase.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;window.clearInterval(slideTimer);},{passive:true});
  showcase.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>40)showShowcaseSlide(slideIndex+(delta<0?1:-1));else showShowcaseSlide(slideIndex);},{passive:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)window.clearInterval(slideTimer);else showShowcaseSlide(slideIndex);});
@@ -280,10 +277,10 @@ async function searchInBible(){
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
 resetBibleFlow();
-const bibleModeButton=document.getElementById('bibleModeToggle'),bibleModeIcon=document.getElementById('bibleModeIcon');
+const bibleModeButton=document.getElementById('bibleModeToggle'),bibleSunIcon=document.getElementById('bibleSunIcon'),bibleMoonIcon=document.getElementById('bibleMoonIcon');
 function setBibleMode(mode){
  const dark=mode==='dark';document.body.classList.toggle('bible-dark',dark);
- if(bibleModeIcon)bibleModeIcon.textContent=dark?'☾':'☼';
+ if(bibleSunIcon)bibleSunIcon.hidden=dark;if(bibleMoonIcon)bibleMoonIcon.hidden=!dark;
  if(bibleModeButton){bibleModeButton.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');bibleModeButton.title=dark?'Switch to light mode':'Switch to dark mode';}
  try{localStorage.setItem('ped-talk-bible-mode',mode);}catch(error){}
 }
