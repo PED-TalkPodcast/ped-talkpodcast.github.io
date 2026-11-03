@@ -321,8 +321,9 @@ function updateBibleSelectionUI(){
  const count=selectedBibleVerses.size;
  bibleSelectionActions.hidden=count===0;
  bibleHighlightPalette.hidden=true;
- bibleSelectionCount.textContent=count+' '+(count===1?'verse selected':'verses selected');
- document.getElementById('bibleSelectedVerse').textContent=count?'Select Highlight or Save · '+count+' selected':'Tap a verse to select it';
+ document.getElementById('bibleVerseCommentBox').hidden=true;
+ bibleSelectionCount.textContent=count+' selected';
+ document.getElementById('bibleSelectedVerse').textContent=count?'Choose an action below · '+count+' selected':'Tap a verse to select it';
 }
 function renderBibleHighlights(){
  const items=getBibleHighlights();bibleHighlightsCount.textContent=String(items.length);
@@ -354,10 +355,25 @@ document.getElementById('bibleSaveSelection')?.addEventListener('click',()=>{
  selectedBibleVerses.clear();updateBibleSelectionUI();renderSavedBibleScriptures();
  document.getElementById('bibleSelectedVerse').textContent='Saved to Saved Scriptures';
 });
-document.getElementById('bibleHighlightsToggle')?.addEventListener('click',()=>{bibleHighlightsPanel.hidden=!bibleHighlightsPanel.hidden;renderBibleHighlights();});
-document.getElementById('bibleHighlightsClose')?.addEventListener('click',()=>{bibleHighlightsPanel.hidden=true;});
-document.getElementById('bibleSavedToggle')?.addEventListener('click',()=>{bibleSavedPanel.hidden=!bibleSavedPanel.hidden;renderSavedBibleScriptures();});
-document.getElementById('bibleSavedClose')?.addEventListener('click',()=>{bibleSavedPanel.hidden=true;});
+const BIBLE_COMMENTS_KEY='ped-talk-bible-verse-comments-v1';
+function getBibleVerseComments(){return readBibleCollection(BIBLE_COMMENTS_KEY);}
+document.getElementById('bibleCommentSelection')?.addEventListener('click',()=>{
+ if(!selectedBibleVerses.size)return;
+ document.getElementById('bibleVerseCommentBox').hidden=false;
+ document.getElementById('bibleVerseCommentInput').focus();
+});
+document.getElementById('bibleSaveComment')?.addEventListener('click',()=>{
+ const note=document.getElementById('bibleVerseCommentInput').value.trim();if(!note||!selectedBibleVerses.size)return;
+ const existing=getBibleVerseComments(),byId=new Map(existing.map(item=>[item.id,item]));
+ selectedBibleVerses.forEach(verse=>{const prior=byId.get(verse.id)||{...verse,comments:[]};prior.comments=prior.comments||[];prior.comments.push({text:note,date:new Date().toISOString()});byId.set(verse.id,prior);});
+ if(!writeBibleCollection(BIBLE_COMMENTS_KEY,[...byId.values()]))return;
+ document.getElementById('bibleVerseCommentInput').value='';document.getElementById('bibleVerseCommentBox').hidden=true;
+ document.getElementById('bibleSelectedVerse').textContent='Comment saved with selected scripture';
+});
+document.getElementById('bibleLibraryToggle')?.addEventListener('click',()=>{const panel=document.getElementById('bibleLibraryPanels');panel.hidden=!panel.hidden;renderBibleHighlights();renderSavedBibleScriptures();});
+document.getElementById('bibleLibraryClose')?.addEventListener('click',()=>{document.getElementById('bibleLibraryPanels').hidden=true;});
+document.getElementById('bibleHighlightsToggle')?.addEventListener('click',()=>{bibleHighlightsPanel.hidden=!bibleHighlightsPanel.hidden; bibleSavedPanel.hidden=true;renderBibleHighlights();});
+document.getElementById('bibleSavedToggle')?.addEventListener('click',()=>{bibleSavedPanel.hidden=!bibleSavedPanel.hidden;bibleHighlightsPanel.hidden=true;renderSavedBibleScriptures();});
 bibleHighlightsList?.addEventListener('click',event=>{
  const remove=event.target.closest('[data-delete-highlight]');
  if(remove){saveBibleHighlights(getBibleHighlights().filter(item=>item.id!==remove.dataset.deleteHighlight));renderBibleHighlights();applyBibleHighlightsToDOM();return;}
