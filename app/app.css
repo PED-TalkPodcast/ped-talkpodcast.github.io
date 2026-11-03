@@ -478,3 +478,12 @@ body.bible-dark .bible-highlight-palette button.active{border-color:#e5edf2}
 @media(max-width:480px){.bible-floating-actions{bottom:calc(72px + env(safe-area-inset-bottom));gap:5px;padding:8px}.bible-floating-actions>button{padding:8px 10px;font-size:9px}.bible-floating-actions>span{flex-basis:100%;text-align:center}.bible-verse-comment-box{flex-direction:column;align-items:stretch}}
 .hope-modal::before{animation:hopeSkyDrift 110s linear infinite}
 @media(prefers-reduced-motion:reduce){.hope-modal::before{animation:none!important}}
+
+/* Seamless two-copy drift: identical sky panels meet edge-to-edge, avoiding a visible reset. */
+.welcome.hope-card{position:relative;isolation:isolate;overflow:hidden;background:#06172a!important}
+.welcome.hope-card::before{content:"";position:absolute;z-index:-2;top:0;bottom:0;left:0;width:200%;background-image:url('../assets/gift-of-hope-sky.svg');background-repeat:repeat-x;background-size:50% 100%;animation:hopeSkyDrift 110s linear infinite;will-change:transform}
+.welcome.hope-card::after{content:"";position:absolute;z-index:-1;inset:0;background:linear-gradient(180deg,rgba(4,13,27,.24),rgba(5,19,37,.78));pointer-events:none}
+.welcome.hope-card>*{position:relative;z-index:1}
+.hope-modal::before{top:0;bottom:0;left:0;width:200%;background-repeat:repeat-x;background-size:50% 100%;animation:hopeSkyDrift 110s linear infinite;will-change:transform}
+@keyframes hopeSkyDrift{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.welcome.hope-card::before,.hope-modal::before{animation:none!important}}
