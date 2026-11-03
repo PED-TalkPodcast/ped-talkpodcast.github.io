@@ -131,7 +131,7 @@ function fillBibleBooks(){
  bibleBookSelect.innerHTML=list.map(book=>'<option value="'+book[0]+'">'+book[1]+'</option>').join('');
  if(!list.some(book=>book[0]===activeBibleBook))activeBibleBook=list[0][0];
  bibleBookSelect.value=activeBibleBook;
- document.getElementById('bibleBookTiles').innerHTML=list.map(book=>'<button type="button" class="bible-book-tile" data-book="'+book[0]+'"><span>'+book[1]+'</span><small>OPEN →</small></button>').join('');
+ document.getElementById('bibleBookTiles').innerHTML=list.map(book=>'<button type="button" class="bible-book-tile" data-book="'+book[0]+'"><span>'+book[1]+'</span></button>').join('');
  document.getElementById('booksStageTitle').textContent=testament==='OT'?'Old Testament':'New Testament';
 }
 function setBibleStage(stage){
@@ -216,7 +216,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
 }
 document.getElementById('testamentTiles').addEventListener('click',event=>{
  const button=event.target.closest('[data-testament]');if(!button)return;
- document.getElementById('bibleTestament').value=button.dataset.testament;activeBibleBook=null;fillBibleBooks();setBibleStage('booksStage');
+ clearBibleSearch();document.getElementById('bibleTestament').value=button.dataset.testament;activeBibleBook=null;fillBibleBooks();setBibleStage('booksStage');
 });
 document.getElementById('bibleBookTiles').addEventListener('click',event=>{
  const button=event.target.closest('[data-book]');if(!button)return;loadBibleBook(button.dataset.book,1,null,false);
