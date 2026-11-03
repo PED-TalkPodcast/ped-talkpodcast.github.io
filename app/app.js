@@ -180,15 +180,15 @@ document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=
 const hopeModal=document.getElementById('hopeModal');
 const giftVerse=document.getElementById('giftVerse');
 const giftReference=document.getElementById('giftReference');
-document.getElementById('openHope').addEventListener('click',()=>{
+function openGiftHope(){
  document.getElementById('modalGiftVerse').textContent=giftVerse.textContent;
  document.getElementById('modalGiftReference').textContent=giftReference.textContent;
  showView('hope');renderHopeComments();
-});
+}
 const hopeCard=document.querySelector('.hope-card');
 hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
-hopeCard.addEventListener('click',event=>{if(event.target.closest('button,a'))return;document.getElementById('openHope').click();});
-hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();document.getElementById('openHope').click();}});
+hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
+hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openGiftHope();}});
 function closeHope(){showView('home');}
 document.getElementById('closeHope').addEventListener('click',closeHope);
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!hopeModal.hidden)closeHope();});
