@@ -139,6 +139,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null){
   }
   if(token!==bibleLoadToken)return;
   activeBibleData=bibleCache[code];
+  document.getElementById('bibleTestament').value=meta[2];
   const chapterData=activeBibleData.chapters.find(item=>Number(item.chapter)===Number(chapter))||activeBibleData.chapters[0];
   activeBibleChapter=Number(chapterData.chapter);
   fillBibleBooks();
