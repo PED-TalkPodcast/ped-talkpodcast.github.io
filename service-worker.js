@@ -1,4 +1,4 @@
-const CACHE_NAME = "ped-talk-v27";
+const CACHE_NAME = "ped-talk-v28";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 const FILES_TO_CACHE = [
