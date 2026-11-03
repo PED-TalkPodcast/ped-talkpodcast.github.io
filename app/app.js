@@ -16,15 +16,60 @@ const bibleBookSelect=document.getElementById('bibleBook');
 const bibleChapterSelect=document.getElementById('bibleChapter');
 function fillBibleBooks(){const testament=document.getElementById('bibleTestament').value;const list=bibleBooks.filter(b=>b[2]===testament);bibleBookSelect.innerHTML=list.map(b=>'<option value="'+b[0]+'">'+b[1]+'</option>').join('');if(!list.some(b=>b[0]===activeBibleBook))activeBibleBook=list[0][0];bibleBookSelect.value=activeBibleBook;}
 function fillBibleChapters(){if(!activeBibleData)return;bibleChapterSelect.innerHTML=activeBibleData.chapters.map(ch=>'<option value="'+ch.number+'">Chapter '+ch.number+'</option>').join('');bibleChapterSelect.value=String(activeBibleChapter);}
-async function loadBibleBook(code,chapter=1,verseToFocus=null){const meta=bibleBooks.find(b=>b[0]===code);if(!meta)return;activeBibleBook=code;activeBibleChapter=chapter;document.getElementById('bibleTitle').textContent='Loading '+meta[1]+'…';document.getElementById('bibleVerses').innerHTML='<p class="loading">Preparing scripture…</p>';try{if(!bibleCache[code]){const response=await fetch('../data/web-bible/'+code+'.json');if(!response.ok)throw new Error('Book not available');bibleCache[code]=await response.json();}activeBibleData=bibleCache[code];fillBibleChapters();const chapterData=activeBibleData.chapters.find(ch=>ch.number===Number(chapter))||activeBibleData.chapters[0];activeBibleChapter=chapterData.number;bibleChapterSelect.value=String(activeBibleChapter);document.getElementById('bibleTitle').textContent=meta[1]+' '+activeBibleChapter;document.getElementById('biblePosition').textContent='Chapter '+activeBibleChapter+' of '+activeBibleData.chapterCount;document.getElementById('biblePrev').disabled=activeBibleChapter===1;document.getElementById('bibleNext').disabled=activeBibleChapter===activeBibleData.chapterCount;document.getElementById('bibleVerses').innerHTML=chapterData.verses.map(v=>'<div class="bible-verse" id="bible-verse-'+v.verse+'"><span>'+v.verse+'</span><p>'+v.text+'</p></div>').join('');if(verseToFocus){setTimeout(()=>document.getElementById('bible-verse-'+verseToFocus)?.scrollIntoView({behavior:'smooth',block:'center'}),100);}}catch(error){document.getElementById('bibleTitle').textContent=meta[1]+' unavailable';document.getElementById('bibleVerses').innerHTML='<p class="loading">This book could not load. Please check your connection and try again.</p>';console.error(error);}}
-function showView(view,reference=null){homeView.hidden=view==='bible';bibleView.hidden=view!=='bible';document.querySelectorAll('.bottom-nav button').forEach(button=>button.classList.toggle('selected',button.dataset.view===view));if(view==='episodes'){homeView.hidden=false;setTimeout(()=>document.getElementById('episodes').scrollIntoView({behavior:'smooth'}),20);}else if(view==='home'){window.scrollTo({top:0,behavior:'smooth'});}else if(view==='bible'){window.scrollTo({top:0,behavior:'smooth'});const parts=reference?reference.split(':'):[];const bookName=parts[0]||activeBibleBook||'John';const meta=bibleBooks.find(b=>b[0]===bookName||b[1].toLowerCase()===bookName.toLowerCase());const code=meta?meta[0]:'John';const chapter=Number(parts[1]||activeBibleChapter||1);const verse=parts[2]?Number(parts[2]):null;const testament=document.getElementById('bibleTestament');testament.value=(bibleBooks.find(b=>b[0]===code)||bibleBooks[0])[2];fillBibleBooks();bibleBookSelect.value=code;loadBibleBook(code,chapter,verse);}}
+async function loadBibleBook(code,chapter=1,verseToFocus=null){const meta=bibleBooks.find(b=>b[0]===code);if(!meta)return;activeBibleBook=code;activeBibleChapter=chapter;document.getElementById('bibleTitle').textContent='Loading '+meta[1]+'…';document.getElementById('bibleVerses').innerHTML='<p class="loading">Preparing scripture…</p>';try{if(!bibleCache[code]){const response=await fetch('../data/web-bible/'+code+'.json');if(!response.ok)throw new Error('Book not available');bibleCache[code]=await response.json();}activeBibleData=bibleCache[code];fillBibleChapters();const chapterData=activeBibleData.chapters.find(ch=>ch.number===Number(chapter))||activeBibleData.chapters[0];activeBibleChapter=chapterData.chapter;bibleChapterSelect.value=String(activeBibleChapter);document.getElementById('bibleTitle').textContent=meta[1]+' '+activeBibleChapter;document.getElementById('biblePosition').textContent='Chapter '+activeBibleChapter+' of '+activeBibleData.chapters.length;document.getElementById('biblePrev').disabled=activeBibleChapter===1;document.getElementById('bibleNext').disabled=activeBibleChapter===activeBibleData.chapterCount;document.getElementById('bibleVerses').innerHTML=chapterData.verses.map(v=>'<div class="bible-verse" id="bible-verse-'+v.verse+'"><span>'+v.verse+'</span><p>'+v.text+'</p></div>').join('');if(verseToFocus){setTimeout(()=>document.getElementById('bible-verse-'+verseToFocus)?.scrollIntoView({behavior:'smooth',block:'center'}),100);}}catch(error){document.getElementById('bibleTitle').textContent=meta[1]+' unavailable';document.getElementById('bibleVerses').innerHTML='<p class="loading">This book could not load. Please check your connection and try again.</p>';console.error(error);}}
+function showView(view,reference=null){homeView.hidden=view==='bible';bibleView.hidden=view!=='bible';document.querySelectorAll('.bottom-nav button').forEach(button=>button.classList.toggle('selected',button.dataset.view===view));if(view==='episodes'){homeView.hidden=false;setTimeout(()=>document.getElementById('episodes').scrollIntoView({behavior:'smooth'}),20);}else if(view==='home'){window.scrollTo({top:0,behavior:'smooth'});}else if(view==='bible'){window.scrollTo({top:0,behavior:'smooth'});const parts=reference?reference.split(':'):[];const bookName=parts[0]||activeBibleBook||'John';const meta=bibleBooks.find(b=>b[0]===bookName||b[1].toLowerCase()===bookName.toLowerCase());const code=meta?meta[0]:'JHN';const chapter=Number(parts[1]||activeBibleChapter||1);const verse=parts[2]?Number(parts[2]):null;const testament=document.getElementById('bibleTestament');testament.value=(bibleBooks.find(b=>b[0]===code)||bibleBooks[0])[2];fillBibleBooks();bibleBookSelect.value=code;loadBibleBook(code,chapter,verse);}}
 document.querySelectorAll('[data-open-bible]').forEach(button=>button.addEventListener('click',()=>showView('bible',button.dataset.openBible)));
 document.getElementById('bibleTestament').addEventListener('change',()=>{fillBibleBooks();loadBibleBook(bibleBookSelect.value,1);});
 bibleBookSelect.addEventListener('change',()=>loadBibleBook(bibleBookSelect.value,1));
 bibleChapterSelect.addEventListener('change',()=>loadBibleBook(activeBibleBook,Number(bibleChapterSelect.value)));
 document.getElementById('biblePrev').addEventListener('click',()=>loadBibleBook(activeBibleBook,activeBibleChapter-1));
 document.getElementById('bibleNext').addEventListener('click',()=>loadBibleBook(activeBibleBook,activeBibleChapter+1));
-function searchInBible(){const q=document.getElementById('bibleSearch').value.trim();const out=document.getElementById('bibleSearchResults');if(!q){out.hidden=true;return;}const ref=q.match(/^(.+?)\s+(\d+)(?::(\d+))?$/);if(ref){const meta=bibleBooks.find(b=>b[1].toLowerCase()===ref[1].toLowerCase()||b[0].toLowerCase()===ref[1].toLowerCase());if(meta){out.hidden=false;out.textContent='Opening '+meta[1]+' '+ref[2]+(ref[3]?':'+ref[3]:'');showView('bible',meta[0]+':'+ref[2]+(ref[3]?':'+ref[3]:''));return;}}const chapter=activeBibleData?.chapters.find(ch=>ch.number===activeBibleChapter);const hits=(chapter?.verses||[]).filter(v=>v.text.toLowerCase().includes(q.toLowerCase())).slice(0,20);out.hidden=false;out.innerHTML=hits.length?'<strong>Matches in this chapter</strong>'+hits.map(v=>'<button type="button" data-hit="'+v.verse+'">Verse '+v.verse+' — '+v.text+'</button>').join(''):'No matches in this chapter. Try a reference such as John 3:16.';out.querySelectorAll('[data-hit]').forEach(btn=>btn.addEventListener('click',()=>document.getElementById('bible-verse-'+btn.dataset.hit)?.scrollIntoView({behavior:'smooth',block:'center'})));}
+function normalizeBibleText(value=''){return value.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[’‘']/g,'').replace(/[^a-z0-9]+/g,' ').trim().replace(/\s+/g,' ');}
+function resolveBibleReference(query){
+ const cleaned=query.trim().replace(/[.]/g,':').replace(/\s*:\s*/g,':').replace(/\s+/g,' ');
+ const match=cleaned.match(/^(.+?)\s+(\d+)(?::(\d+))?$/);if(!match)return null;
+ const name=normalizeBibleText(match[1]);
+ const aliases={'gen':'GEN','ex':'EXO','psalm':'PSA','ps':'PSA','song of songs':'SNG','song of solomon':'SNG','matt':'MAT','mk':'MRK','lk':'LUK','jn':'JHN','rom':'ROM','rev':'REV'};
+ const meta=bibleBooks.find(b=>normalizeBibleText(b[1])===name||b[0].toLowerCase()===name||aliases[name]===b[0]);
+ return meta?{meta,chapter:Number(match[2]),verse:match[3]?Number(match[3]):null}:null;
+}
+async function searchInBible(){
+ const q=document.getElementById('bibleSearch').value.trim();const out=document.getElementById('bibleSearchResults');if(!q){out.hidden=true;return;}
+ const ref=resolveBibleReference(q);
+ if(ref){
+  out.hidden=false;out.textContent='Opening '+ref.meta[1]+' '+ref.chapter+(ref.verse?':'+ref.verse:'')+'…';
+  document.getElementById('bibleTestament').value=ref.meta[2];fillBibleBooks();bibleBookSelect.value=ref.meta[0];
+  await loadBibleBook(ref.meta[0],ref.chapter,ref.verse);return;
+ }
+ const needle=normalizeBibleText(q);if(needle.length<2){out.hidden=false;out.textContent='Enter at least two letters to search the Bible.';return;}
+ out.hidden=false;out.textContent='Searching all 66 books…';
+ try{
+  const books=await Promise.all(bibleBooks.map(async meta=>{
+   if(!bibleCache[meta[0]]){
+    const response=await fetch('../data/web/books/'+encodeURIComponent(meta[1])+'.json');
+    if(!response.ok)throw new Error('Could not load '+meta[1]);
+    bibleCache[meta[0]]=await response.json();
+   }
+   return {meta,data:bibleCache[meta[0]]};
+  }));
+  const hits=[];
+  for(const book of books){
+   for(const chapter of book.data.chapters){
+    for(const verse of chapter.verses){
+     if(normalizeBibleText(verse.text).includes(needle)){hits.push({meta:book.meta,chapter:chapter.chapter,verse:verse.number,text:verse.text});if(hits.length>=40)break;}
+    }
+    if(hits.length>=40)break;
+   }
+   if(hits.length>=40)break;
+  }
+  out.innerHTML=hits.length?'<strong>'+hits.length+(hits.length===40?'+':'')+' matching verses</strong>'+hits.map(hit=>'<button type="button" data-ref="'+hit.meta[0]+':'+hit.chapter+':'+hit.verse+'"><b>'+hit.meta[1]+' '+hit.chapter+':'+hit.verse+'</b><span>'+hit.text+'</span></button>').join(''):'No matches found. Try a different word or phrase.';
+  out.querySelectorAll('[data-ref]').forEach(btn=>btn.addEventListener('click',()=>{
+   const parts=btn.dataset.ref.split(':');const meta=bibleBooks.find(b=>b[0]===parts[0]);
+   document.getElementById('bibleTestament').value=meta[2];fillBibleBooks();bibleBookSelect.value=meta[0];
+   loadBibleBook(meta[0],Number(parts[1]),Number(parts[2]));
+  }));
+ }catch(error){out.textContent='Search could not finish. Please check your connection and try again.';console.error(error);}
+}
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
 fillBibleBooks();loadBibleBook('JHN',3,16);
