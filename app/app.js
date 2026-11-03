@@ -59,8 +59,8 @@ async function searchInBible(){
   const hits=[];
   for(const book of books){
    for(const chapter of book.data.chapters){
-    for(const verse of chapter.verses){
-     const verseText=bibleVerseText(verse);if(normalizeBibleText(verseText).includes(needle)){hits.push({meta:book.meta,chapter:chapter.chapter,verse:bibleVerseNumber(verse,hits.length),text:verseText});if(hits.length>=40)break;}
+    for(let verseIndex=0;verseIndex<chapter.verses.length;verseIndex++){const verse=chapter.verses[verseIndex];
+     const verseText=bibleVerseText(verse);if(normalizeBibleText(verseText).includes(needle)){hits.push({meta:book.meta,chapter:chapter.chapter,verse:bibleVerseNumber(verse,verseIndex),text:verseText});if(hits.length>=40)break;}
     }
     if(hits.length>=40)break;
    }
