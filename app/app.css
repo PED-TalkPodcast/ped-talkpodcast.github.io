@@ -34,3 +34,9 @@ main{max-width:920px;margin:auto;padding:0 22px}.welcome{position:relative;overf
 .bible-pager button:disabled{opacity:.35}
 .bible-pager span{color:#91a6ba;font-size:9px}
 @media(max-width:520px){.bible-view{padding:20px 14px 105px}.bible-head{display:block}.bible-home{margin-top:13px}.bible-controls{grid-template-columns:1fr 1fr}.bible-controls label:first-child{grid-column:1/-1}.bible-reader{padding:14px}.bible-verse p{font-size:15px}.bible-bookmark-note{display:none}}
+
+.upcoming-section{padding:0 0 38px}
+.upcoming-note{font-size:10px;color:#9fb4c8}
+.upcoming-artwork{overflow:hidden;border:1px solid rgba(211,230,247,.18);border-radius:19px;background:#17120f;box-shadow:0 16px 38px rgba(0,0,0,.22)}
+.upcoming-artwork img{display:block;width:100%;height:auto;aspect-ratio:1/1;object-fit:contain}
+@media(min-width:650px){.upcoming-artwork{max-width:590px;margin:0 auto}}
