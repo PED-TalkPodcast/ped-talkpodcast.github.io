@@ -240,3 +240,25 @@ body.modal-open{overflow:hidden}
 .chapter-loading{grid-column:1/-1;margin:0;padding:12px;border-radius:10px;background:rgba(16,44,75,.45);color:#a9c8e5;font-size:11px}
 @media(min-width:650px){.bible-picker{padding:20px}.bible-book-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.bible-chapter-grid{grid-template-columns:repeat(10,minmax(0,1fr))}}
 @media(max-width:360px){.bible-picker{padding:11px}.bible-book-grid{gap:6px}.bible-book-tile{padding:10px 7px;font-size:9px}.bible-chapter-grid{gap:5px}.bible-chapter-tile{border-radius:8px}}
+
+/* Guided Bible reading flow: testament → book → chapter → scripture */
+.bible-view .bible-head{margin-bottom:18px}
+.bible-view .bible-head h2{margin:0;font-size:clamp(30px,7vw,42px)}
+.bible-view .bible-intro,.bible-view .bible-home{display:none!important}
+.bible-stage[hidden],#bibleReader[hidden]{display:none!important}
+.bible-stage-heading{display:flex;align-items:center;gap:13px;margin:2px 0 15px}
+.bible-stage-heading h3{font-size:17px;margin:0;color:#f1f6fb}
+.bible-stage-heading p{font-size:10px;color:#9db2c5;margin:4px 0 0}
+.bible-back{border:1px solid rgba(169,200,229,.24);border-radius:12px;background:rgba(16,44,75,.72);color:#dce8f3;padding:10px 13px;font:700 10px 'DM Sans',sans-serif;white-space:nowrap;cursor:pointer}
+.testament-tile .tile-symbol{width:42px;height:42px;flex-basis:42px;border-radius:13px}
+.tile-symbol svg{width:29px;height:29px;fill:currentColor;stroke:currentColor}
+.samuel-symbol svg{fill:rgba(199,224,245,.18);stroke:#c7e0f5}
+.cross-symbol svg{fill:#e4f1fc;stroke:#e4f1fc}
+.bible-reader{margin-top:15px}
+.bible-reader-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 13px}
+#bibleSelectedVerse{font-size:9px;color:#a9c8e5;text-align:right}
+.bible-verse{display:flex;width:100%;align-items:flex-start;gap:12px;padding:12px 10px;border:0;border-bottom:1px solid rgba(169,200,229,.1);border-radius:0;background:transparent;color:#e7eff7;text-align:left;cursor:pointer}
+.bible-verse>span{flex:0 0 23px;color:#8fb5d5;font:800 10px 'DM Sans',sans-serif;padding-top:3px}
+.bible-verse p{margin:0;font:400 15px/1.75 Georgia,serif;color:#e8eff6}
+.bible-verse.verse-selected{border-radius:10px;background:rgba(169,200,229,.14);box-shadow:inset 3px 0 #a9c8e5}
+.bible-verse:focus-visible{outline:2px solid #d5e7f7;outline-offset:-2px}
