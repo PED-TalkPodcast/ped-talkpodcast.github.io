@@ -147,9 +147,9 @@
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      background: linear-gradient(120deg, #010208 0%, #020510 48%, #01030a 100%);
+      background: linear-gradient(120deg, #000105 0%, #01030a 52%, #000106 100%);
       background-size: 200% 200%;
-      animation: hopeFlow 26s ease-in-out infinite;
+      animation: hopeFlow 32s ease-in-out infinite;
       will-change: background-position;
     }
 
@@ -160,19 +160,23 @@
       z-index: 0;
       pointer-events: none;
       background:
+        repeating-linear-gradient(118deg,
+          transparent 0 34px,
+          rgba(25, 66, 145, .025) 35px,
+          transparent 37px 68px),
         linear-gradient(112deg,
-          transparent 27%,
-          rgba(8, 24, 72, .04) 38%,
-          rgba(13, 43, 112, .18) 45%,
-          rgba(25, 75, 170, .34) 49%,
-          rgba(37, 94, 196, .26) 51%,
-          rgba(9, 30, 92, .12) 56%,
+          transparent 30%,
+          rgba(8, 24, 72, .025) 39%,
+          rgba(10, 34, 96, .10) 45%,
+          rgba(20, 58, 138, .22) 49%,
+          rgba(30, 76, 160, .16) 51%,
+          rgba(7, 24, 74, .07) 56%,
           transparent 68%),
-        radial-gradient(ellipse at 48% 52%, rgba(12, 42, 112, .16), transparent 46%);
-      background-size: 220% 220%;
-      filter: blur(24px);
-      opacity: .78;
-      animation: hopeGlow 22s ease-in-out infinite alternate, hopeLight 28s linear infinite;
+        radial-gradient(ellipse at 48% 52%, rgba(8, 29, 83, .10), transparent 46%);
+      background-size: 260% 260%, 220% 220%, 220% 220%;
+      filter: blur(18px);
+      opacity: .64;
+      animation: hopeGlow 30s ease-in-out infinite alternate, hopeLight 34s linear infinite;
       will-change: transform, opacity, background-position;
     }
 
@@ -183,15 +187,15 @@
     }
 
     @keyframes hopeGlow {
-      0% { transform: translate3d(-10%, -3%, 0) scale(.96) rotate(-3deg); opacity: .62; }
-      50% { transform: translate3d(9%, 4%, 0) scale(1.06) rotate(3deg); opacity: .86; }
-      100% { transform: translate3d(-5%, 6%, 0) scale(1.02) rotate(-2deg); opacity: .7; }
+      0% { transform: translate3d(-9%, -2%, 0) scale(.98) rotate(-2deg); opacity: .48; }
+      50% { transform: translate3d(8%, 3%, 0) scale(1.04) rotate(2deg); opacity: .7; }
+      100% { transform: translate3d(-4%, 5%, 0) scale(1.01) rotate(-1deg); opacity: .54; }
     }
 
     @keyframes hopeLight {
-      0% { background-position: 0% 45%; }
-      50% { background-position: 100% 55%; }
-      100% { background-position: 0% 45%; }
+      0% { background-position: 0% 45%, 0% 45%, 0% 45%; }
+      50% { background-position: 100% 55%, 100% 55%, 100% 55%; }
+      100% { background-position: 0% 45%, 0% 45%, 0% 45%; }
     }
 
     .christmas-slide::after {
@@ -200,25 +204,25 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: .34;
+      opacity: .27;
       background-image:
-        radial-gradient(1px 1px at 8% 18%, rgba(210,228,255,.72) 98%, transparent),
-        radial-gradient(1px 1px at 19% 72%, rgba(190,215,255,.58) 98%, transparent),
-        radial-gradient(1.2px 1.2px at 31% 36%, rgba(220,235,255,.68) 98%, transparent),
-        radial-gradient(1px 1px at 43% 84%, rgba(190,215,255,.52) 98%, transparent),
-        radial-gradient(1px 1px at 57% 16%, rgba(210,228,255,.64) 98%, transparent),
-        radial-gradient(1px 1px at 68% 58%, rgba(200,220,255,.56) 98%, transparent),
-        radial-gradient(1.2px 1.2px at 79% 29%, rgba(225,238,255,.66) 98%, transparent),
-        radial-gradient(1px 1px at 91% 78%, rgba(190,215,255,.52) 98%, transparent),
-        radial-gradient(1px 1px at 96% 12%, rgba(210,228,255,.62) 98%, transparent);
+        radial-gradient(1px 1px at 8% 18%, rgba(210,228,255,.68) 98%, transparent),
+        radial-gradient(1px 1px at 19% 72%, rgba(190,215,255,.5) 98%, transparent),
+        radial-gradient(1.2px 1.2px at 31% 36%, rgba(220,235,255,.6) 98%, transparent),
+        radial-gradient(1px 1px at 43% 84%, rgba(190,215,255,.46) 98%, transparent),
+        radial-gradient(1px 1px at 57% 16%, rgba(210,228,255,.58) 98%, transparent),
+        radial-gradient(1px 1px at 68% 58%, rgba(200,220,255,.48) 98%, transparent),
+        radial-gradient(1.2px 1.2px at 79% 29%, rgba(225,238,255,.6) 98%, transparent),
+        radial-gradient(1px 1px at 91% 78%, rgba(190,215,255,.46) 98%, transparent),
+        radial-gradient(1px 1px at 96% 12%, rgba(210,228,255,.56) 98%, transparent);
       background-size: 100% 100%;
-      animation: starTwinkle 9s ease-in-out infinite alternate;
+      animation: starTwinkle 11s ease-in-out infinite alternate;
     }
 
     @keyframes starTwinkle {
-      0% { opacity: .22; }
-      50% { opacity: .46; }
-      100% { opacity: .3; }
+      0% { opacity: .18; }
+      50% { opacity: .38; }
+      100% { opacity: .24; }
     }
 
     .christmas-slide > * {
