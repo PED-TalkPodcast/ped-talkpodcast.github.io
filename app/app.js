@@ -28,23 +28,6 @@ function searchInBible(){const q=document.getElementById('bibleSearch').value.tr
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
 document.getElementById('bibleSearch').addEventListener('keydown',event=>{if(event.key==='Enter')searchInBible();});
 fillBibleBooks();loadBibleBook('John',3,16);
-document.querySelectorAll('.bottom-nav button').forEach(button=>button.classList.toggle('selected',button.dataset.view===view));
-  if(view==='episodes'){homeView.hidden=false;setTimeout(()=>document.getElementById('episodes').scrollIntoView({behavior:'smooth'}),20);}
-  else if(view==='home'){window.scrollTo({top:0,behavior:'smooth'});}
-  else if(view==='bible'&&!bibleFrame.dataset.loaded){
-    bibleFrame.addEventListener('load',()=>{
-      try{
-        const doc=bibleFrame.contentDocument;
-        const style=doc.createElement('style');
-        style.textContent='header,.hero,.notice{display:none!important}body{background:#f4f1e9!important}.reader-shell{padding-top:14px!important;padding-bottom:35px!important}.panel{position:static!important}';
-        doc.head.appendChild(style);
-        const back=doc.querySelector('.back');if(back)back.style.display='none';
-        bibleFrame.dataset.loaded='1';
-      }catch(e){}
-    },{once:true});
-    bibleFrame.src='../bible.html';
-  }
-}
 document.querySelectorAll('.bottom-nav button').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.view)));
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
