@@ -56,3 +56,10 @@ main{max-width:920px;margin:auto;padding:0 22px}.welcome{position:relative;overf
 .upcoming-title{min-width:0;color:#edf4fa;font-size:11px;font-weight:700;line-height:1.35}
 @media(min-width:650px){.welcome{min-height:300px}.upcoming-card{max-width:600px}}
 @media(max-width:390px){.welcome{min-height:210px}.today-scripture blockquote{font-size:18px}}
+
+/* Final home-screen spacing overrides */
+.welcome{margin:18px 0 14px;min-height:260px;padding:34px 24px 22px}
+.welcome .intro,.welcome .verse-card{display:none!important}
+@media(min-width:650px){.welcome{min-height:300px;padding:42px 36px 24px}}
+@media(max-width:390px){.welcome{min-height:220px;padding:28px 19px 20px}}
+.upcoming-artwork{display:none!important}
