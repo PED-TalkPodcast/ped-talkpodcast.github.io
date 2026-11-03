@@ -160,14 +160,15 @@
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 18% 28%, rgba(20, 126, 255, .82), transparent 42%),
-        radial-gradient(ellipse at 78% 68%, rgba(40, 190, 255, .72), transparent 43%),
-        radial-gradient(ellipse at 52% 48%, rgba(75, 105, 255, .66), transparent 48%),
-        radial-gradient(ellipse at 50% 8%, rgba(150, 205, 255, .28), transparent 38%);
+        radial-gradient(ellipse at 18% 28%, rgba(24, 126, 255, .94), transparent 42%),
+        radial-gradient(ellipse at 78% 68%, rgba(25, 190, 255, .88), transparent 43%),
+        radial-gradient(ellipse at 52% 48%, rgba(75, 105, 255, .82), transparent 48%),
+        radial-gradient(ellipse at 50% 8%, rgba(150, 205, 255, .42), transparent 38%);
+      background-size: 180% 180%;
       filter: blur(28px);
-      opacity: .95;
-      animation: hopeGlow 22s ease-in-out infinite alternate;
-      will-change: transform, opacity;
+      opacity: .98;
+      animation: hopeGlow 12s ease-in-out infinite alternate, hopeLight 18s linear infinite;
+      will-change: transform, opacity, background-position;
     }
 
     @keyframes hopeFlow {
@@ -177,9 +178,15 @@
     }
 
     @keyframes hopeGlow {
-      0% { transform: translate3d(-5%, -3%, 0) scale(.96) rotate(0deg); opacity: .72; }
-      50% { transform: translate3d(5%, 4%, 0) scale(1.08) rotate(8deg); opacity: 1; }
-      100% { transform: translate3d(-2%, 5%, 0) scale(1.02) rotate(-5deg); opacity: .82; }
+      0% { transform: translate3d(-12%, -8%, 0) scale(.88) rotate(-5deg); opacity: .78; }
+      50% { transform: translate3d(12%, 9%, 0) scale(1.16) rotate(9deg); opacity: 1; }
+      100% { transform: translate3d(-8%, 10%, 0) scale(1.04) rotate(-7deg); opacity: .88; }
+    }
+
+    @keyframes hopeLight {
+      0% { background-position: 0% 20%; }
+      50% { background-position: 100% 80%; }
+      100% { background-position: 0% 20%; }
     }
 
     .christmas-slide > * {
@@ -187,10 +194,11 @@
       z-index: 1;
     }
 
-    .christmas-slide .episode-meta { color: #ffe1ef; }
+    .christmas-slide .episode-meta { color: #b9dcff; }
     .christmas-slide h3 { color: #ffffff; }
+    .christmas-slide a { color: #b9dcff; }
     .christmas-slide p {
-      color: #f4eaff;
+      color: #eaf4ff;
       font-family: Georgia, serif;
       font-size: 16px;
     }
