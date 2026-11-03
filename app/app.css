@@ -262,3 +262,6 @@ body.modal-open{overflow:hidden}
 .bible-verse p{margin:0;font:400 15px/1.75 Georgia,serif;color:#e8eff6}
 .bible-verse.verse-selected{border-radius:10px;background:rgba(169,200,229,.14);box-shadow:inset 3px 0 #a9c8e5}
 .bible-verse:focus-visible{outline:2px solid #d5e7f7;outline-offset:-2px}
+
+/* Hide the testament heading and tiles together when another Bible stage is open. */
+.testament-tiles[hidden],.bible-picker-heading[hidden]{display:none!important}
