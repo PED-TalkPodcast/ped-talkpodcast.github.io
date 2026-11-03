@@ -169,3 +169,15 @@ body.modal-open{overflow:hidden}
 .hope-modal[hidden],.books-view[hidden],.bible-view[hidden],#homeView[hidden]{display:none!important;}
 .hope-modal-panel{width:min(100%,720px);}
 @media(max-width:520px){.upcoming-artwork{max-width:100%;}.upcoming-artwork img{min-height:0;}}
+
+/* Smooth page transitions and responsive tap feedback */
+.view-enter{animation:pedViewDwoop .42s cubic-bezier(.2,.85,.25,1) both;transform-origin:50% 20%;will-change:transform,opacity}
+@keyframes pedViewDwoop{0%{opacity:0;transform:translate3d(0,18px,0) scale(.985);filter:blur(2px)}68%{opacity:1;transform:translate3d(0,-2px,0) scale(1.003);filter:blur(0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+.bottom-nav button,.hope-expand,.hope-actions button,.hope-close,.book-category,.bible-home,.button-link,.filter{transition:transform .22s cubic-bezier(.2,.85,.25,1),background-color .22s ease,border-color .22s ease,opacity .22s ease;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+.bottom-nav button:active,.hope-expand:active,.hope-actions button:active,.hope-close:active,.bible-home:active,.button-link:active,.filter:active{transform:scale(.94)}
+.hope-card{transition:transform .28s cubic-bezier(.2,.85,.25,1),box-shadow .28s ease}
+.hope-card:active{transform:scale(.992)}
+.hope-modal{overscroll-behavior:contain}
+.hope-modal-panel{animation:pedHopeOpen .46s cubic-bezier(.18,.9,.25,1) both}
+@keyframes pedHopeOpen{0%{opacity:0;transform:translate3d(0,24px,0) scale(.975);filter:blur(3px)}70%{opacity:1;transform:translate3d(0,-3px,0) scale(1.006);filter:blur(0)}100%{opacity:1;transform:translate3d(0,0,0) scale(1)}}
+@media(prefers-reduced-motion:reduce){.view-enter,.hope-modal-panel{animation:none!important}*,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important}}
