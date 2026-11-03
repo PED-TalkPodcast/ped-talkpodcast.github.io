@@ -47,7 +47,7 @@ async function searchInBible(){
  try{
   const books=await Promise.all(bibleBooks.map(async meta=>{
    if(!bibleCache[meta[0]]){
-    const response=await fetch('../data/web/books/'+encodeURIComponent(meta[0])+'.json');
+    const response=await fetch('../data/web/books/'+encodeURIComponent(bibleFileByCode[meta[0]])+'.json');
     if(!response.ok)throw new Error('Could not load '+meta[1]);
     bibleCache[meta[0]]=await response.json();
    }
