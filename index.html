@@ -147,47 +147,32 @@
       position: relative;
       isolation: isolate;
       overflow: hidden;
-      background: linear-gradient(120deg, #000105 0%, #01030a 52%, #000106 100%);
-      background-size: 200% 200%;
-      animation: hopeFlow 32s ease-in-out infinite;
+      background: #020711 url("assets/gift-of-hope-sky.svg") center center / cover no-repeat;
+      animation: hopeDrift 38s ease-in-out infinite alternate;
       will-change: background-position;
     }
 
     .christmas-slide::before {
       content: "";
       position: absolute;
-      inset: -38%;
+      inset: -8%;
       z-index: 0;
       pointer-events: none;
       background:
-        radial-gradient(ellipse at 18% 42%, rgba(20, 57, 139, .42) 0%, rgba(12, 35, 91, .22) 24%, transparent 48%),
-        radial-gradient(ellipse at 72% 35%, rgba(22, 66, 155, .38) 0%, rgba(10, 31, 85, .2) 27%, transparent 51%),
-        radial-gradient(ellipse at 52% 78%, rgba(15, 49, 126, .34) 0%, rgba(8, 26, 73, .16) 25%, transparent 49%),
-        radial-gradient(ellipse at 88% 78%, rgba(24, 61, 137, .26) 0%, transparent 38%);
-      background-size: 155% 155%, 165% 165%, 150% 150%, 170% 170%;
-      background-position: 0% 40%, 100% 20%, 45% 100%, 80% 70%;
-      filter: blur(25px);
-      opacity: .88;
-      animation: hopeClouds 19s ease-in-out infinite alternate, hopeLight 27s ease-in-out infinite;
-      will-change: transform, opacity, background-position;
+        radial-gradient(ellipse at 50% 58%, rgba(143, 166, 195, .12), transparent 55%),
+        linear-gradient(180deg, rgba(0, 3, 10, .12), rgba(0, 3, 10, .28));
+      filter: blur(18px);
+      animation: hopeCloudGlow 24s ease-in-out infinite alternate;
     }
 
-    @keyframes hopeFlow {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    @keyframes hopeDrift {
+      0% { background-position: 48% 48%; }
+      100% { background-position: 53% 52%; }
     }
 
-    @keyframes hopeClouds {
-      0% { transform: translate3d(-7%, -4%, 0) scale(.94); opacity: .68; }
-      50% { transform: translate3d(5%, 3%, 0) scale(1.06); opacity: .92; }
-      100% { transform: translate3d(-3%, 6%, 0) scale(1.02); opacity: .78; }
-    }
-
-    @keyframes hopeLight {
-      0% { background-position: 0% 40%, 100% 20%, 45% 100%, 80% 70%; }
-      50% { background-position: 70% 65%, 25% 75%, 85% 20%, 10% 30%; }
-      100% { background-position: 0% 40%, 100% 20%, 45% 100%, 80% 70%; }
+    @keyframes hopeCloudGlow {
+      0% { transform: translate3d(-1.5%, -1%, 0) scale(1); opacity: .72; }
+      100% { transform: translate3d(1.5%, 1%, 0) scale(1.04); opacity: 1; }
     }
 
     .christmas-slide::after {
@@ -196,7 +181,7 @@
       inset: 0;
       z-index: 0;
       pointer-events: none;
-      opacity: .78;
+      opacity: .76;
       background-image:
         radial-gradient(1.2px 1.2px at 8% 18%, rgba(255,255,255,.98) 98%, transparent),
         radial-gradient(1px 1px at 19% 72%, rgba(235,244,255,.9) 98%, transparent),
@@ -212,9 +197,9 @@
     }
 
     @keyframes starTwinkle {
-      0% { opacity: .55; }
-      50% { opacity: 1; }
-      100% { opacity: .72; }
+      0% { opacity: .48; }
+      50% { opacity: .95; }
+      100% { opacity: .68; }
     }
 
     .christmas-slide > * {
