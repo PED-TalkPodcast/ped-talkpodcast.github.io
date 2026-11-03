@@ -47,14 +47,34 @@ async function renderAppUpcoming(){
  }catch(error){output.alt='PED-Talk upcoming schedule unavailable';console.warn(error);}
 }
 renderAppUpcoming();
+const showcase=document.getElementById('appShowcase');
+if(showcase){
+ const track=document.getElementById('appShowcaseTrack');
+ const dots=[...document.querySelectorAll('#showcaseDots button')];
+ let slideIndex=0,slideTimer=null,touchStart=0;
+ function showShowcaseSlide(index){
+  slideIndex=(index+3)%3;
+  track.style.transform='translateX(-'+(slideIndex*100)+'%)';
+  dots.forEach((dot,i)=>{dot.classList.toggle('active',i===slideIndex);dot.setAttribute('aria-current',String(i===slideIndex));});
+  window.clearInterval(slideTimer);
+  slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),6500);
+ }
+ document.getElementById('showcasePrev').addEventListener('click',()=>showShowcaseSlide(slideIndex-1));
+ document.getElementById('showcaseNext').addEventListener('click',()=>showShowcaseSlide(slideIndex+1));
+ dots.forEach((dot,i)=>dot.addEventListener('click',()=>showShowcaseSlide(i)));
+ showcase.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;window.clearInterval(slideTimer);},{passive:true});
+ showcase.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>40)showShowcaseSlide(slideIndex+(delta<0?1:-1));else showShowcaseSlide(slideIndex);},{passive:true});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)window.clearInterval(slideTimer);else showShowcaseSlide(slideIndex);});
+ showShowcaseSlide(0);
+}
 const groupRoot=document.getElementById('episodeGroups');
 const archiveRoot=document.getElementById('archiveEpisodeGroups');
 let allEpisodes=[];let activeCategory='All';let archiveCategory='All';
-function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\\s+/g,' ').trim()}
+function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\s+/g,' ').trim()}
 function categoryFor(ep){const text=(ep.title+' '+plainText(ep.description)).toLowerCase();if(/relationship|marriage|dating|couple|family|partner/.test(text))return'Relationships';if(/friend|friendship|companionship|together/.test(text))return'Friendship';if(/love|loving|beloved|compassion/.test(text))return'Love';return'Leadership'}
-function episodeSeason(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?parseInt(match[1],10):1}
-function episodeNumber(ep){const match=(ep.title||'').match(/S\\d+E(\\d+)/i);return match?parseInt(match[1],10):null}
-function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\\d+E\\d+/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
+function episodeSeason(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?parseInt(match[1],10):1}
+function episodeNumber(ep){const match=(ep.title||'').match(/S\d+E(\d+)/i);return match?parseInt(match[1],10):null}
+function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\d+E\d+/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
 function sortedEpisodes(list){return [...list].sort((a,b)=>episodeSeason(b)-episodeSeason(a)||(episodeNumber(b)||0)-(episodeNumber(a)||0)||String(b.published||'').localeCompare(String(a.published||'')))}
 function renderEpisodeGroups(root,list,emptyMessage){
  if(!root)return;
