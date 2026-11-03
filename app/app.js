@@ -120,7 +120,13 @@ function fillBibleBooks(){
  document.getElementById('booksStageTitle').textContent=testament==='OT'?'Old Testament':'New Testament';
 }
 function setBibleStage(stage){
- ['testamentStage','booksStage','chaptersStage'].forEach(id=>{document.getElementById(id).hidden=id!==stage;});
+ const showTestaments=stage==='testamentStage';
+ const heading=document.querySelector('.bible-picker-heading');
+ const tiles=document.getElementById('testamentTiles');
+ if(heading)heading.hidden=!showTestaments;
+ if(tiles)tiles.hidden=!showTestaments;
+ document.getElementById('booksStage').hidden=stage!=='booksStage';
+ document.getElementById('chaptersStage').hidden=stage!=='chaptersStage';
  document.getElementById('bibleReader').hidden=stage!=='scripture';
  window.scrollTo({top:0,behavior:'smooth'});
 }
@@ -135,7 +141,7 @@ function openBibleReference(reference){
  const meta=bibleBooks.find(book=>book[0]===name||book[1].toLowerCase()===name.toLowerCase());
  if(!meta){resetBibleFlow();return;}
  document.getElementById('bibleTestament').value=meta[2];fillBibleBooks();
- document.getElementById('testamentStage').hidden=true;document.getElementById('booksStage').hidden=true;document.getElementById('chaptersStage').hidden=true;
+ document.querySelector('.bible-picker-heading').hidden=true;document.getElementById('testamentTiles').hidden=true;document.getElementById('booksStage').hidden=true;document.getElementById('chaptersStage').hidden=true;
  loadBibleBook(meta[0],Math.max(1,Number(parts[1]||1)),parts[2]?Number(parts[2]):null,true);
 }
 function fillBibleChapters(){
@@ -175,7 +181,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
    verses.querySelectorAll('.bible-verse').forEach(item=>item.classList.toggle('verse-selected',item===button));
    document.getElementById('bibleSelectedVerse').textContent=meta[1]+' '+activeBibleChapter+':'+button.dataset.verse;
   }));
-  document.getElementById('testamentStage').hidden=true;document.getElementById('booksStage').hidden=true;
+  document.querySelector('.bible-picker-heading').hidden=true;document.getElementById('testamentTiles').hidden=true;document.getElementById('booksStage').hidden=true;
   document.getElementById('chaptersStage').hidden=openReader;document.getElementById('bibleReader').hidden=!openReader;
   if(verseToFocus){
    document.getElementById('bibleReader').hidden=false;document.getElementById('chaptersStage').hidden=true;
