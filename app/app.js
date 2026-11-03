@@ -15,8 +15,24 @@ const groupRoot=document.getElementById('episodeGroups');
 let allEpisodes=[];let activeCategory='All';
 function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\s+/g,' ').trim()}
 function categoryFor(ep){const text=(ep.title+' '+plainText(ep.description)).toLowerCase();if(/relationship|marriage|dating|couple|family|partner/.test(text))return'Relationships';if(/friend|friendship|companionship|together/.test(text))return'Friendship';if(/love|loving|beloved|compassion/.test(text))return'Love';return'Leadership'}
-function seasonFor(ep){const match=(ep.title||'').match(/S(\d+)E\d+/i);return match?'Season '+parseInt(match[1],10):'More conversations'}
-function render(){const filtered=allEpisodes.filter(ep=>activeCategory==='All'||categoryFor(ep)===activeCategory);if(!filtered.length){groupRoot.innerHTML='<p class="empty">No episodes in this category yet. More conversations are on the way.</p>';return}const groups={};filtered.forEach(ep=>(groups[seasonFor(ep)]??=[]).push(ep));groupRoot.innerHTML=Object.entries(groups).map(([season,eps])=>'<section class="season"><h3 class="season-title">'+season+'</h3><div class="episode-grid">'+eps.map(ep=>'<article class="episode"><img loading="lazy" src="'+(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""><p class="tag">'+categoryFor(ep)+'</p><h3>'+plainText(ep.title)+'</h3><p class="desc">'+plainText(ep.description)+'</p>'+(ep.audio?'<audio controls preload="none" src="'+ep.audio+'"></audio>':'')+'</article>').join('')+'</div></section>').join('')}
+function seasonFor(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?'Season '+parseInt(match[1],10):'More conversations'}
+function episodeNumber(ep){const match=(ep.title||'').match(/S\\d+E(\\d+)/i);return match?parseInt(match[1],10):null}
+function episodeSeason(ep){const match=(ep.title||'').match(/S(\\d+)E\\d+/i);return match?parseInt(match[1],10):null}
+function displayEpisodeTitle(ep){const title=(ep.title||'').trim();if(/^S\\d+E\\d+$/i.test(title)){const n=episodeNumber(ep);const known={3:'Character Becomes Destiny',4:'Mistakes Are Inevitable',5:'Discussion: Lilian & Dave'};return known[n]||'PED-Talk Conversation'}return title}
+function render(){
+ const filtered=allEpisodes.filter(ep=>activeCategory==='All'||categoryFor(ep)===activeCategory);
+ if(!filtered.length){groupRoot.innerHTML='<p class="empty">No episodes in this category yet. More conversations are on the way.</p>';return}
+ const groups={};filtered.forEach(ep=>(groups[seasonFor(ep)]??=[]).push(ep));
+ groupRoot.innerHTML=Object.entries(groups).map(([season,eps])=>{
+  const seasonNum=episodeSeason(eps[0]);
+  const seasonLabel=seasonNum?'SEASON '+String(seasonNum).padStart(2,'0'):'MORE TO EXPLORE';
+  return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">'+season+'</h3></div><span class="season-count">'+eps.length+' conversations</span></div><div class="episode-grid">'+eps.map(ep=>{
+   const number=episodeNumber(ep),desc=plainText(ep.description),title=displayEpisodeTitle(ep);
+   const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
+   return '<article class="episode"><div class="episode-art"><img loading="lazy" src="'+(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></div><div class="episode-info"><p class="tag">'+meta+'</p><h3>'+title+'</h3><p class="desc">'+desc+'</p>'+(ep.audio?'<audio controls preload="none" src="'+ep.audio+'"></audio>':'')+(ep.link?'<a class="episode-more" href="'+ep.link+'" target="_blank" rel="noopener">Episode details ↗</a>':'')+'</div></article>'
+  }).join('')+'</div></section>'
+ }).join('')
+}
 document.getElementById('filters').addEventListener('click',event=>{const button=event.target.closest('button[data-category]');if(!button)return;activeCategory=button.dataset.category;document.querySelectorAll('.filter').forEach(item=>item.classList.toggle('active',item===button));render()});
 fetch('../episodes.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('Could not load episodes');return response.json()}).then(data=>{allEpisodes=data.episodes||[];render()}).catch(()=>{groupRoot.innerHTML='<p class="empty">Your episode library could not load just now. Please check your connection and try again.</p>'});
 
