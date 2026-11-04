@@ -880,8 +880,9 @@ renderDevotionalStage(devotionalIndex);scheduleDevotional();
 window.PEDDevotional={sync:()=>{if(devotionalCanRun())scheduleDevotional();else pauseDevotional();},get phase(){return devotionalStages[devotionalIndex].phase;}};
 function openGiftHope(){
  renderDevotionalStage(devotionalIndex);
- const panel=hopeModal.querySelector('.hope-modal-panel');if(panel)panel.scrollTop=0;
  showView('hope');renderHopeComments();
+ const panel=hopeModal.querySelector('.hope-modal-panel');
+ if(panel){panel.scrollTop=0;requestAnimationFrame(()=>{if(!hopeModal.hidden)panel.scrollTop=0;});}
 }
 hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
 hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
