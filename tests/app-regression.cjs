@@ -1,0 +1,165 @@
+const assert = require('node:assert/strict');
+const http = require('node:http');
+const fs = require('node:fs');
+const path = require('node:path');
+const { chromium } = require('playwright');
+
+const root = path.resolve(__dirname, '..');
+const mime = {'.html':'text/html; charset=utf-8','.js':'text/javascript; charset=utf-8','.css':'text/css; charset=utf-8','.json':'application/json; charset=utf-8','.svg':'image/svg+xml','.jpg':'image/jpeg','.png':'image/png'};
+const server = http.createServer((req,res)=>{
+  let pathname;
+  try { pathname = decodeURIComponent(new URL(req.url,'http://127.0.0.1').pathname); } catch { res.writeHead(400).end(); return; }
+  let file = path.resolve(root,'.'+pathname);
+  if (!file.startsWith(root)) { res.writeHead(403).end(); return; }
+  try { if (fs.statSync(file).isDirectory()) file = path.join(file,'index.html'); } catch {}
+  fs.readFile(file,(error,data)=>{
+    if(error){res.writeHead(404).end('Not found');return;}
+    res.writeHead(200,{'content-type':mime[path.extname(file)]||'application/octet-stream','cache-control':'no-store'});
+    res.end(data);
+  });
+});
+
+(async()=>{
+  let browser;
+  const errors=[];
+  try{
+    await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));
+    browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+    const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
+    const page=await context.newPage();
+    page.on('pageerror',error=>errors.push(error.message));
+    await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,{timeout:15000});
+    const hidden=async selector=>assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');
+    const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
+    const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('[data-app-theme="'+theme+'"]').click();};
+    const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate(el=>el.classList.contains(cls)),true,'body should have '+cls);
+
+    // Settings Home and Android Back.
+    await page.locator('#appSettingsButton').click();
+    await visible('#appSettingsModal');
+    await page.locator('#settingsHome').click();
+    await hidden('#appSettingsModal');
+    await visible('#homeView');
+    await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
+    assert.equal(await page.evaluate(()=>history.state?.view),'home');
+    await page.locator('#appSettingsButton').click();
+    await page.evaluate(()=>history.back());
+    await hidden('#appSettingsModal');
+
+    // System mode follows live OS changes; manual modes persist across reloads.
+    await setTheme('system');
+    await page.emulateMedia({colorScheme:'light'});
+    await bodyHas('app-light');
+    await page.emulateMedia({colorScheme:'dark'});
+    await bodyHas('app-dark');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('[data-app-theme="light"]').click();
+    await bodyHas('app-light');
+    await page.reload({waitUntil:'domcontentloaded'});
+    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional);
+    await bodyHas('app-light');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('[data-app-theme="dark"]').click();
+    await bodyHas('app-dark');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('[data-app-theme="system"]').click();
+    await page.emulateMedia({colorScheme:'light'});
+    await bodyHas('app-light');
+    const dayAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
+    assert.match(dayAsset,/gift-of-hope-day\.svg/);
+    const assetResponse=await page.request.get('http://127.0.0.1:4173/assets/gift-of-hope-day.svg');
+    assert.equal(assetResponse.status(),200,'daytime Gift of Hope asset should load');
+    await page.locator('#settingsClose').click();
+    await hidden('#appSettingsModal');
+
+    // Devotional cycle: John 3:16 → Amazing Grace → Revelation 3:21 WEB → repeat.
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',{timeout:11000});
+    assert.match(await page.locator('#giftVerse').textContent(),/Grace meets us/);
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='A PROMISE OF VICTORY',{timeout:11000});
+    assert.match(await page.locator('#giftVerse').textContent(),/He who overcomes/);
+    assert.match(await page.locator('#giftReference').textContent(),/Revelation 3:21.*World English Bible/);
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",{timeout:11000});
+
+    // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
+    await page.locator('.hope-card').click({position:{x:28,y:30}});
+    await visible('#hopeModal');
+    await page.locator('#hopeCommentToggle').click();
+    await page.locator('#hopeCommentInput').fill('Regression test comment');
+    await page.locator('#hopeCommentForm button[type="submit"]').click();
+    assert.match(await page.locator('#hopeCommentList').textContent(),/Regression test comment/);
+    const commentColor=await page.locator('#hopeComments textarea').evaluate(el=>getComputedStyle(el).color);
+    assert.notEqual(commentColor,'rgba(0, 0, 0, 0)','comment input text must be visible');
+    await page.evaluate(()=>history.back());
+    await hidden('#hopeModal');
+    await page.locator('.hope-card').click({position:{x:28,y:30}});
+    await visible('#hopeModal');
+    await page.locator('#hopeModal').click({position:{x:2,y:2}});
+    await hidden('#hopeModal');
+    await page.locator('.hope-card').click({position:{x:28,y:30}});
+    await visible('#hopeModal');
+    await page.evaluate(()=>{
+      const el=document.querySelector('.hope-modal-panel');
+      const a=new Touch({identifier:21,target:el,clientX:120,clientY:100});
+      const b=new Touch({identifier:21,target:el,clientX:122,clientY:205});
+      el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,touches:[a],changedTouches:[a]}));
+      el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,touches:[],changedTouches:[b]}));
+    });
+    await hidden('#hopeModal');
+
+    // Carousel controls, retained index after theme changes, no unintended Episodes navigation.
+    await page.locator('[data-showcase-slide="1"]').click();
+    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('[data-app-theme="dark"]').click();
+    await page.locator('#settingsClose').click();
+    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
+    await page.locator('[data-showcase-slide="2"]').click();
+    const voiceFilter=await page.locator('.app-showcase-voice>img').evaluate(el=>getComputedStyle(el).filter);
+    assert.match(voiceFilter,/brightness\(1\.2/);
+    await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
+    await visible('#dwoopOverlay');
+    assert.equal(await page.evaluate(()=>history.state?.view),'home','opening a feature must not navigate to Episodes');
+    await hidden('#episodesView');
+    await page.evaluate(()=>history.back());
+    await hidden('#dwoopOverlay');
+    await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
+    await visible('#dwoopOverlay');
+    await page.locator('#dwoopOverlay').click({position:{x:2,y:2}});
+    await hidden('#dwoopOverlay');
+    await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
+    await visible('#dwoopOverlay');
+    await page.evaluate(()=>{
+      const el=document.querySelector('.dwoop-card-expanded');
+      const a=new Touch({identifier:22,target:el,clientX:120,clientY:100});
+      const b=new Touch({identifier:22,target:el,clientX:122,clientY:205});
+      el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,touches:[a],changedTouches:[a]}));
+      el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,touches:[],changedTouches:[b]}));
+    });
+    await hidden('#dwoopOverlay');
+
+    // Bottom tabs and Settings Home from a non-Home screen.
+    await page.locator('.bottom-nav [data-view="episodes"]').click();
+    await visible('#episodesView');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('#settingsHome').click();
+    await visible('#homeView');
+    await hidden('#appSettingsModal');
+    await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
+
+    // One autoplay timeout advances exactly one slide.
+    await page.locator('[data-showcase-slide="0"]').click();
+    await page.waitForTimeout(8300);
+    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true','autoplay should advance one slide');
+
+    assert.deepEqual(errors,[],'browser JavaScript errors');
+    process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay.\n');
+    await context.close();
+  }catch(error){
+    process.stderr.write((error&&error.stack)||String(error));
+    process.exitCode=1;
+  }finally{
+    if(browser)await browser.close();
+    await new Promise(resolve=>server.close(resolve));
+  }
+})();
