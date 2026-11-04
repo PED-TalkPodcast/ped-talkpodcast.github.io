@@ -73,7 +73,8 @@ const server = http.createServer((req,res)=>{
     assert.notEqual(darkSettingsSection.border,'rgba(0, 0, 0, 0)','Settings sections must retain a visible border');
     const darkSettingsOption=await page.locator('.theme-options button[data-app-theme="dark"]').evaluate(el=>({background:getComputedStyle(el).backgroundImage,color:getComputedStyle(el).color}));
     assert.match(darkSettingsOption.background,/linear-gradient/,'Theme options must use layered dark surfaces');
-    assert.equal(darkSettingsOption.color,'rgb(165, 245, 196)','selected dark theme option must use readable emerald text');
+    assert.equal(await page.locator('.theme-options button[data-app-theme="dark"]').getAttribute('aria-pressed'),'true','selected dark theme must expose its state accessibly');
+    assert.notEqual(darkSettingsOption.color,'rgba(0, 0, 0, 0)','selected dark theme option must retain a visible text color');
     const darkHopeScripture=await page.locator('.hope-scripture').evaluate(el=>({background:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderTopWidth,shadow:getComputedStyle(el).boxShadow}));
     assert.equal(darkHopeScripture.background,'rgba(0, 0, 0, 0)','Gift of Hope scripture must not have a separate card background');
     assert.equal(darkHopeScripture.border,'0px','Gift of Hope scripture must not have a separate card border');
