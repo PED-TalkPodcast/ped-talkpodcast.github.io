@@ -1968,7 +1968,6 @@ body.app-dark::before{
  background-image:radial-gradient(rgba(220,255,235,.16) .45px,transparent .65px);
  background-size:5px 5px;mix-blend-mode:soft-light;
 }
-body.app-dark>*{position:relative;z-index:1}
 body.app-dark main,
 body.app-dark .bible-view,
 body.app-dark .books-view,
