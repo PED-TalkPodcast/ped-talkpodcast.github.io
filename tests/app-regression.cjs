@@ -122,7 +122,7 @@ const server = http.createServer((req,res)=>{
       el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,touches:[a],changedTouches:[a]}));
       el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,touches:[],changedTouches:[b]}));
     });
-    await hidden('#hopeModal');
+    await page.waitForFunction(()=>document.querySelector('#hopeModal')?.hidden===true,null,{timeout:2000});
 
     // Carousel controls, retained index after theme changes, no unintended Episodes navigation.
     await page.locator('[data-showcase-slide="1"]').click();
@@ -153,7 +153,7 @@ const server = http.createServer((req,res)=>{
       el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,touches:[a],changedTouches:[a]}));
       el.dispatchEvent(new TouchEvent('touchend',{bubbles:true,touches:[],changedTouches:[b]}));
     });
-    await hidden('#dwoopOverlay');
+    await page.waitForFunction(()=>document.querySelector('#dwoopOverlay')?.hidden===true,null,{timeout:2000});
 
     // Bottom tabs and Settings Home from a non-Home screen.
     await page.locator('.bottom-nav [data-view="episodes"]').click();
