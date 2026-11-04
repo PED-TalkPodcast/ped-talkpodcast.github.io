@@ -800,3 +800,18 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 .episode-play-label{position:static!important;color:#fff!important;font-size:11px!important;font-weight:600!important}
 .episode-play-button:active{transform:scale(.97);background:#24563a!important}
 @media(prefers-reduced-motion:reduce){.episode-open-mark,.episode-play-button{transition:none!important}}
+
+/* v87 — refined app touch feedback, rounded focus glow and install action. */
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.app-install-button{min-height:34px;padding:0 13px;border:1px solid rgba(183,213,138,.5);border-radius:999px;background:#b7d58a;color:#173d2b;font:700 10px 'DM Sans',sans-serif;cursor:pointer;white-space:nowrap}
+.app-install-button[hidden]{display:none!important}
+.install-guide{display:flex;align-items:center;justify-content:space-between;gap:14px;max-width:920px;margin:12px auto 0;padding:13px 18px;border:1px solid rgba(183,213,138,.24);border-radius:15px;background:rgba(183,213,138,.08);color:#eaf3e5}
+.install-guide[hidden]{display:none!important}
+.install-guide strong{display:block;font-size:12px}
+.install-guide p{margin:4px 0 0;color:#b9c9ba;font-size:10px;line-height:1.5}
+a,button,[role="button"]{-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .18s cubic-bezier(.2,.8,.25,1),background-color .18s ease,border-color .18s ease,box-shadow .18s ease}
+a:active,button:active,[role="button"]:active{transform:scale(.985)}
+a:focus:not(:focus-visible),button:focus:not(:focus-visible),[role="button"]:focus:not(:focus-visible){outline:none}
+a:focus-visible,button:focus-visible,[role="button"]:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(183,213,138,.48)}
+@media(max-width:420px){.topbar{padding-left:15px;padding-right:15px}.topbar-actions{gap:8px}.live-dot{font-size:9px}.app-install-button{padding:0 10px}}
+@media(prefers-reduced-motion:reduce){a,button,[role="button"]{transition:none!important}a:active,button:active,[role="button"]:active{transform:none}}
