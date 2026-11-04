@@ -52,9 +52,9 @@ const server = http.createServer((req,res)=>{
     // System mode follows live OS changes; manual modes persist across reloads.
     await setTheme('system');
     await page.emulateMedia({colorScheme:'light'});
-    await bodyHas('app-light');
+    await page.waitForFunction(()=>document.body.classList.contains('app-light'),null,{timeout:2000});
     await page.emulateMedia({colorScheme:'dark'});
-    await bodyHas('app-dark');
+    await page.waitForFunction(()=>document.body.classList.contains('app-dark'),null,{timeout:2000});
     const nightAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
     assert.match(nightAsset,/gift-of-hope-sky\.svg/);
     await page.locator('[data-app-theme="light"]').click();
@@ -67,7 +67,7 @@ const server = http.createServer((req,res)=>{
     await bodyHas('app-dark');
     await page.locator('[data-app-theme="system"]').click();
     await page.emulateMedia({colorScheme:'light'});
-    await bodyHas('app-light');
+    await page.waitForFunction(()=>document.body.classList.contains('app-light'),null,{timeout:2000});
     const dayAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
     assert.match(dayAsset,/gift-of-hope-day\.svg/);
     const assetResponse=await page.request.get('http://127.0.0.1:4173/assets/gift-of-hope-day.svg');
@@ -128,6 +128,13 @@ const server = http.createServer((req,res)=>{
     // Carousel controls, retained index after theme changes, no unintended Episodes navigation.
     await page.locator('[data-showcase-slide="1"]').click();
     assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
+    await page.evaluate(()=>{
+      const el=document.getElementById('appShowcase');
+      el.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:77,pointerType:'touch',clientX:300,clientY:120}));
+      el.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:77,pointerType:'touch',clientX:180,clientY:122}));
+    });
+    await page.waitForFunction(()=>document.querySelector('[data-showcase-slide="2"]')?.getAttribute('aria-pressed')==='true',null,{timeout:2000});
+    await page.locator('[data-showcase-slide="1"]').click();
     await page.locator('#appSettingsButton').click();
     await page.locator('[data-app-theme="light"]').click();
     await page.locator('#settingsClose').click();
@@ -141,6 +148,10 @@ const server = http.createServer((req,res)=>{
     await hidden('#episodesView');
     await page.evaluate(()=>history.back());
     await hidden('#dwoopOverlay');
+    await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
+    await visible('#dwoopOverlay');
+    await page.locator('#dwoopClose').click();
+    await page.waitForFunction(()=>document.querySelector('#dwoopOverlay')?.hidden===true,null,{timeout:2000});
     await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
     await visible('#dwoopOverlay');
     await page.locator('#dwoopOverlay').click({position:{x:2,y:2}});
