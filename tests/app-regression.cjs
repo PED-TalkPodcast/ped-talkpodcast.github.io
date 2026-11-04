@@ -73,6 +73,11 @@ const server = http.createServer((req,res)=>{
     assert.match(dayAsset,/gift-of-hope-day\.svg/);
     const assetResponse=await page.request.get('http://127.0.0.1:4173/assets/gift-of-hope-day.svg');
     assert.equal(assetResponse.status(),200,'daytime Gift of Hope asset should load');
+    const daySvg=fs.readFileSync(path.join(root,'assets/gift-of-hope-day.svg'),'utf8');
+    assert.match(daySvg,/#4d9fe0/,'daytime sky must use a clear blue upper-sky tone');
+    assert.match(daySvg,/#78bce9/,'daytime sky must retain a bright blue mid-sky tone');
+    assert.match(daySvg,/cloudFace/,'daytime sky must contain layered white cloud artwork');
+    assert.doesNotMatch(daySvg,/#f5dfbd|linearGradient id="hills"/,'daytime artwork must not fall back to the old beige/hill palette');
     const dayCardImage=await page.locator('.hope-card').evaluate(el=>getComputedStyle(el).backgroundImage);
     assert.match(dayCardImage,/gift-of-hope-day\.svg/,'home Gift of Hope card must use the daytime asset');
     const dayModalImage=await page.locator('#hopeModal').evaluate(el=>getComputedStyle(el).backgroundImage);
@@ -95,6 +100,8 @@ const server = http.createServer((req,res)=>{
     // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
+    const lightGlassSurface=await page.locator('.hope-modal-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
+    assert.match(lightGlassSurface,/rgba\\(255, 255, 255, 0\\.78\\)/,'Light Mode expanded card must remain translucent glass, not an opaque gray/white slab');
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
     assert.match(await page.locator('#modalGiftVerse').textContent(),/Amazing grace! how sweet the sound/);
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
