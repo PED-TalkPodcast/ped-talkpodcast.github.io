@@ -148,8 +148,6 @@ document.addEventListener('keydown',event=>{
 });
 if(showcase){
  const track=document.getElementById('appShowcaseTrack'),slides=[...track.querySelectorAll('.app-showcase-slide')],slideCount=slides.length;
- const dots=[...showcase.querySelectorAll('[data-showcase-slide]')];
- const previous=showcase.querySelector('[data-showcase-prev]'),next=showcase.querySelector('[data-showcase-next]');
  slides.forEach(slide=>{slide.setAttribute('role','button');slide.setAttribute('aria-haspopup','dialog');});
  let slideIndex=0,slideTimer=null,pointerStart=null,suppressClickUntil=0;
  function stopShowcaseTimer(){if(slideTimer){window.clearTimeout(slideTimer);slideTimer=null;}}
@@ -160,14 +158,9 @@ if(showcase){
   slideIndex=((index%slideCount)+slideCount)%slideCount;
   track.style.transform='translate3d(-'+(slideIndex*100)+'%,0,0)';
   slides.forEach((slide,i)=>{const active=i===slideIndex;slide.setAttribute('aria-hidden',active?'false':'true');slide.tabIndex=active?0:-1;slide.inert=!active;});
-  dots.forEach((dot,i)=>{const active=i===slideIndex;dot.setAttribute('aria-pressed',String(active));dot.setAttribute('aria-current',active?'true':'false');});
   scheduleShowcaseAdvance();
  }
- previous?.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(slideIndex-1);});
- next?.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(slideIndex+1);});
- dots.forEach(dot=>dot.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(Number(dot.dataset.showcaseSlide)||0);}));
  showcase.addEventListener('pointerdown',event=>{
-  if(event.target.closest('.showcase-controls'))return;
   if(event.pointerType==='mouse'&&event.button!==0)return;
   pointerStart={id:event.pointerId,x:event.clientX,y:event.clientY};stopShowcaseTimer();
  },{passive:true});
@@ -179,12 +172,11 @@ if(showcase){
  },{passive:true});
  showcase.addEventListener('pointercancel',()=>{pointerStart=null;scheduleShowcaseAdvance();},{passive:true});
  showcase.addEventListener('click',event=>{
-  if(Date.now()<suppressClickUntil||event.target.closest('.showcase-controls,button,a,input,textarea,select,[data-view]'))return;
+  if(Date.now()<suppressClickUntil||event.target.closest('button,a,input,textarea,select,[data-view]'))return;
   const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;
   openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');
  });
  showcase.addEventListener('keydown',event=>{
-  if(event.target.closest('.showcase-controls'))return;
   if(event.key==='ArrowRight'){event.preventDefault();showShowcaseSlide(slideIndex+1);return;}
   if(event.key==='ArrowLeft'){event.preventDefault();showShowcaseSlide(slideIndex-1);return;}
   if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');}
@@ -819,7 +811,7 @@ if(colorSchemeQuery?.addEventListener)colorSchemeQuery.addEventListener('change'
 function openAppSettings(){
  if(!appSettingsModal||!appSettingsModal.hidden)return;
  pushOverlayHistory('settings');appSettingsModal.hidden=false;document.body.classList.add('settings-open');
- document.getElementById('settingsClose')?.focus({preventScroll:true});window.PEDShowcase?.pause();window.PEDDevotional?.sync();
+ document.getElementById('settingsHome')?.focus({preventScroll:true});window.PEDShowcase?.pause();window.PEDDevotional?.sync();
 }
 document.getElementById('appSettingsButton')?.addEventListener('click',openAppSettings);
 function closeAppSettings(fromHistory=false){
@@ -836,7 +828,6 @@ function settingsNavigateHome(event){
  showView('home',null,false,{history:'none',restoreFocus:true});
  window.PEDShowcase?.resume();window.PEDDevotional?.sync();
 }
-document.getElementById('settingsClose')?.addEventListener('click',()=>closeAppSettings());
 document.getElementById('settingsHome')?.addEventListener('click',settingsNavigateHome);
 appSettingsModal?.addEventListener('click',event=>{if(event.target===appSettingsModal)closeAppSettings();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&appSettingsModal&&!appSettingsModal.hidden)closeAppSettings();});
@@ -879,12 +870,25 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevoti
 renderDevotionalStage(devotionalIndex);scheduleDevotional();
 window.PEDDevotional={sync:()=>{if(devotionalCanRun())scheduleDevotional();else pauseDevotional();},get phase(){return devotionalStages[devotionalIndex].phase;}};
 function openGiftHope(){
+ if(!hopeModal||!homeView||!hopeCard||!giftVerse||!giftVerseLabel||!giftReference){
+  console.error('Gift of Hope could not open: required devotional elements are missing.');
+  return;
+ }
+ if(!Array.isArray(devotionalStages)||!devotionalStages.length||!devotionalStages[devotionalIndex]){
+  console.error('Gift of Hope could not open: devotional stage data is unavailable.');
+  return;
+ }
  renderDevotionalStage(devotionalIndex);
- showView('hope');renderHopeComments();
+ renderHopeComments();
+ showView('hope');
  const panel=hopeModal.querySelector('.hope-modal-panel');
  const title=document.getElementById('hopeModalTitle');
- title?.focus({preventScroll:true});
- if(panel){panel.scrollTop=0;requestAnimationFrame(()=>{if(!hopeModal.hidden){panel.scrollTop=0;title?.focus({preventScroll:true});}});}
+ if(panel)panel.scrollTop=0;
+ requestAnimationFrame(()=>{
+  if(!hopeModal.hidden)return;
+  if(panel)panel.scrollTop=0;
+  title?.focus({preventScroll:true});
+ });
 }
 hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
 hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
@@ -905,7 +909,7 @@ function syncHopeLike(){const liked=safeStorageGet(likeKey)==='true';likeButton.
 likeButton.addEventListener('click',()=>{safeStorageSet(likeKey,likeButton.getAttribute('aria-pressed')!=='true'?'true':'false');syncHopeLike();});syncHopeLike();
 const commentsKey='ped-talk-gift-hope-comments';
 function getHopeComments(){try{const parsed=JSON.parse(safeStorageGet(commentsKey,'[]'));return Array.isArray(parsed)?parsed:[];}catch(error){return[];}}
-function renderHopeComments(){const list=document.getElementById('hopeCommentList'),comments=getHopeComments();list.innerHTML=comments.length?comments.map(item=>'<article class="hope-comment"><p>'+String(item.text||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</p><small>'+new Date(item.date).toLocaleString()+'</small></article>').join(''):'<p class="empty">Be the first to share a thought.</p>';}
+function renderHopeComments(){const list=document.getElementById('hopeCommentList');if(!list)return;const comments=getHopeComments();list.innerHTML=comments.length?comments.map(item=>'<article class="hope-comment"><p>'+String(item.text||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</p><small>'+new Date(item.date).toLocaleString()+'</small></article>').join(''):'<p class="empty">Be the first to share a thought.</p>';}
 document.getElementById('hopeCommentToggle').addEventListener('click',()=>{const panel=document.getElementById('hopeComments'),button=document.getElementById('hopeCommentToggle');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){renderHopeComments();panel.scrollIntoView({block:'nearest',behavior:'smooth'});}});
 document.getElementById('hopeCommentForm').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('hopeCommentInput'),value=input.value.trim();if(!value)return;const comments=getHopeComments();comments.unshift({text:value,date:new Date().toISOString()});if(!safeStorageSet(commentsKey,JSON.stringify(comments.slice(0,100)))){alert('Comments cannot be saved on this device right now.');return;}input.value='';renderHopeComments();});
 document.getElementById('hopeShare').addEventListener('click',async()=>{const shareData={title:'PED-Talk · Gift of Hope',text:giftVerse.textContent+' — '+giftReference.textContent,url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareData.text+' '+shareData.url);alert('Gift of Hope copied to clipboard.');}else alert(shareData.text+' '+shareData.url);}catch(error){if(error.name!=='AbortError')console.warn('Share was not completed',error);}});
