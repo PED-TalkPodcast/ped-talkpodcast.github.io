@@ -483,7 +483,7 @@ function universalTouch(){universalLastActivity=Date.now();}
 function universalFlushTick(){
  if(!activeUniversalSession)return;
  const now=Date.now(),visible=!document.hidden&&(activeUniversalSession.sourceType==='bible'?document.getElementById('bibleReader')?.hidden===false:true);
- if(visible&&now-universalLastActivity<=UNIVERSAL_IDLE_LIMIT){
+ if(visible){
   const elapsed=Math.max(0,Math.min(30,Math.round((now-universalLastTick)/1000)));
   if(elapsed){
    activeUniversalSession.durationSeconds+=elapsed;
