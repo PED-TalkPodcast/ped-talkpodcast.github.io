@@ -871,3 +871,13 @@ body.app-light .settings-close{color:#304237;background:#f1f5f1;border-color:#e0
 body.app-light .subscription-notice{color:#28563a;background:#edf5e9}
 body.app-light .hope-modal{background:rgba(20,37,29,.35)!important}
 @media(max-width:520px){.hope-modal{padding:14px!important}.hope-modal-panel{max-height:88dvh!important;padding:24px 19px!important;border-radius:26px!important}.app-settings-panel{padding:22px 18px;border-radius:23px}.theme-options{gap:6px}.theme-options button{padding:11px 8px}}
+
+body.app-dark .reading-stats-view{background:#071b31!important;color:#edf4fa!important}
+body.app-dark .reading-stats-head h2,body.app-dark .reading-section-head h3{color:#edf4fa!important}
+body.app-dark .reading-stats-head p:not(.reader-kicker),body.app-dark .reading-section-head>span{color:#aebfd0!important}
+body.app-dark .reading-stats-view .reading-card-type{color:#b7d58a!important}
+body.app-dark .reading-stats-view .reading-local-note{color:#aebfd0!important}
+body.app-dark .reading-summary-card,body.app-dark .reading-time-card,body.app-dark .reading-breakdown-button,body.app-dark .reading-detail-total,body.app-dark .reading-detail-empty,body.app-dark .episode-player-window{background:#102b43!important;border-color:rgba(214,231,220,.14)!important;color:#edf4fa!important}
+body.app-dark .reading-summary-card strong,body.app-dark .reading-time-card strong,body.app-dark .reading-detail-books h3,body.app-dark .reading-detail-sessions h3,body.app-dark .reading-detail-book span,body.app-dark .reading-session-row strong,body.app-dark .reading-breakdown-button strong{color:#edf4fa!important}
+body.app-dark .reading-summary-card span,body.app-dark .reading-time-card span,body.app-dark .reading-detail-book strong,body.app-dark .reading-session-row>b,body.app-dark .reading-breakdown-button>b{color:#b7d58a!important}
+body.app-dark .bible-view,body.app-dark .bible-library-view,body.app-dark .books-view,body.app-dark .episodes-view{color:#edf4fa}
