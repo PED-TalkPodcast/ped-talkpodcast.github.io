@@ -53,6 +53,7 @@ const showcase=document.getElementById('appShowcase');
 function openDwoopModal(kind='upcoming'){
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
+ const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
  if(kind==='upcoming'){
   eyebrow.textContent='PED-TALK · COMING UP NEXT';title.textContent='Upcoming episodes';intro.textContent='A look at the conversations being prepared for you.';
   content.innerHTML=upcomingScheduleRows.length?upcomingScheduleRows.map((ep,index)=>'<article class="dwoop-episode"><span class="dwoop-episode-number">EP '+String(Number(ep.number)||index+1).padStart(2,'0')+'</span><div><h3>'+escapeBibleHTML(ep.title||'Upcoming conversation')+'</h3>'+(ep.subtitle?'<p>'+escapeBibleHTML(ep.subtitle)+'</p>':'')+'</div><span class="dwoop-status">COMING SOON</span></article>').join(''):'<p class="dwoop-empty">The next conversations will appear here when they are announced.</p>';
@@ -428,6 +429,7 @@ function showBibleLibraryTab(tab){
  if(tab==='highlights')renderBibleHighlights();if(tab==='saved')renderSavedBibleScriptures();if(tab==='notes')renderBibleNotes();
 }
 document.getElementById('bibleLibraryToggle')?.addEventListener('click',()=>{renderBibleHighlights();renderSavedBibleScriptures();renderBibleNotes();showBibleLibraryTab('saved');showView('bible-library');});
+document.getElementById('bibleLibraryReturn')?.addEventListener('click',()=>showView('bible',null,true));
 document.getElementById('bibleHighlightsToggle')?.addEventListener('click',()=>showBibleLibraryTab('highlights'));
 document.getElementById('bibleSavedToggle')?.addEventListener('click',()=>showBibleLibraryTab('saved'));
 function renderBibleNotes(){
@@ -571,6 +573,23 @@ function formatUniversalTime(seconds){
 }
 function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate()).getTime();}
 function startOfLocalWeek(date){const day=(date.getDay()+6)%7;return startOfLocalDay(new Date(date.getFullYear(),date.getMonth(),date.getDate()-day));}
+document.querySelectorAll('[data-reading-period]').forEach(button=>button.addEventListener('click',()=>{
+ const period=button.dataset.readingPeriod;
+ const now=new Date(),start=period==='today'?startOfLocalDay(now):period==='week'?startOfLocalWeek(now):new Date(now.getFullYear(),now.getMonth(),1).getTime();
+ const sessions=universalSessions().filter(item=>Number(item.endTime)>=start);
+ const seconds=sessions.reduce((sum,item)=>sum+(Number(item.durationSeconds)||0),0);
+ const names=[...new Set(sessions.map(item=>item.bookTitle||item.title||item.bookId).filter(Boolean))];
+ const overlay=document.getElementById('dwoopOverlay'),artwork=document.getElementById('dwoopArtwork');
+ document.getElementById('dwoopEyebrow').textContent='YOUR READING JOURNEY';
+ document.getElementById('dwoopTitle').textContent=period==='today'?'Today':period==='week'?'This week':'This month';
+ document.getElementById('dwoopIntro').textContent='Your reading time and activity for this period.';
+ artwork?.replaceChildren();
+ const content=document.getElementById('dwoopContent');
+ content.innerHTML='<div class="reading-period-total"><span>Total reading time</span><strong>'+escapeBibleHTML(formatUniversalTime(seconds))+'</strong></div><p class="reading-period-label">'+(names.length?escapeBibleHTML(names.join(' · ')):'No reading sessions recorded in this period yet.')+'</p>';
+ const y=window.scrollY||window.pageYOffset||0;
+ document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');
+ overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+}));
 function renderReadingDashboard(){
  const sessions=universalSessions(),now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
  const totalSince=start=>sessions.reduce((sum,item)=>sum+(Number(item.durationSeconds)||0)*(Number(item.endTime)>=start?1:0),0);
@@ -588,12 +607,13 @@ function renderReadingDashboard(){
  continueList.innerHTML=continueItems.length?continueItems.map(item=>{
   const percent=Math.round(Math.max(0,Math.min(1,Number(item.completionPercentage)||0))*100);
   const location=item.lastKnownLocation||{};
-  const resume=item.sourceType==='bible'?'bible:'+encodeURIComponent((location.bookName||item.title)+':'+(location.chapter||1)+':'+(location.verse||1)):'';
+  const bookMeta=bibleBooks.find(book=>book[0]===String(location.bookCode||'').toUpperCase())||bibleBooks.find(book=>book[1]===String(location.bookName||item.title||''));
+  const resume=item.sourceType==='bible'&&bookMeta?'bible:'+encodeURIComponent(bookMeta[0]+':'+(location.chapter||1)+':'+(location.verse||1)):'';
   return '<article class="reading-progress-card"><div class="reading-card-type">'+(item.sourceType==='bible'?'BIBLE':'BOOK')+'</div><h4>'+universalEscape(item.title)+'</h4><p>'+universalEscape(item.subtitle||'Continue where you left off')+'</p><div class="reading-progress-track"><span style="width:'+percent+'%"></span></div><div class="reading-progress-meta"><span>'+universalEscape(item.progressDisplayText||'In progress')+'</span><strong>'+percent+'%</strong></div><button type="button" class="reading-continue-button" '+(resume?'data-reading-resume="'+universalEscape(resume)+'"':'disabled')+'>Continue reading</button></article>';
  }).join(''):'<p class="reading-empty">Your recently read books and Bible passages will appear here. Start reading to build your list.</p>';
  const snippets=readUniversalArray(UNIVERSAL_SNIPPETS_KEY),snippetList=document.getElementById('readingSnippetsList');
  snippetList.innerHTML=snippets.length?snippets.slice(0,8).map(item=>'<article class="reading-snippet"><span>▤</span><div><strong>'+universalEscape(item.title||'Saved snippet')+'</strong><p>'+universalEscape(item.text||'')+'</p></div></article>').join(''):'<p class="reading-empty">Saved articles and reading snippets will appear here when you add them.</p>';
- continueList.querySelectorAll('[data-reading-resume]').forEach(button=>button.addEventListener('click',()=>{const value=decodeURIComponent(button.dataset.readingResume).slice(5);showView('bible',value,true);}));
+ continueList.querySelectorAll('[data-reading-resume]').forEach(button=>button.addEventListener('click',()=>{const encoded=button.dataset.readingResume.slice(6);let reference='';try{reference=decodeURIComponent(encoded);}catch(error){return;}const [bookCode,chapter,verse]=reference.split(':');const meta=bibleBooks.find(book=>book[0]===bookCode);if(!meta)return;document.getElementById('bibleTestament').value=meta[2];showView('bible',bookCode+':'+(Number(chapter)||1)+':'+(Number(verse)||1),true);}));
 }
 window.PEDReadingProgress={
  start:config=>startUniversalReading(config||{}),
