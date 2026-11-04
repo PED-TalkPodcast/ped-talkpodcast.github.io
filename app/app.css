@@ -815,3 +815,59 @@ a:focus:not(:focus-visible),button:focus:not(:focus-visible),[role="button"]:foc
 a:focus-visible,button:focus-visible,[role="button"]:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(183,213,138,.48)}
 @media(max-width:420px){.topbar{padding-left:15px;padding-right:15px}.topbar-actions{gap:8px}.live-dot{font-size:9px}.app-install-button{padding:0 10px}}
 @media(prefers-reduced-motion:reduce){a,button,[role="button"]{transition:none!important}a:active,button:active,[role="button"]:active{transform:none}}
+
+/* v88 — rounded frosted Gift of Hope dialog and app-wide appearance settings. */
+.hope-modal[hidden],.app-settings-overlay[hidden]{display:none!important}
+.hope-modal{position:fixed!important;inset:0!important;z-index:80!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:22px!important;overflow-y:auto!important;background:rgba(4,14,24,.48)!important;backdrop-filter:blur(16px) saturate(1.25)!important;-webkit-backdrop-filter:blur(16px) saturate(1.25)!important}
+.hope-modal::before,.hope-modal::after{display:none!important;content:none!important}
+.hope-modal-panel{width:min(100%,560px)!important;height:auto!important;max-height:min(86dvh,820px)!important;overflow-y:auto!important;overscroll-behavior:contain!important;padding:clamp(25px,6vw,42px)!important;border:1px solid rgba(255,255,255,.42)!important;border-radius:30px!important;background:linear-gradient(145deg,rgba(255,255,255,.22),rgba(224,241,232,.10))!important;box-shadow:0 24px 80px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.38)!important;backdrop-filter:blur(28px) saturate(1.55)!important;-webkit-backdrop-filter:blur(28px) saturate(1.55)!important;color:#f5fbff!important}
+.hope-modal-panel>*{max-width:none!important}
+.hope-modal-panel h2{color:#fff!important}
+.hope-modal-panel blockquote{color:#fff!important}
+.hope-modal-panel>p:not(.eyebrow){color:rgba(245,251,255,.78)!important}
+.hope-modal-panel .hope-actions button{border-radius:999px}
+body.settings-open{overflow:hidden}
+.app-settings-overlay{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(3,13,22,.55);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px)}
+.app-settings-panel{width:min(100%,520px);max-height:min(88dvh,760px);overflow:auto;padding:26px;border:1px solid rgba(255,255,255,.16);border-radius:26px;background:linear-gradient(155deg,#102d48,#071b31 78%);color:#eef5f8;box-shadow:0 25px 80px rgba(0,0,0,.32)}
+.settings-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:28px}
+.settings-heading h2{margin:0;font-size:30px;letter-spacing:-.055em}
+.settings-heading p:not(.eyebrow){margin:7px 0 0;color:#aebfce;font-size:12px}
+.settings-close{width:38px;height:38px;border:1px solid rgba(255,255,255,.17);border-radius:50%;background:rgba(255,255,255,.07);color:#fff;font-size:24px}
+.settings-section h3{margin:0 0 5px;font-size:15px}.settings-section>p{margin:0 0 14px;color:#aebfce;font-size:11px}
+.theme-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.theme-options button{display:grid;justify-items:start;gap:6px;padding:13px 11px;border:1px solid rgba(255,255,255,.13);border-radius:15px;background:rgba(255,255,255,.055);color:#eaf3f7;text-align:left}
+.theme-options button.active{border-color:#b7d58a;background:rgba(183,213,138,.14);box-shadow:inset 0 0 0 1px rgba(183,213,138,.18)}
+.theme-symbol{font-size:21px;color:#b7d58a}.theme-options strong{font-size:11px}.theme-options small{font-size:9px;color:#aebfce}
+.subscription-entry{display:flex;align-items:center;gap:14px;width:100%;margin-top:25px;padding:14px;border:1px solid rgba(183,213,138,.26);border-radius:18px;background:linear-gradient(110deg,rgba(183,213,138,.12),rgba(255,255,255,.045));color:#f1f6ed;text-align:left}
+.subscription-ring{display:block;flex:0 0 58px;width:58px;height:58px}
+.subscription-ring svg{width:100%;height:100%;overflow:visible}
+.subscription-ring circle{fill:none;stroke:rgba(255,255,255,.18);stroke-width:3}
+.subscription-ring .subscription-ring-progress{stroke:#b7d58a;stroke-width:3.5;stroke-linecap:round;stroke-dasharray:97.22 100;transform:rotate(-90deg);transform-origin:32px 32px}
+.subscription-ring text{fill:#eaf4dc;font:700 21px 'DM Sans',sans-serif}
+.subscription-copy{display:grid;gap:5px;flex:1;min-width:0}.subscription-copy strong{font-size:13px}.subscription-copy small{font-size:10px;line-height:1.5;color:#b7c8bb}.subscription-arrow{font-size:22px;color:#b7d58a}
+.subscription-notice{margin:12px 2px 0;padding:12px;border-radius:12px;background:rgba(183,213,138,.1);color:#dcebcf;font-size:11px;line-height:1.5}
+.settings-footnote{margin:18px 0 0;color:#91a6b8;font-size:10px}
+body.app-light{background:#f4f7f4!important;color:#203128!important}
+body.app-light .topbar{background:rgba(250,252,250,.94)!important;border-color:#e0e9e0!important}
+body.app-light .brand,body.app-light .topbar .live-dot{color:#203128!important}
+body.app-light .bottom-nav{background:rgba(250,252,250,.96)!important;border-color:#e0e9e0!important}
+body.app-light .bottom-nav button{color:#738277!important}
+body.app-light .bottom-nav button.selected{color:#236b43!important}
+body.app-light .episode,body.app-light .bible-promo,body.app-light .reading-stats-promo{background:#fff!important;border-color:#e1e9e1!important;color:#26382d!important}
+body.app-light .season-title,body.app-light .episode h3,body.app-light .section-head h2,body.app-light .bible-promo h2,body.app-light .reading-stats-promo h2{color:#26382d!important}
+body.app-light .episode .desc,body.app-light .bible-promo p:not(.eyebrow),body.app-light .reading-stats-promo p:not(.eyebrow){color:#718176!important}
+body.app-light .reading-stats-view{background:#f4f7f4!important}
+body.app-light .bible-view,body.app-light .bible-library-view,body.app-light .books-view,body.app-light .episodes-view{color:#26382d}
+body.app-light .bible-head h2,body.app-light .bible-head h3,body.app-light .bible-picker-heading h3{color:#26382d}
+body.app-light .app-settings-panel{background:linear-gradient(155deg,#fff,#f1f6f1)!important;color:#26382d!important;border-color:#dfe8df}
+body.app-light .settings-heading p:not(.eyebrow),body.app-light .settings-section>p{color:#718176}
+body.app-light .theme-options button{background:#f5f8f5;border-color:#e0e9e0;color:#304237}
+body.app-light .theme-options button.active{background:#eaf3e7;border-color:#7ca66f}
+body.app-light .theme-options small{color:#718176}
+body.app-light .subscription-entry{background:linear-gradient(110deg,#f0f6ed,#fff);border-color:#dce8d8;color:#304237}
+body.app-light .subscription-ring text{fill:#236b43}
+body.app-light .subscription-copy small,body.app-light .settings-footnote{color:#718176}
+body.app-light .settings-close{color:#304237;background:#f1f5f1;border-color:#e0e9e0}
+body.app-light .subscription-notice{color:#28563a;background:#edf5e9}
+body.app-light .hope-modal{background:rgba(20,37,29,.35)!important}
+@media(max-width:520px){.hope-modal{padding:14px!important}.hope-modal-panel{max-height:88dvh!important;padding:24px 19px!important;border-radius:26px!important}.app-settings-panel{padding:22px 18px;border-radius:23px}.theme-options{gap:6px}.theme-options button{padding:11px 8px}}
