@@ -275,11 +275,12 @@ function showView(view,reference=null,preserveBible=false){
  const readingStatsView=document.getElementById('readingStatsView');
  const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
- [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView,hopeModal].forEach(el=>{if(el){el.hidden=el!==next;el.classList.remove('view-enter');}});
+ [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView].forEach(el=>{if(el){el.hidden=el!==next;el.classList.remove('view-enter');}});
+ hopeModal.hidden=target!=='hope';
  document.body.classList.remove('modal-open');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
  const token=++viewTransitionToken;
- requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
+ if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
  window.scrollTo({top:0,behavior:'smooth'});
  if(target==='bible'){if(reference)openBibleReference(reference);else if(!preserveBible)resetBibleFlow();}
  if(target==='reading-stats')renderReadingDashboard();
@@ -605,6 +606,35 @@ bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classLi
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 document.querySelectorAll('.reading-stats-open,[data-reading-home]').forEach(button=>button.addEventListener('click',()=>showView(button.hasAttribute('data-reading-home')?'home':'reading-stats')));
 
+
+/* PED-Talk app settings: system, light and dark appearance. */
+const APP_THEME_KEY='ped-talk-app-theme';
+const appSettingsModal=document.getElementById('appSettingsModal');
+const appThemeButtons=[...document.querySelectorAll('[data-app-theme]')];
+function systemPrefersDark(){return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);}
+function applyAppTheme(choice){
+ const theme=['system','light','dark'].includes(choice)?choice:'system';
+ const effective=theme==='system'?(systemPrefersDark()?'dark':'light'):theme;
+ document.body.dataset.appTheme=effective;
+ document.body.classList.toggle('app-light',effective==='light');
+ document.body.classList.toggle('app-dark',effective==='dark');
+ appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
+ const meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.content=effective==='dark'?'#071b31':'#f5f8f5';
+ try{localStorage.setItem(APP_THEME_KEY,theme);}catch(error){}
+}
+let preferredAppTheme='system';try{preferredAppTheme=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}
+applyAppTheme(preferredAppTheme);
+const colorSchemeQuery=window.matchMedia?.('(prefers-color-scheme: dark)');
+colorSchemeQuery?.addEventListener?.('change',()=>{let choice='system';try{choice=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}if(choice==='system')applyAppTheme('system');});
+document.getElementById('appSettingsButton')?.addEventListener('click',()=>{appSettingsModal.hidden=false;document.body.classList.add('settings-open');});
+function closeAppSettings(){appSettingsModal.hidden=true;document.body.classList.remove('settings-open');}
+document.getElementById('settingsClose')?.addEventListener('click',closeAppSettings);
+appSettingsModal?.addEventListener('click',event=>{if(event.target===appSettingsModal)closeAppSettings();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&appSettingsModal&&!appSettingsModal.hidden)closeAppSettings();});
+appThemeButtons.forEach(button=>button.addEventListener('click',()=>applyAppTheme(button.dataset.appTheme)));
+document.getElementById('subscriptionEntry')?.addEventListener('click',()=>{const note=document.getElementById('subscriptionNotice');if(note){note.hidden=false;note.textContent='PED-Talk subscriptions are being prepared. Membership options will appear here when available.';}});
+
 // Gift of Hope expanded reading tile and community actions.
 const hopeModal=document.getElementById('hopeModal');
 const giftVerse=document.getElementById('giftVerse');
@@ -619,7 +649,7 @@ hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hop
 hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
 hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openGiftHope();}});
 function closeHope(){showView('home');}
-document.getElementById('closeHope').addEventListener('click',closeHope);
+hopeModal.addEventListener('click',event=>{if(event.target===hopeModal)closeHope();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!hopeModal.hidden)closeHope();});
 const likeButton=document.getElementById('hopeLike');
 const likeKey='pedtalk-gift-hope-liked';
