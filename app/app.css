@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,500;0,600;1,500;1,600&display=swap');
-:root{color-scheme:dark;--night:#071b31;--blue:#102c4b;--blue2:#173d60;--sky:#a9c8e5;--paper:#f4f1e9;--muted:#a7b8c8;--line:rgba(255,255,255,.13)}
+:root{color-scheme:light dark;--night:#071b31;--blue:#102c4b;--blue2:#173d60;--sky:#a9c8e5;--paper:#f4f1e9;--muted:#a7b8c8;--line:rgba(255,255,255,.13)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--night);color:#f7f8fa;font-family:'DM Sans',sans-serif;padding-bottom:92px}.topbar{height:68px;padding:0 max(22px,calc((100vw - 920px)/2));display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);background:rgba(7,27,49,.94)}.brand{display:flex;align-items:center;gap:10px;color:white;text-decoration:none;font-size:14px;font-weight:800;letter-spacing:.12em}.brand img{width:34px;height:34px}.brand small{display:block;color:#93abc1;font-size:8px;letter-spacing:.22em;margin-top:3px}.live-dot{font-size:11px;color:#b6cce0}.live-dot:before{content:"";display:inline-block;width:6px;height:6px;background:#9ac4e8;border-radius:50%;margin:0 8px 1px 0}
 main{max-width:920px;margin:auto;padding:0 22px}.welcome{position:relative;overflow:hidden;margin:22px 0 46px;padding:38px 28px 26px;min-height:430px;border:1px solid rgba(255,255,255,.12);border-radius:27px;background:linear-gradient(180deg,rgba(7,27,49,.13),rgba(7,27,49,.92)),url('../assets/gift-of-hope-sky.svg') center 44%/cover no-repeat}.eyebrow{font-size:9px;font-weight:800;letter-spacing:.22em;color:#a9c8e5;margin:0 0 13px}.welcome h1{font-size:clamp(48px,10vw,78px);line-height:.88;letter-spacing:-.07em;margin:0;max-width:430px}.welcome h1 em{font-family:'Playfair Display',serif;font-weight:500;color:#b9d4eb}.intro{max-width:390px;color:#d1dce7;font-size:13px;line-height:1.7;margin:18px 0 24px}.verse-card{max-width:510px;padding:18px 20px;border-radius:17px;background:rgba(5,20,37,.76);border:1px solid rgba(211,230,247,.2);backdrop-filter:blur(9px)}.verse-label{font-size:8px;font-weight:800;letter-spacing:.2em;color:#a9c8e5}.verse-card blockquote{font-family:'Playfair Display',serif;font-size:19px;line-height:1.4;margin:10px 0}.verse-card p{font-size:10px;color:#b7c9d9;margin:0 0 12px}.text-link{color:#b9d4eb;text-decoration:none;font-size:11px;font-weight:700}.text-link span{margin-left:5px}.library{padding-bottom:42px}.section-head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:19px}.section-head h2,.bible-promo h2{font-size:29px;letter-spacing:-.055em;margin:0}.filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 15px;scrollbar-width:none}.filters::-webkit-scrollbar{display:none}.filter{white-space:nowrap;border:1px solid var(--line);border-radius:30px;padding:9px 14px;background:transparent;color:#c4d1de;font:600 10px 'DM Sans',sans-serif}.filter.active{background:#d5e7f7;color:#0a2038;border-color:#d5e7f7}.season{margin:14px 0 25px}.season-title{font-size:13px;font-weight:800;margin:0 0 12px;color:#eaf1f7}.episode-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.episode{min-width:0;overflow:hidden;border:1px solid var(--line);border-radius:17px;background:linear-gradient(145deg,#102c4b,#0b223b);padding:10px}.episode img{display:block;width:100%;aspect-ratio:1.35;object-fit:cover;border-radius:10px;background:#173d60}.episode h3{font-size:12px;line-height:1.35;margin:11px 2px 5px}.episode .desc{font-size:10px;color:#aabaca;line-height:1.5;margin:0 2px 10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.episode audio{width:100%;height:34px;filter:invert(.88) hue-rotate(170deg);margin-top:3px}.episode .tag{font-size:8px;letter-spacing:.1em;text-transform:uppercase;color:#a9c8e5;margin:0 2px}.loading,.empty{color:#aabaca;font-size:12px;padding:18px 0}.bible-promo{display:flex;justify-content:space-between;align-items:center;gap:20px;margin:8px 0 25px;padding:27px;border-radius:22px;background:linear-gradient(125deg,#173d60,#102b49);border:1px solid var(--line)}.bible-promo p:not(.eyebrow){max-width:420px;color:#c1d0dd;font-size:12px;line-height:1.6}.bible-mark{font:120px 'Playfair Display',serif;color:rgba(210,231,249,.17);line-height:.7}.button-link{display:inline-block;margin-top:5px;padding:11px 15px;border-radius:30px;background:#d5e7f7;color:#0a2038;text-decoration:none;font-size:10px;font-weight:800}.bottom-nav{position:fixed;z-index:5;bottom:0;left:0;right:0;padding:10px 10px max(12px,env(safe-area-inset-bottom));display:flex;justify-content:center;gap:clamp(10px,4vw,32px);background:rgba(5,19,34,.96);border-top:1px solid var(--line);backdrop-filter:blur(16px)}.bottom-nav a{min-width:54px;text-align:center;text-decoration:none;color:#91a6ba;font-size:9px;font-weight:700}.bottom-nav a span{display:block;font-size:19px;margin-bottom:3px}.bottom-nav a.selected{color:#d5e7f7}
 @media(min-width:650px){.episode-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.welcome{padding:48px 42px;min-height:475px}.intro{font-size:14px}}@media(max-width:390px){main{padding:0 15px}.welcome{padding:29px 19px 20px;min-height:415px}.episode-grid{gap:9px}.episode{padding:8px}.episode h3{font-size:11px}.section-head h2{font-size:25px}}
@@ -1502,3 +1502,95 @@ body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important
  .app-showcase-upcoming .upcoming-episode{font-size:7px!important}
  .app-showcase-upcoming .upcoming-title{font-size:10px!important}
 }
+
+
+/* v97 — shared semantic theme tokens and complete interaction polish. */
+:root{--app-background:#071b31;--app-surface:#102c4b;--app-surface-elevated:#173d60;--app-text-primary:#f4f7fa;--app-text-secondary:#b1c1cf;--app-text-muted:#91a6b8;--app-accent:#b7d58a;--app-border:rgba(255,255,255,.13);--app-overlay:rgba(2,10,18,.78);--app-button-background:#d5e7f7;--app-button-text:#0a2038}
+body.app-dark{color-scheme:dark;--app-background:#071b31;--app-surface:#102c4b;--app-surface-elevated:#173d60;--app-text-primary:#f4f7fa;--app-text-secondary:#b1c1cf;--app-text-muted:#91a6b8;--app-accent:#b7d58a;--app-border:rgba(255,255,255,.13);--app-overlay:rgba(2,10,18,.78);--app-button-background:#d5e7f7;--app-button-text:#0a2038}
+body.app-light{color-scheme:light;--app-background:#f4f7f4;--app-surface:#fff;--app-surface-elevated:#eef4ee;--app-text-primary:#203128;--app-text-secondary:#52675a;--app-text-muted:#718176;--app-accent:#47784e;--app-border:#dfe8df;--app-overlay:rgba(30,48,37,.42);--app-button-background:#24583a;--app-button-text:#fff}
+html,body{background:var(--app-background)}body{color:var(--app-text-primary)}
+body.app-light .topbar{color:var(--app-text-primary)}
+body.app-light .topbar .brand small{color:var(--app-text-muted)}
+body.app-light .topbar .app-install-button{background:var(--app-button-background);color:var(--app-button-text)}
+body.app-light .bottom-nav button{color:var(--app-text-muted)}
+body.app-light .bottom-nav button.selected{color:var(--app-accent)}
+body.app-light .section-head .eyebrow,body.app-light .reading-stats-view .eyebrow,body.app-light .bible-view .eyebrow{color:#47784e}
+body.app-light .loading,body.app-light .empty{color:var(--app-text-muted)}
+body.app-light .episode,body.app-light .episode-more-tile,body.app-light .episode-feature-panel,body.app-light .bible-reader,body.app-light .book-category{background:var(--app-surface)!important;color:var(--app-text-primary)!important;border-color:var(--app-border)!important}
+body.app-light .episode .tag,body.app-light .episode-more-tile small{color:#47784e!important}
+body.app-light .episode .desc,body.app-light .episode-feature-description{color:var(--app-text-secondary)!important}
+body.app-light .bible-reader-top,body.app-light .bible-reader-actions{border-color:var(--app-border)!important}
+body.app-light .bible-reader-top h3,body.app-light .bible-verse p{color:var(--app-text-primary)!important}
+body.app-light .bible-pager button,body.app-light .bible-search button,body.app-light .bible-library-return,body.app-light .reading-continue-button{background:var(--app-button-background)!important;color:var(--app-button-text)!important}
+body.app-light .bible-pager span,body.app-light .bible-reader-actions span{color:var(--app-text-muted)!important}
+body.app-light .settings-section h3,body.app-light .settings-heading h2{color:var(--app-text-primary)!important}
+.settings-heading-actions{display:flex;align-items:center;gap:9px;flex:0 0 auto}
+.settings-home{min-height:42px;padding:0 13px;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(255,255,255,.17);border-radius:24px;background:rgba(255,255,255,.07);color:#edf4fa;font:700 11px 'DM Sans',sans-serif}
+.settings-home span{font-size:11px}
+body.app-light .settings-home{background:#edf5eb!important;border-color:#dce8d8!important;color:#24583a!important}
+body.app-dark .settings-home{background:#17384b!important;border-color:rgba(226,238,227,.18)!important;color:#edf4fa!important}
+body.app-light .app-settings-overlay{background:rgba(31,47,36,.42)!important}
+body.app-light .hope-modal{background:var(--app-overlay)!important}
+body.app-dark .hope-modal{background:rgba(4,14,24,.48)!important}
+body.app-light .hope-modal-panel{color:var(--app-text-primary)!important}
+body.app-light .hope-modal-panel .eyebrow{color:#47784e!important}
+body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#263c30!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#68796b!important}
+body.app-light .hope-comments{background:rgba(255,255,255,.94)!important;border-color:#dce5d8!important;color:#263c30!important}
+body.app-light .hope-comments h3{color:#284b34!important}
+body.app-light .hope-comments textarea{background:#fff!important;border-color:#d5e0d2!important;color:#24382b!important}
+body.app-light .hope-comments textarea::placeholder{color:#819084!important}
+body.app-light .hope-comment p{color:#304638!important}
+body.app-light .hope-comment small,body.app-light .hope-local-note{color:#718176!important}
+body.app-light .hope-actions button{background:#fff!important;border-color:#d5e0d2!important;color:#31533b!important}
+body.app-light .hope-actions button[aria-pressed=true]{background:#f8e8eb!important;color:#a33d55!important}
+body.app-light .hope-modal-panel .button-link{background:#24583a!important;color:#fff!important}
+body.app-dark .hope-modal-panel h2,body.app-dark .hope-modal-panel blockquote{color:#f5fbff!important}
+body.app-dark .hope-comments{background:rgba(4,19,34,.4)!important;border-color:rgba(220,237,255,.18)!important;color:#edf4fa!important}
+body.app-dark .hope-comments textarea{background:#071b31!important;border-color:rgba(220,237,255,.2)!important;color:#f5f8fb!important}
+
+/* Theme-selected artwork: Light Mode receives a real daytime sky. */
+.welcome.hope-card{background-image:linear-gradient(180deg,rgba(4,13,27,.24),rgba(4,13,27,.78)),var(--gift-of-hope-image,url('../assets/gift-of-hope-sky.svg'))!important}
+body.app-light .welcome.hope-card{background-image:linear-gradient(180deg,rgba(255,251,240,.08),rgba(242,247,235,.84)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important;border-color:rgba(82,112,77,.24)!important;color:#203a2b!important}
+body.app-light .welcome.hope-card .eyebrow,body.app-light .welcome.hope-card .verse-label{color:#42664a!important}
+body.app-light .welcome.hope-card h1,body.app-light .welcome.hope-card h1 em{color:#203a2b!important}
+body.app-light .hope-scripture{border-color:rgba(51,88,58,.24)!important}
+body.app-light .hope-scripture blockquote{color:#263c30!important}
+body.app-light .hope-scripture p{color:#5c6e60!important}
+body.app-light .hope-scripture .text-link{color:#244f35!important}
+.hope-modal{background-image:linear-gradient(180deg,rgba(3,12,25,.18),rgba(3,12,25,.82)),var(--gift-of-hope-image,url('../assets/gift-of-hope-sky.svg'))!important;background-size:cover!important;background-position:center!important}
+body.app-light .hope-modal{background-image:linear-gradient(180deg,rgba(249,249,239,.2),rgba(239,246,235,.9)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important}
+.hope-devotional{transition:opacity .68s ease,transform .68s cubic-bezier(.22,.7,.2,1);will-change:opacity,transform}
+.hope-devotional.is-leaving{opacity:0;transform:translateY(-18px)}
+.hope-devotional.is-entering{animation:hopeScriptureEnter .68s cubic-bezier(.22,.7,.2,1) both}
+@keyframes hopeScriptureEnter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.hope-devotional,.hope-devotional.is-entering{animation:none!important;transition:none!important;transform:none!important}}
+
+/* Featured carousel controls use the same stable index as swipe and autoplay. */
+.showcase-controls{display:flex;align-items:center;justify-content:center;gap:18px;padding:10px 0 0}
+.showcase-arrow{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--app-border);border-radius:50%;background:var(--app-surface);color:var(--app-text-secondary);font:500 22px/1 'DM Sans',sans-serif}
+.showcase-dots{display:flex;align-items:center;gap:8px}
+.showcase-dots button{width:7px;height:7px;padding:0;border:0;border-radius:50%;background:#9aa9a0;opacity:.48}
+.showcase-dots button[aria-pressed=true]{width:20px;border-radius:8px;background:#47784e;opacity:1}
+body.app-dark .showcase-dots button[aria-pressed=true]{background:#b7d58a}
+body.app-light .showcase-arrow{background:#fff;border-color:#dce6dc;color:#35513c}
+.showcase-arrow:focus-visible,.showcase-dots button:focus-visible{outline:2px solid var(--app-accent);outline-offset:3px}
+
+/* Voice of Healing: warm midtones with a restrained lower text scrim. */
+.app-showcase-voice>img{filter:var(--voice-of-healing-filter,brightness(.96) contrast(1.05))!important;object-position:center 42%}
+.app-showcase-voice .voice-shade{background:linear-gradient(180deg,rgba(12,23,25,.02) 26%,rgba(12,23,25,.12) 54%,rgba(12,23,25,.78) 100%)!important}
+.app-showcase-voice .voice-copy .eyebrow{color:#dcebc8!important}
+.app-showcase-voice .voice-copy h2,.app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 9px rgba(0,0,0,.35)!important}
+body.app-light .app-showcase-voice>img{filter:var(--voice-of-healing-filter,brightness(1.2) saturate(1.08) contrast(1.02))!important}
+body.app-light .app-showcase-voice .voice-shade{background:linear-gradient(180deg,rgba(39,48,39,.02) 25%,rgba(39,48,39,.12) 56%,rgba(39,48,39,.78) 100%)!important}
+body.app-light .app-showcase-voice .voice-copy .eyebrow{color:#e7f0d8!important}
+body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 9px rgba(0,0,0,.4)!important}
+
+/* Enlarged feature surfaces inherit the active theme and remain dismissible. */
+body.app-light .dwoop-overlay{background:rgba(25,39,31,.42)!important}
+body.app-light .dwoop-card-expanded.dwoop-light{background:linear-gradient(155deg,#fffdf8,#f6f8f1 72%,#fbf1f1)!important;color:#203128!important;border-color:#e1e8dd!important}
+body.app-light .dwoop-card-expanded.dwoop-light .dwoop-intro,body.app-light .dwoop-card-expanded.dwoop-light .dwoop-feature-copy,body.app-light .dwoop-card-expanded.dwoop-light .dwoop-episode p{color:#596b5e!important}
+body.app-light .dwoop-card-expanded.dwoop-light .dwoop-episode{background:#fff!important;border-color:#e0e8dc!important}
+body.app-light .dwoop-card-expanded.dwoop-light .dwoop-close{background:#f3f6ef!important;color:#294632!important;border-color:#dce5d8!important}
+body.app-dark .dwoop-card-expanded{background:linear-gradient(155deg,#102c43,#071b2c 76%)!important;color:#edf5f8!important}
+body.dwoop-locked .bottom-nav,body.hope-open .bottom-nav{display:none!important}
