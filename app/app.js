@@ -652,42 +652,64 @@ function readingSessionTitle(session,progress){
  const saved=progress.find(item=>item.bookId===session.bookId);
  return universalBookTitle(session.bookId,session.bookTitle||session.title||saved?.title||'Reading session');
 }
+function readingRangeSessions(start,end){
+ return universalSessions().filter(item=>Number(item.endTime)>start&&Number(item.startTime)<end).map(item=>{
+  const rawStart=Number(item.startTime),rawEnd=Number(item.endTime),duration=Math.max(0,Number(item.durationSeconds)||0),overlapStart=Math.max(start,rawStart),overlapEnd=Math.min(end,rawEnd),span=Math.max(0,rawEnd-rawStart),clipped=span>0?Math.min(duration,Math.round(duration*(overlapEnd-overlapStart)/span)):duration;
+  return {...item,displayStart:overlapStart,displayEnd:overlapEnd,displayDuration:Math.max(0,clipped)};
+ }).filter(item=>item.displayDuration>0).sort((a,b)=>a.displayStart-b.displayStart);
+}
+function readingRangeTotal(sessions){return sessions.reduce((sum,item)=>sum+item.displayDuration,0);}
+function readingDayKey(date){return date.getFullYear()+'-'+String(date.getMonth()+1).padStart(2,'0')+'-'+String(date.getDate()).padStart(2,'0');}
+function readingDateTitle(date,options={weekday:'long',month:'long',day:'numeric'}){return new Intl.DateTimeFormat(undefined,options).format(date);}
+function readingSessionsMarkup(sessions,progress){
+ const grouped=new Map();sessions.forEach(item=>{const name=readingSessionTitle(item,progress);grouped.set(name,(grouped.get(name)||0)+item.displayDuration);});
+ return (grouped.size?'<section class="reading-detail-books"><h3>Books read</h3>'+[...grouped.entries()].map(([name,seconds])=>'<div class="reading-detail-book"><span>'+escapeBibleHTML(name)+'</span><strong>'+escapeBibleHTML(formatUniversalTime(seconds))+'</strong></div>').join('')+'</section>':'')+
+ '<section class="reading-detail-sessions"><h3>Reading sessions</h3>'+(sessions.length?sessions.map(item=>'<article class="reading-session-row"><div><strong>'+escapeBibleHTML(readingSessionTitle(item,progress))+'</strong><span>'+escapeBibleHTML(readingDateTime(item.displayStart))+' – '+escapeBibleHTML(readingClock(item.displayEnd))+'</span></div><b>'+escapeBibleHTML(formatDetailedReadingTime(item.displayDuration))+'</b></article>').join(''):'<p class="reading-detail-empty">No reading sessions were recorded in this period.</p>')+'</section>';
+}
+function readingPeriodHeader(label,total,sessions,sub){
+ return '<section class="reading-detail-total"><span>'+escapeBibleHTML(label)+'</span><strong>'+escapeBibleHTML(formatUniversalTime(total))+'</strong><small>'+sessions.length+' recorded '+(sessions.length===1?'session':'sessions')+(sub?' · '+escapeBibleHTML(sub):'')+'</small></section>';
+}
 function openReadingPeriod(period){
- const now=Date.now(),date=new Date(now);
- const start=period==='today'?startOfLocalDay(date):period==='week'?startOfLocalWeek(date):new Date(date.getFullYear(),date.getMonth(),1).getTime();
- const sessions=universalSessions().filter(item=>Number(item.endTime)>start&&Number(item.startTime)<now)
-  .map(item=>{
-   const rawStart=Number(item.startTime),rawEnd=Number(item.endTime),duration=Math.max(0,Number(item.durationSeconds)||0);
-   const overlapStart=Math.max(start,rawStart),overlapEnd=Math.min(now,rawEnd);
-   const span=Math.max(0,rawEnd-rawStart);
-   const clipped=span>0?Math.min(duration,Math.round(duration*(overlapEnd-overlapStart)/span)):duration;
-   return {...item,displayStart:overlapStart,displayEnd:overlapEnd,displayDuration:Math.max(0,clipped)};
-  }).filter(item=>item.displayDuration>0)
-  .sort((a,b)=>a.displayStart-b.displayStart);
- const total=sessions.reduce((sum,item)=>sum+item.displayDuration,0);
- const progress=universalProgressItems();
- const grouped=new Map();
- sessions.forEach(item=>{const name=readingSessionTitle(item,progress);grouped.set(name,(grouped.get(name)||0)+item.displayDuration);});
- const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
- if(!overlay||!card)return;
+ const now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
+ const start=period==='today'?todayStart:period==='week'?weekStart:monthStart;
+ const sessions=readingRangeSessions(start,now.getTime()),total=readingRangeTotal(sessions),progress=universalProgressItems();
+ const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');if(!overlay||!card)return;
  const existingPlayer=overlay.querySelector('.episode-page-audio');if(existingPlayer){existingPlayer.pause();existingPlayer.removeAttribute('src');}
- card.classList.remove('dwoop-page-card');
- overlay.classList.remove('dwoop-episode-mode');
- const artwork=document.getElementById('dwoopArtwork');artwork?.replaceChildren();
- card.classList.add('dwoop-light','dwoop-page-card');
- overlay.classList.add('dwoop-page-mode','dwoop-reading-mode');
+ card.classList.remove('dwoop-page-card');overlay.classList.remove('dwoop-episode-mode');document.getElementById('dwoopArtwork')?.replaceChildren();
+ card.classList.add('dwoop-light','dwoop-page-card');overlay.classList.add('dwoop-page-mode','dwoop-reading-mode');
  document.querySelector('.coming-soon-indicator')?.setAttribute('hidden','');
  document.getElementById('dwoopEyebrow').textContent='YOUR READING JOURNEY';
  document.getElementById('dwoopTitle').textContent=readingPeriodLabel(period);
- document.getElementById('dwoopIntro').textContent=new Intl.DateTimeFormat(undefined,{dateStyle:'full'}).format(date)+' · Local device reading history';
+ document.getElementById('dwoopIntro').textContent=period==='today'?readingDateTitle(now)+' · Daily reading breakdown':period==='week'?'Monday – Sunday · Daily reading breakdown':readingDateTitle(now,{month:'long',year:'numeric'})+' · Weekly reading breakdown';
  const content=document.getElementById('dwoopContent');
- content.innerHTML='<section class="reading-detail-total"><span>Total time read</span><strong>'+escapeBibleHTML(formatUniversalTime(total))+'</strong><small>'+sessions.length+' recorded '+(sessions.length===1?'session':'sessions')+'</small></section>'+
-  (grouped.size?'<section class="reading-detail-books"><h3>Books read</h3>'+[...grouped.entries()].map(([name,seconds])=>'<div class="reading-detail-book"><span>'+escapeBibleHTML(name)+'</span><strong>'+escapeBibleHTML(formatUniversalTime(seconds))+'</strong></div>').join('')+'</section>':'')+
-  '<section class="reading-detail-sessions"><h3>Reading sessions</h3>'+(sessions.length?sessions.map(item=>'<article class="reading-session-row"><div><strong>'+escapeBibleHTML(readingSessionTitle(item,progress))+'</strong><span>'+escapeBibleHTML(readingDateTime(item.displayStart))+' – '+escapeBibleHTML(readingClock(item.displayEnd))+'</span></div><b>'+escapeBibleHTML(formatDetailedReadingTime(item.displayDuration))+'</b></article>').join(''):'<p class="reading-detail-empty">No completed reading time has been recorded for this period yet. Your sessions will appear here as you read.</p>')+'</section>';
- const y=window.scrollY||window.pageYOffset||0;
- document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');
- overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+ let breakdown='';
+ if(period==='today'){
+  const hourRows=[];for(let h=0;h<=now.getHours();h++){const a=todayStart+h*3600000,b=Math.min(now.getTime(),a+3600000),part=readingRangeSessions(a,b),seconds=readingRangeTotal(part);if(seconds)hourRows.push('<article class="reading-breakdown-row"><div><strong>'+escapeBibleHTML(new Intl.DateTimeFormat(undefined,{hour:'numeric'}).format(new Date(a)))+'</strong><span>'+part.length+' '+(part.length===1?'session':'sessions')+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(seconds))+'</b></article>');}
+  breakdown='<section class="reading-breakdown"><h3>Today by hour</h3>'+(hourRows.length?hourRows.join(''):'<p class="reading-detail-empty">Your hourly reading activity will appear here as you read today.</p>')+'</section>'+readingSessionsMarkup(sessions,progress);
+ }else if(period==='week'){
+  const rows=[];for(let i=0;i<7;i++){const a=weekStart+i*86400000,b=Math.min(now.getTime(),a+86400000);if(a>now.getTime())break;const part=readingRangeSessions(a,b),seconds=readingRangeTotal(part),date=new Date(a);rows.push('<button type="button" class="reading-breakdown-row reading-breakdown-button" data-reading-drill="day" data-range-start="'+a+'" data-range-end="'+b+'"><div><strong>'+escapeBibleHTML(readingDateTitle(date,{weekday:'long'}))+'</strong><span>'+escapeBibleHTML(readingDateTitle(date,{month:'short',day:'numeric'}))+' · '+part.length+' '+(part.length===1?'session':'sessions')+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(seconds))+' <i>›</i></b></button>');}
+  breakdown='<section class="reading-breakdown"><h3>This week · each day</h3>'+rows.join('')+'</section><p class="reading-period-label">Tap any day to see its hourly activity, books and individual reading sessions.</p>';
+ }else{
+  const rows=[];let cursor=new Date(now.getFullYear(),now.getMonth(),1),weekNo=1;
+  while(cursor.getTime()<=now.getTime()){const a=cursor.getTime(),next=new Date(cursor.getFullYear(),cursor.getMonth(),cursor.getDate()+7),b=Math.min(next.getTime(),now.getTime());const part=readingRangeSessions(a,b),seconds=readingRangeTotal(part),endDate=new Date(Math.max(a,b-1));rows.push('<button type="button" class="reading-breakdown-row reading-breakdown-button" data-reading-drill="week" data-range-start="'+a+'" data-range-end="'+b+'"><div><strong>Week '+weekNo+'</strong><span>'+escapeBibleHTML(readingDateTitle(cursor,{month:'short',day:'numeric'}))+' – '+escapeBibleHTML(readingDateTitle(endDate,{month:'short',day:'numeric'}))+' · '+part.length+' '+(part.length===1?'session':'sessions')+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(seconds))+' <i>›</i></b></button>');cursor=next;weekNo++;}
+  breakdown='<section class="reading-breakdown"><h3>This month · weekly totals</h3>'+rows.join('')+'</section><p class="reading-period-label">Tap a week to see each day and its reading sessions.</p>';
+ }
+ content.innerHTML=readingPeriodHeader('Total time read',total,sessions,period==='today'?'Today':period==='week'?'This week':'This month')+breakdown;
+ const y=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
+function openReadingDrill(start,end,kind){
+ const sessions=readingRangeSessions(start,end),total=readingRangeTotal(sessions),progress=universalProgressItems(),startDate=new Date(start),endDate=new Date(Math.max(start,end-1)),overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
+ if(!overlay||!card)return;
+ const title=kind==='day'?readingDateTitle(startDate):readingDateTitle(startDate,{month:'short',day:'numeric'})+' – '+readingDateTitle(endDate,{month:'short',day:'numeric'});
+ document.getElementById('dwoopEyebrow').textContent=kind==='day'?'DAILY READING DETAIL':'WEEKLY READING DETAIL';document.getElementById('dwoopTitle').textContent=title;document.getElementById('dwoopIntro').textContent='Detailed breakdown from your local reading history.';
+ const content=document.getElementById('dwoopContent');
+ let hourly='';
+ if(kind==='day'){const rows=[];for(let h=0;h<24;h++){const a=start+h*3600000,b=Math.min(end,a+3600000);if(a>=end)break;const part=readingRangeSessions(a,b),seconds=readingRangeTotal(part);if(seconds)rows.push('<article class="reading-breakdown-row"><div><strong>'+escapeBibleHTML(new Intl.DateTimeFormat(undefined,{hour:'numeric'}).format(new Date(a)))+'</strong><span>'+part.length+' '+(part.length===1?'session':'sessions')+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(seconds))+'</b></article>');}hourly='<section class="reading-breakdown"><h3>Hourly activity</h3>'+(rows.length?rows.join(''):'<p class="reading-detail-empty">No reading activity recorded for this day.</p>')+'</section>';}
+ else{const rows=[];for(let t=start;t<end;t+=86400000){const a=t,b=Math.min(end,t+86400000),part=readingRangeSessions(a,b),seconds=readingRangeTotal(part),date=new Date(a);rows.push('<article class="reading-breakdown-row"><div><strong>'+escapeBibleHTML(readingDateTitle(date,{weekday:'long'}))+'</strong><span>'+escapeBibleHTML(readingDateTitle(date,{month:'short',day:'numeric'}))+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(seconds))+'</b></article>');}hourly='<section class="reading-breakdown"><h3>Daily totals</h3>'+rows.join('')+'</section>';}
+ content.innerHTML=readingPeriodHeader('Total time read',total,sessions,kind==='day'?'Daily total':'Weekly total')+hourly+readingSessionsMarkup(sessions,progress);
+ card.classList.add('dwoop-light','dwoop-page-card');overlay.classList.add('dwoop-page-mode','dwoop-reading-mode');
+}
+document.getElementById('dwoopContent')?.addEventListener('click',event=>{const button=event.target.closest('[data-reading-drill]');if(!button)return;openReadingDrill(Number(button.dataset.rangeStart),Number(button.dataset.rangeEnd),button.dataset.readingDrill);});
 document.querySelectorAll('[data-reading-period]').forEach(button=>button.addEventListener('click',()=>openReadingPeriod(button.dataset.readingPeriod)));
 function renderReadingDashboard(){
  const sessions=universalSessions(),now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
