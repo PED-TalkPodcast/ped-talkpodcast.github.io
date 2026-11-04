@@ -86,30 +86,25 @@ const server = http.createServer((req,res)=>{
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
 
-    // The compact Home tile is a fixed John 3:16 preview; it must not cycle to Amazing Grace.
-    assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE");
-    assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
-    await page.waitForTimeout(8500);
-    assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE",'Home preview must stay fixed while the devotional timer advances');
-    assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
-
-    // Mobile compact presentation is fixed-size and visually treated as a glass sky card.
+    // Compact Home card cycles content but has a fixed geometry and glass scripture treatment.
     assert.equal(await page.locator('.hope-card').getAttribute('data-presentation'),'compact');
+    assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
     const compactBoxBefore=await page.locator('.hope-card').boundingBox();
     const compactGlass=await page.locator('.hope-scripture').evaluate(el=>getComputedStyle(el).backgroundColor);
     assert.equal(compactGlass,'rgba(239, 248, 255, 0.68)','compact scripture surface should use light glass styling');
     assert.equal(Math.round(compactBoxBefore.height),286,'compact Home card should have a stable mobile height');
-    await page.waitForTimeout(8500);
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:12000});
+    assert.match(await page.locator('#giftVerse').textContent(),/Amazing grace! how sweet the sound/);
     const compactBoxAfter=await page.locator('.hope-card').boundingBox();
-    assert.equal(Math.round(compactBoxAfter.height),Math.round(compactBoxBefore.height),'compact card height must not change as devotional timer advances');
+    assert.equal(Math.round(compactBoxAfter.height),Math.round(compactBoxBefore.height),'compact card height must not change as devotional text changes');
     assert.ok(Math.abs(compactBoxAfter.y-compactBoxBefore.y)<1,'compact card position must remain stable');
-    assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
-    // Gift of Hope expanded card owns the Scripture → Amazing Grace → victory sequence.
+    assert.equal(await page.locator('#giftVerse').evaluate(el=>getComputedStyle(el).webkitLineClamp),'2','compact verse text must clamp to two lines');
+    // Tapping opens a separate expanded presentation, with its own glass card.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
     const lightGlassSurface=await page.locator('.hope-modal-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
     assert.equal(lightGlassSurface,'rgba(239, 248, 255, 0.66)','Light Mode expanded card must remain translucent sky glass, not an opaque slab');
-    await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
+    assert.equal(await page.locator('#modalGiftVerseLabel').textContent(),'AMAZING GRACE','expanded card opens at the current devotional stage');
     assert.match(await page.locator('#modalGiftVerse').textContent(),/Amazing grace! how sweet the sound/);
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
     assert.match(await page.locator('#modalGiftVerse').textContent(),/He who overcomes/);
