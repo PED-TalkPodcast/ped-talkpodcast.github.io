@@ -74,6 +74,21 @@ async function renderAppUpcoming(){
 renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
 let dwoopTransitionToken=0;
+let lastDwoopTrigger=null;
+function currentAppView(){
+ const state=window.history?.state;
+ if(state?.pedTalkApp&&state.view)return state.view;
+ const ids=[['home','homeView'],['episodes','episodesView'],['bible','bibleView'],['bible-library','bibleLibraryView'],['reading-stats','readingStatsView'],['books','booksView'],['explore-bible','exploreBibleView']];
+ return ids.find(([,id])=>!document.getElementById(id)?.hidden)?.[0]||'home';
+}
+function ensureAppHistory(){
+ if(!window.history?.state?.pedTalkApp)window.history.replaceState({pedTalkApp:true,view:currentAppView()},'',window.location.href);
+}
+function pushOverlayHistory(overlay){
+ ensureAppHistory();
+ if(window.history.state?.overlay!==overlay)window.history.pushState({...window.history.state,pedTalkApp:true,overlay},'',window.location.href);
+}
+if(window.history&&!window.history.state?.pedTalkApp)window.history.replaceState({pedTalkApp:true,view:'home'},'',window.location.href);
 function openDwoopModal(kind='upcoming'){
  const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
@@ -91,37 +106,70 @@ function openDwoopModal(kind='upcoming'){
   eyebrow.textContent='VOICE OF HEALING';title.textContent='There is power in being heard.';intro.textContent='Stories, sound and stillness for the moments that need a gentler place to land.';content.innerHTML='<p class="dwoop-feature-copy">A space for thoughtful conversations and stories that meet people with care.</p>';
  }
  const overlayWasOpen=!overlay.hidden;
- if(!overlayWasOpen){const scrollY=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-scrollY)+'px');document.body.dataset.dwoopScrollY=String(scrollY);document.body.classList.add('dwoop-locked');}
+ if(!overlayWasOpen){lastDwoopTrigger=document.activeElement&&document.activeElement!==document.body?document.activeElement:document.querySelector('.app-showcase-slide[aria-hidden="false"]');pushOverlayHistory('dwoop');window.PEDShowcase?.pause();const scrollY=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-scrollY)+'px');document.body.dataset.dwoopScrollY=String(scrollY);document.body.classList.add('dwoop-locked');}
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-page-card','episode-swipe-next','episode-swipe-prev');overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
  overlay.hidden=false;requestAnimationFrame(()=>{if(transitionToken===dwoopTransitionToken)overlay.classList.add('active');});document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
-function closeDwoopModal(){
- const transitionToken=++dwoopTransitionToken;
+function closeDwoopModal(fromHistory=false){
  const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
+ if(!fromHistory&&window.history?.state?.overlay==='dwoop'){window.history.back();return;}
+ const transitionToken=++dwoopTransitionToken;
  const player=overlay.querySelector('.episode-page-audio');if(player){player.pause();player.removeAttribute('src');}
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light','dwoop-page-card','episode-swipe-next','episode-swipe-prev');
  overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  overlay.classList.remove('active');
  const y=Number(document.body.dataset.dwoopScrollY)||0;
- window.setTimeout(()=>{if(transitionToken!==dwoopTransitionToken)return;overlay.hidden=true;document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');delete document.body.dataset.dwoopScrollY;window.scrollTo(0,y);},320);
+ window.setTimeout(()=>{if(transitionToken!==dwoopTransitionToken)return;overlay.hidden=true;document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');delete document.body.dataset.dwoopScrollY;window.scrollTo(0,y);if(lastDwoopTrigger?.isConnected)lastDwoopTrigger.focus?.({preventScroll:true});lastDwoopTrigger=null;window.PEDShowcase?.resume();},320);
 }
 document.getElementById('dwoopClose')?.addEventListener('click',closeDwoopModal);
 document.getElementById('dwoopOverlay')?.addEventListener('click',event=>{if(event.target.id==='dwoopOverlay')closeDwoopModal();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('dwoopOverlay')?.hidden)closeDwoopModal();});
 if(showcase){
  const track=document.getElementById('appShowcaseTrack'),slides=[...track.querySelectorAll('.app-showcase-slide')],slideCount=slides.length;
- slides.forEach(slide=>{slide.tabIndex=0;slide.setAttribute('role','button');slide.setAttribute('aria-haspopup','dialog');});
+ const dots=[...showcase.querySelectorAll('[data-showcase-slide]')];
+ const previous=showcase.querySelector('[data-showcase-prev]'),next=showcase.querySelector('[data-showcase-next]');
+ slides.forEach(slide=>{slide.setAttribute('role','button');slide.setAttribute('aria-haspopup','dialog');});
  let slideIndex=0,slideTimer=null,pointerStart=null,suppressClickUntil=0;
  function stopShowcaseTimer(){if(slideTimer){window.clearTimeout(slideTimer);slideTimer=null;}}
- function scheduleShowcaseAdvance(){stopShowcaseTimer();if(document.hidden||pointerStart||!slideCount)return;slideTimer=window.setTimeout(()=>showShowcaseSlide(slideIndex+1),8000);}
- function showShowcaseSlide(index){if(!slideCount)return;slideIndex=((index%slideCount)+slideCount)%slideCount;track.style.transform='translate3d(-'+(slideIndex*100)+'%,0,0)';slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i===slideIndex?'false':'true'));scheduleShowcaseAdvance();}
- showcase.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;pointerStart={id:event.pointerId,x:event.clientX,y:event.clientY};stopShowcaseTimer();},{passive:true});
- showcase.addEventListener('pointerup',event=>{if(!pointerStart||event.pointerId!==pointerStart.id)return;const dx=event.clientX-pointerStart.x,dy=event.clientY-pointerStart.y;pointerStart=null;if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.15){suppressClickUntil=Date.now()+500;showShowcaseSlide(slideIndex+(dx<0?1:-1));}else scheduleShowcaseAdvance();},{passive:true});
+ function canAutoplay(){return !document.hidden&&!pointerStart&&!document.getElementById('homeView')?.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false&&document.getElementById('hopeModal')?.hidden!==false&&document.getElementById('appSettingsModal')?.hidden!==false;}
+ function scheduleShowcaseAdvance(){stopShowcaseTimer();if(!canAutoplay()||!slideCount)return;slideTimer=window.setTimeout(()=>showShowcaseSlide(slideIndex+1),8000);}
+ function showShowcaseSlide(index){
+  if(!slideCount)return;
+  slideIndex=((index%slideCount)+slideCount)%slideCount;
+  track.style.transform='translate3d(-'+(slideIndex*100)+'%,0,0)';
+  slides.forEach((slide,i)=>{const active=i===slideIndex;slide.setAttribute('aria-hidden',active?'false':'true');slide.tabIndex=active?0:-1;slide.inert=!active;});
+  dots.forEach((dot,i)=>{const active=i===slideIndex;dot.setAttribute('aria-pressed',String(active));dot.setAttribute('aria-current',active?'true':'false');});
+  scheduleShowcaseAdvance();
+ }
+ previous?.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(slideIndex-1);});
+ next?.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(slideIndex+1);});
+ dots.forEach(dot=>dot.addEventListener('click',event=>{event.stopPropagation();showShowcaseSlide(Number(dot.dataset.showcaseSlide)||0);}));
+ showcase.addEventListener('pointerdown',event=>{
+  if(event.target.closest('.showcase-controls'))return;
+  if(event.pointerType==='mouse'&&event.button!==0)return;
+  pointerStart={id:event.pointerId,x:event.clientX,y:event.clientY};stopShowcaseTimer();
+ },{passive:true});
+ showcase.addEventListener('pointerup',event=>{
+  if(!pointerStart||event.pointerId!==pointerStart.id)return;
+  const dx=event.clientX-pointerStart.x,dy=event.clientY-pointerStart.y;pointerStart=null;
+  if(Math.abs(dx)>42&&Math.abs(dx)>Math.abs(dy)*1.15){suppressClickUntil=Date.now()+500;showShowcaseSlide(slideIndex+(dx<0?1:-1));}
+  else scheduleShowcaseAdvance();
+ },{passive:true});
  showcase.addEventListener('pointercancel',()=>{pointerStart=null;scheduleShowcaseAdvance();},{passive:true});
- showcase.addEventListener('click',event=>{if(Date.now()<suppressClickUntil)return;const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');});
- showcase.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');}});
+ showcase.addEventListener('click',event=>{
+  if(Date.now()<suppressClickUntil||event.target.closest('.showcase-controls'))return;
+  const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;
+  openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');
+ });
+ showcase.addEventListener('keydown',event=>{
+  if(event.target.closest('.showcase-controls'))return;
+  if(event.key==='ArrowRight'){event.preventDefault();showShowcaseSlide(slideIndex+1);return;}
+  if(event.key==='ArrowLeft'){event.preventDefault();showShowcaseSlide(slideIndex-1);return;}
+  if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');}
+ });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopShowcaseTimer();else scheduleShowcaseAdvance();});
+ window.PEDShowcase={pause:stopShowcaseTimer,resume:scheduleShowcaseAdvance,goTo:showShowcaseSlide,get activeIndex(){return slideIndex;}};
  showShowcaseSlide(0);
 }
 const groupRoot=document.getElementById('episodeGroups');
@@ -157,6 +205,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
  if(!overlay||!card||!ep)return;
  const overlayWasOpen=!overlay.hidden;
+ if(!overlayWasOpen){lastDwoopTrigger=document.activeElement&&document.activeElement!==document.body?document.activeElement:null;pushOverlayHistory('dwoop');window.PEDShowcase?.pause();}
  const wasOpen=overlayWasOpen&&overlay.classList.contains('dwoop-episode-mode');
  const previousIndex=activeEpisodeIndex;
  activeEpisodeSequence=sortedEpisodes(seasonEpisodes&&seasonEpisodes.length?seasonEpisodes:[ep]);
@@ -200,16 +249,16 @@ document.getElementById('dwoopContent')?.addEventListener('click',event=>{
  const tile=event.target.closest('[data-episode-index]');if(!tile)return;
  const ep=allEpisodes[Number(tile.dataset.episodeIndex)];if(ep)openEpisodeModal(ep,allEpisodes.filter(item=>episodeSeason(item)===episodeSeason(ep)));
 });
-// Swipe left for the next episode and right for the previous one.
+// Enlarged-card gestures: downward swipe dismisses; horizontal swipe changes episodes.
 (()=>{
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');if(!overlay||!card)return;
- let startX=0,startY=0,startTarget=null;
- card.addEventListener('pointerdown',event=>{if(!overlay.classList.contains('dwoop-episode-mode')||event.pointerType==='mouse'&&event.button!==0)return;startX=event.clientX;startY=event.clientY;startTarget=event.target;},{passive:true});
+ let startX=0,startY=0,startTarget=null,startScrollTop=0;
+ card.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;startX=event.clientX;startY=event.clientY;startTarget=event.target;startScrollTop=card.scrollTop;},{passive:true});
  card.addEventListener('pointerup',event=>{
-  if(!startTarget||!overlay.classList.contains('dwoop-episode-mode'))return;
-  const dx=event.clientX-startX,dy=event.clientY-startY,target=startTarget;startTarget=null;
-  if(target.closest('button,a,audio,input,textarea,select,[data-no-episode-swipe]'))return;
-  if(Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;
+  if(!startTarget)return;const dx=event.clientX-startX,dy=event.clientY-startY,target=startTarget;startTarget=null;
+  if(target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe]'))return;
+  if(dy>88&&dy>Math.abs(dx)*1.25&&startScrollTop<=2){closeDwoopModal();return;}
+  if(!overlay.classList.contains('dwoop-episode-mode')||Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;
   const nextIndex=activeEpisodeIndex+(dx<0?1:-1);if(nextIndex<0||nextIndex>=activeEpisodeSequence.length)return;
   openEpisodeModal(activeEpisodeSequence[nextIndex],activeEpisodeSequence,dx<0?1:-1);
  },{passive:true});
@@ -274,8 +323,15 @@ const bibleChapterSelect=document.getElementById('bibleChapter');
 const booksView=document.getElementById('booksView');
 const exploreBibleView=document.getElementById('exploreBibleView');
 let viewTransitionToken=0;
-function showView(view,reference=null,preserveBible=false){
+function showView(view,reference=null,preserveBible=false,options={}){
  const target=['home','episodes','bible','bible-library','reading-stats','books','explore-bible','hope'].includes(view)?view:'home';
+ const historyMode=options.history||'push';
+ if(historyMode!=='none'){
+  ensureAppHistory();
+  if(window.history.state?.overlay)window.history.replaceState({pedTalkApp:true,view:window.history.state.view||currentAppView()},'',window.location.href);
+  if(historyMode==='replace')window.history.replaceState({pedTalkApp:true,view:target},'',window.location.href);
+  else if((window.history.state?.view||'home')!==target)window.history.pushState({pedTalkApp:true,view:target},'',window.location.href);
+ }
  const readingStatsView=document.getElementById('readingStatsView');
  const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='explore-bible'?exploreBibleView:target==='hope'?hopeModal:homeView;
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
@@ -291,6 +347,9 @@ function showView(view,reference=null,preserveBible=false){
  if(target==='bible'){if(reference)openBibleReference(reference);else if(!preserveBible)resetBibleFlow();}
  if(target==='reading-stats')renderReadingDashboard();
  if(target==='explore-bible')renderExploreBible('stories');
+ if(target==='home')window.PEDShowcase?.resume();else window.PEDShowcase?.pause();
+ window.PEDDevotional?.sync();
+ if(target==='home'&&options.restoreFocus)requestAnimationFrame(()=>document.querySelector('.hope-card')?.focus({preventScroll:true}));
 }
 
 
@@ -689,75 +748,133 @@ function setBibleMode(mode){
 let savedBibleMode='light';try{savedBibleMode=localStorage.getItem('ped-talk-bible-mode')||'light';}catch(error){}
 setBibleMode(savedBibleMode==='dark'?'dark':'light');
 bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classList.contains('bible-dark')?'light':'dark'));
-document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
+document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home',null,false,{history:button.closest('.bottom-nav')?'replace':'push'});}));
 document.querySelectorAll('[data-view="explore-bible"],[data-view="home"]:not(.bottom-nav button)').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 const exploreHomeTile=document.querySelector('.explore-promo');
 if(exploreHomeTile){exploreHomeTile.tabIndex=0;exploreHomeTile.setAttribute('role','button');exploreHomeTile.setAttribute('aria-label','Explore Bible stories and history');exploreHomeTile.addEventListener('click',()=>showView('explore-bible'));exploreHomeTile.addEventListener('keydown',event=>{if(event.target===exploreHomeTile&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('explore-bible');}});}
 const readingHomeTile=document.querySelector('.reading-stats-promo');
 if(readingHomeTile){readingHomeTile.tabIndex=0;readingHomeTile.setAttribute('role','button');readingHomeTile.setAttribute('aria-label','Open reading statistics');readingHomeTile.addEventListener('click',()=>showView('reading-stats'));readingHomeTile.addEventListener('keydown',event=>{if(event.target===readingHomeTile&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('reading-stats');}});}
 
-document.getElementById('bibleReaderHome')?.addEventListener('click',()=>showView('home'));
+document.getElementById('bibleReaderHome')?.addEventListener('click',()=>showView('home',null,false,{history:'replace'}));
 document.querySelectorAll('.reading-stats-open,[data-reading-home]').forEach(button=>button.addEventListener('click',()=>showView(button.hasAttribute('data-reading-home')?'home':'reading-stats')));
 
 
-/* PED-Talk app settings: system, light and dark appearance. */
+/* PED-Talk appearance controller: one saved preference, one live system listener. */
 const APP_THEME_KEY='ped-talk-app-theme';
+const APP_THEME_ASSETS={
+ light:{giftOfHope:'../assets/gift-of-hope-day.svg',voiceOfHealing:'../assets/voice-of-healing.jpg'},
+ dark:{giftOfHope:'../assets/gift-of-hope-sky.svg',voiceOfHealing:'../assets/voice-of-healing.jpg'}
+};
 const appSettingsModal=document.getElementById('appSettingsModal');
 const appThemeButtons=[...document.querySelectorAll('[data-app-theme]')];
 function systemPrefersDark(){return !!(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches);}
 function applyAppTheme(choice){
  const theme=['system','light','dark'].includes(choice)?choice:'system';
  const effective=theme==='system'?(systemPrefersDark()?'dark':'light'):theme;
- document.body.dataset.appTheme=effective;
+ document.body.dataset.appTheme=effective;document.documentElement.dataset.appTheme=effective;
+ document.body.classList.toggle('app-light',effective==='light');document.body.classList.toggle('app-dark',effective==='dark');
+ const assets=APP_THEME_ASSETS[effective];
+ document.documentElement.style.setProperty('--gift-of-hope-image','url("'+assets.giftOfHope+'")');
+ document.documentElement.style.setProperty('--voice-of-healing-image','url("'+assets.voiceOfHealing+'")');
+ document.documentElement.style.setProperty('--voice-of-healing-filter',effective==='light'?'brightness(1.2) saturate(1.08) contrast(1.02)':'brightness(.96) saturate(.98) contrast(1.05)');
  if(typeof setBibleMode==='function')setBibleMode(effective);
- document.body.classList.toggle('app-light',effective==='light');
- document.body.classList.toggle('app-dark',effective==='dark');
  appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
- const meta=document.querySelector('meta[name="theme-color"]');
- if(meta)meta.content=effective==='dark'?'#071b31':'#f5f8f5';
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#071b31':'#f5f8f5';
  try{localStorage.setItem(APP_THEME_KEY,theme);}catch(error){}
+ window.PEDDevotional?.sync();
 }
 let preferredAppTheme='system';try{preferredAppTheme=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}
 applyAppTheme(preferredAppTheme);
 const colorSchemeQuery=window.matchMedia?.('(prefers-color-scheme: dark)');
-colorSchemeQuery?.addEventListener?.('change',()=>{let choice='system';try{choice=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}if(choice==='system')applyAppTheme('system');});
-document.getElementById('appSettingsButton')?.addEventListener('click',()=>{appSettingsModal.hidden=false;document.body.classList.add('settings-open');document.getElementById('settingsClose')?.focus({preventScroll:true});});
-function closeAppSettings(){appSettingsModal.hidden=true;document.body.classList.remove('settings-open');}
-document.getElementById('settingsClose')?.addEventListener('click',closeAppSettings);
+const onSystemThemeChange=()=>{let choice='system';try{choice=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}if(choice==='system')applyAppTheme('system');};
+if(colorSchemeQuery?.addEventListener)colorSchemeQuery.addEventListener('change',onSystemThemeChange);else colorSchemeQuery?.addListener?.(onSystemThemeChange);
+function openAppSettings(){
+ if(!appSettingsModal||!appSettingsModal.hidden)return;
+ pushOverlayHistory('settings');appSettingsModal.hidden=false;document.body.classList.add('settings-open');
+ document.getElementById('settingsClose')?.focus({preventScroll:true});window.PEDShowcase?.pause();window.PEDDevotional?.sync();
+}
+document.getElementById('appSettingsButton')?.addEventListener('click',openAppSettings);
+function closeAppSettings(fromHistory=false){
+ if(!appSettingsModal||appSettingsModal.hidden)return;
+ if(!fromHistory&&window.history?.state?.overlay==='settings'){window.history.back();return;}
+ appSettingsModal.hidden=true;document.body.classList.remove('settings-open');
+ document.getElementById('appSettingsButton')?.focus({preventScroll:true});window.PEDShowcase?.resume();window.PEDDevotional?.sync();
+}
+function settingsNavigateHome(){
+ if(!appSettingsModal||appSettingsModal.hidden)return;
+ appSettingsModal.hidden=true;document.body.classList.remove('settings-open');
+ window.history.replaceState({pedTalkApp:true,view:'home'},'',window.location.href);
+ showView('home',null,false,{history:'none',restoreFocus:true});
+}
+document.getElementById('settingsClose')?.addEventListener('click',()=>closeAppSettings());
+document.getElementById('settingsHome')?.addEventListener('click',settingsNavigateHome);
 appSettingsModal?.addEventListener('click',event=>{if(event.target===appSettingsModal)closeAppSettings();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&appSettingsModal&&!appSettingsModal.hidden)closeAppSettings();});
 appThemeButtons.forEach(button=>button.addEventListener('click',()=>applyAppTheme(button.dataset.appTheme)));
 document.getElementById('subscriptionEntry')?.addEventListener('click',()=>{const note=document.getElementById('subscriptionNotice');if(note){note.hidden=false;note.textContent='PED-Talk subscriptions are being prepared. Membership options will appear here when available.';note.scrollIntoView({block:'nearest',behavior:'smooth'});}});
 
-// Gift of Hope expanded reading tile and community actions.
-const hopeModal=document.getElementById('hopeModal');
-const giftVerse=document.getElementById('giftVerse');
-const giftReference=document.getElementById('giftReference');
-function openGiftHope(){
- document.getElementById('modalGiftVerse').textContent=giftVerse.textContent;
- document.getElementById('modalGiftReference').textContent=giftReference.textContent;
- showView('hope');renderHopeComments();
+// Gift of Hope: Scripture → Amazing Grace reflection → WEB victory promise.
+const hopeModal=document.getElementById('hopeModal'),giftVerse=document.getElementById('giftVerse'),giftReference=document.getElementById('giftReference');
+const hopeCard=document.querySelector('.hope-card'),giftDevotional=document.getElementById('giftDevotional'),giftVerseLabel=document.getElementById('giftVerseLabel');
+const devotionalStages=[
+ {label:"TODAY'S SCRIPTURE",text:'“For God so loved the world, that he gave his one and only Son…”',reference:'John 3:16 · World English Bible',bible:'John:3:16',phase:'scripture'},
+ {label:'AMAZING GRACE',text:'Grace meets us in our weakness, carries us through every trial, and leads us home in hope.',reference:'A reflection on the hymn Amazing Grace',bible:'John:3:16',phase:'grace'},
+ {label:'A PROMISE OF VICTORY',text:'He who overcomes, I will give to him to sit down with me on my throne, as I also overcame, and sat down with my Father on his throne.',reference:'Revelation 3:21 · World English Bible',bible:'REV:3:21',phase:'victory'}
+];
+let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
+function renderDevotionalStage(index){
+ const stage=devotionalStages[index];giftVerseLabel.textContent=stage.label;giftVerse.textContent=stage.text;giftReference.textContent=stage.reference;
+ hopeCard.dataset.devotionalPhase=stage.phase;
+ const cardLink=hopeCard.querySelector('.scripture-open');if(cardLink)cardLink.dataset.openBible=stage.bible;
+ const modalLabel=document.getElementById('modalGiftVerseLabel'),modalVerse=document.getElementById('modalGiftVerse'),modalRef=document.getElementById('modalGiftReference'),modalLink=document.getElementById('hopeModalBibleLink');
+ if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;if(modalLink)modalLink.dataset.openBible=stage.bible;
 }
-const hopeCard=document.querySelector('.hope-card');
+function devotionalCanRun(){return !document.hidden&&hopeCardVisible&&!homeView.hidden&&hopeModal.hidden&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
+function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');}
+function scheduleDevotional(){if(!devotionalTimer&&devotionalCanRun())devotionalTimer=window.setTimeout(advanceDevotional,7200);}
+function advanceDevotional(){
+ devotionalTimer=null;if(!devotionalCanRun())return;
+ giftDevotional.classList.remove('is-entering');giftDevotional.classList.add('is-leaving');
+ devotionalTimer=window.setTimeout(()=>{
+  devotionalTimer=null;if(!devotionalCanRun()){giftDevotional.classList.remove('is-leaving');return;}
+  devotionalIndex=(devotionalIndex+1)%devotionalStages.length;renderDevotionalStage(devotionalIndex);
+  giftDevotional.classList.remove('is-leaving');giftDevotional.classList.add('is-entering');scheduleDevotional();
+ },680);
+}
+giftDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')giftDevotional.classList.remove('is-entering');});
+if('IntersectionObserver' in window){const hopeObserver=new IntersectionObserver(entries=>{hopeCardVisible=!!entries[0]?.isIntersecting;if(hopeCardVisible)scheduleDevotional();else pauseDevotional();},{threshold:.12});hopeObserver.observe(hopeCard);}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevotional();else scheduleDevotional();});
+renderDevotionalStage(devotionalIndex);scheduleDevotional();
+window.PEDDevotional={sync:()=>{if(devotionalCanRun())scheduleDevotional();else pauseDevotional();},get phase(){return devotionalStages[devotionalIndex].phase;}};
+function openGiftHope(){renderDevotionalStage(devotionalIndex);showView('hope');renderHopeComments();}
 hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
 hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
 hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openGiftHope();}});
-function closeHope(){showView('home');}
+function closeHope(){if(window.history?.state?.pedTalkApp&&window.history.state.view==='hope'){window.history.back();return;}showView('home',null,false,{history:'replace',restoreFocus:true});}
 hopeModal.addEventListener('click',event=>{if(event.target===hopeModal)closeHope();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!hopeModal.hidden)closeHope();});
-const likeButton=document.getElementById('hopeLike');
-const likeKey='pedtalk-gift-hope-liked';
+let hopeSwipeStart=null;
+hopeModal.querySelector('.hope-modal-panel')?.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;hopeSwipeStart={y:event.clientY,x:event.clientX,scrollTop:event.currentTarget.scrollTop,target:event.target};},{passive:true});
+hopeModal.querySelector('.hope-modal-panel')?.addEventListener('pointerup',event=>{if(!hopeSwipeStart)return;const start=hopeSwipeStart;hopeSwipeStart=null;if(start.scrollTop>2||start.target.closest('button,a,summary,input,textarea,select'))return;const dy=event.clientY-start.y,dx=event.clientX-start.x;if(dy>88&&dy>Math.abs(dx)*1.25)closeHope();},{passive:true});
+const likeButton=document.getElementById('hopeLike'),likeKey='ped-talk-gift-hope-liked';
 function safeStorageGet(key,fallback=null){try{const value=localStorage.getItem(key);return value===null?fallback:value;}catch(error){return fallback;}}
 function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true;}catch(error){return false;}}
 function syncHopeLike(){const liked=safeStorageGet(likeKey)==='true';likeButton.setAttribute('aria-pressed',String(liked));likeButton.innerHTML=(liked?'♥':'♡')+' <span>'+(liked?'Liked':'Like')+'</span>';}
-likeButton.addEventListener('click',()=>{safeStorageSet(likeKey,likeButton.getAttribute('aria-pressed')!=='true'?'true':'false');syncHopeLike();});
-syncHopeLike();
-const commentsKey='pedtalk-gift-hope-comments';
+likeButton.addEventListener('click',()=>{safeStorageSet(likeKey,likeButton.getAttribute('aria-pressed')!=='true'?'true':'false');syncHopeLike();});syncHopeLike();
+const commentsKey='ped-talk-gift-hope-comments';
 function getHopeComments(){try{const parsed=JSON.parse(safeStorageGet(commentsKey,'[]'));return Array.isArray(parsed)?parsed:[];}catch(error){return[];}}
-function renderHopeComments(){const list=document.getElementById('hopeCommentList');const comments=getHopeComments();list.innerHTML=comments.length?comments.map(item=>'<article class="hope-comment"><p>'+String(item.text||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</p><small>'+new Date(item.date).toLocaleString()+'</small></article>').join(''):'<p class="empty">Be the first to share a thought.</p>';}
+function renderHopeComments(){const list=document.getElementById('hopeCommentList'),comments=getHopeComments();list.innerHTML=comments.length?comments.map(item=>'<article class="hope-comment"><p>'+String(item.text||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</p><small>'+new Date(item.date).toLocaleString()+'</small></article>').join(''):'<p class="empty">Be the first to share a thought.</p>';}
 document.getElementById('hopeCommentToggle').addEventListener('click',()=>{const panel=document.getElementById('hopeComments'),button=document.getElementById('hopeCommentToggle');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){renderHopeComments();panel.scrollIntoView({block:'nearest',behavior:'smooth'});}});
-document.getElementById('hopeCommentForm').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('hopeCommentInput');const value=input.value.trim();if(!value)return;const comments=getHopeComments();comments.unshift({text:value,date:new Date().toISOString()});if(!safeStorageSet(commentsKey,JSON.stringify(comments.slice(0,100)))){alert('Comments cannot be saved on this device right now.');return;}input.value='';renderHopeComments();});
+document.getElementById('hopeCommentForm').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('hopeCommentInput'),value=input.value.trim();if(!value)return;const comments=getHopeComments();comments.unshift({text:value,date:new Date().toISOString()});if(!safeStorageSet(commentsKey,JSON.stringify(comments.slice(0,100)))){alert('Comments cannot be saved on this device right now.');return;}input.value='';renderHopeComments();});
 document.getElementById('hopeShare').addEventListener('click',async()=>{const shareData={title:'PED-Talk · Gift of Hope',text:giftVerse.textContent+' — '+giftReference.textContent,url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareData.text+' '+shareData.url);alert('Gift of Hope copied to clipboard.');}else alert(shareData.text+' '+shareData.url);}catch(error){if(error.name!=='AbortError')console.warn('Share was not completed',error);}});
+document.addEventListener('click',event=>{const link=event.target.closest('[data-open-bible]');if(!link)return;event.preventDefault();showView('bible',link.dataset.openBible);});
+window.addEventListener('popstate',event=>{
+ const state=event.state||{};
+ if(!appSettingsModal.hidden&&state.overlay!=='settings')closeAppSettings(true);
+ if(!document.getElementById('dwoopOverlay')?.hidden&&state.overlay!=='dwoop')closeDwoopModal(true);
+ if(!hopeModal.hidden&&state.view!=='hope'){showView(state.view||'home',null,false,{history:'none',restoreFocus:true});return;}
+ if(state.view&&state.view!==currentAppView())showView(state.view,null,false,{history:'none'});
+});
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
 
@@ -885,6 +1002,7 @@ function openReadingPeriod(period){
  const start=period==='today'?todayStart:period==='week'?weekStart:monthStart;
  const sessions=readingRangeSessions(start,now.getTime()),total=readingRangeTotal(sessions),progress=universalProgressItems();
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');if(!overlay||!card)return;
+ if(overlay.hidden){lastDwoopTrigger=document.activeElement&&document.activeElement!==document.body?document.activeElement:null;pushOverlayHistory('dwoop');window.PEDShowcase?.pause();}
  const existingPlayer=overlay.querySelector('.episode-page-audio');if(existingPlayer){existingPlayer.pause();existingPlayer.removeAttribute('src');}
  card.classList.remove('dwoop-page-card');overlay.classList.remove('dwoop-episode-mode');document.getElementById('dwoopArtwork')?.replaceChildren();
  card.classList.add('dwoop-light','dwoop-page-card');overlay.classList.add('dwoop-page-mode','dwoop-reading-mode');
