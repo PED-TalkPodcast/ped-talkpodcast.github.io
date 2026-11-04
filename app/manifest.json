@@ -4,7 +4,7 @@
   "short_name": "PED-Talk",
   "description": "Gift of Hope, podcast episodes and Bible reading from PED-Talk by Anagkazo Media.",
   "start_url": "./",
-  "scope": "./",
+  "scope": "../",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#071b31",
