@@ -110,6 +110,7 @@ const server = http.createServer((req,res)=>{
     await hidden('#hopeModal');
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
+    assert.equal(await page.locator('.hope-modal-panel').evaluate(el=>el.scrollTop),0,'Gift of Hope should reopen at the top so swipe-to-dismiss remains available');
     await page.locator('#hopeModal').click({position:{x:2,y:2}});
     await hidden('#hopeModal');
     await page.locator('.hope-card').click({position:{x:28,y:30}});
