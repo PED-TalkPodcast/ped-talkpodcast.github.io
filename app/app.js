@@ -1,4 +1,4 @@
-/* v87 — install the actual /app PWA, never the brochure website. */
+/* v88 — unified app appearance, devotional flow and resilient navigation. */
 let deferredAppInstallPrompt = null;
 const appInstallButton = document.getElementById('appInstallButton');
 const installGuide = document.getElementById('installGuide');
@@ -119,8 +119,33 @@ function closeDwoopModal(fromHistory=false){
  window.setTimeout(()=>{if(transitionToken!==dwoopTransitionToken)return;overlay.hidden=true;document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');delete document.body.dataset.dwoopScrollY;window.scrollTo(0,y);if(lastDwoopTrigger?.isConnected)lastDwoopTrigger.focus?.({preventScroll:true});lastDwoopTrigger=null;window.PEDShowcase?.resume();},320);
 }
 document.getElementById('dwoopClose')?.addEventListener('click',closeDwoopModal);
-document.getElementById('dwoopOverlay')?.addEventListener('click',event=>{if(event.target.id==='dwoopOverlay')closeDwoopModal();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('dwoopOverlay')?.hidden)closeDwoopModal();});
+const dwoopOverlay=document.getElementById('dwoopOverlay');
+dwoopOverlay?.addEventListener('click',event=>{if(event.target===dwoopOverlay)closeDwoopModal();});
+let dwoopSwipeStart=null;
+const dwoopCard=dwoopOverlay?.querySelector('.dwoop-card-expanded');
+dwoopCard?.addEventListener('touchstart',event=>{
+ const touch=event.changedTouches[0];if(!touch)return;
+ const target=event.target;
+ if(target.closest('button,a,summary,input,textarea,select,audio,[contenteditable="true"]')){dwoopSwipeStart=null;return;}
+ dwoopSwipeStart={x:touch.clientX,y:touch.clientY,scrollTop:dwoopCard.scrollTop};
+},{passive:true});
+dwoopCard?.addEventListener('touchend',event=>{
+ if(!dwoopSwipeStart)return;
+ const start=dwoopSwipeStart;dwoopSwipeStart=null;const touch=event.changedTouches[0];if(!touch)return;
+ const dx=touch.clientX-start.x,dy=touch.clientY-start.y;
+ if(start.scrollTop<=2&&dwoopCard.scrollTop<=2&&dy>92&&dy>Math.abs(dx)*1.25)closeDwoopModal();
+},{passive:true});
+document.addEventListener('keydown',event=>{
+ const overlay=document.getElementById('dwoopOverlay');
+ if(overlay&&!overlay.hidden&&event.key==='Escape'){closeDwoopModal();return;}
+ if(overlay&&!overlay.hidden&&event.key==='Tab'){
+  const focusable=[...overlay.querySelectorAll('button:not([disabled]),a[href],input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])')].filter(node=>!node.hidden&&node.getClientRects().length);
+  if(!focusable.length){event.preventDefault();overlay.querySelector('.dwoop-card-expanded')?.focus();return;}
+  const first=focusable[0],last=focusable[focusable.length-1];
+  if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+  else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+ }
+});
 if(showcase){
  const track=document.getElementById('appShowcaseTrack'),slides=[...track.querySelectorAll('.app-showcase-slide')],slideCount=slides.length;
  const dots=[...showcase.querySelectorAll('[data-showcase-slide]')];
@@ -154,7 +179,7 @@ if(showcase){
  },{passive:true});
  showcase.addEventListener('pointercancel',()=>{pointerStart=null;scheduleShowcaseAdvance();},{passive:true});
  showcase.addEventListener('click',event=>{
-  if(Date.now()<suppressClickUntil||event.target.closest('.showcase-controls'))return;
+  if(Date.now()<suppressClickUntil||event.target.closest('.showcase-controls,button,a,input,textarea,select,[data-view]'))return;
   const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;
   openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');
  });
@@ -742,12 +767,10 @@ const bibleModeButton=document.getElementById('bibleModeToggle'),bibleSunIcon=do
 function setBibleMode(mode){
  const dark=mode==='dark';document.body.classList.toggle('bible-dark',dark);
  if(bibleSunIcon)bibleSunIcon.hidden=dark;if(bibleMoonIcon)bibleMoonIcon.hidden=!dark;
- if(bibleModeButton){bibleModeButton.setAttribute('aria-label',dark?'Switch to light mode':'Switch to dark mode');bibleModeButton.title=dark?'Switch to light mode':'Switch to dark mode';}
- try{localStorage.setItem('ped-talk-bible-mode',mode);}catch(error){}
+ if(bibleModeButton){bibleModeButton.setAttribute('aria-label',dark?'Switch the whole app to light mode':'Switch the whole app to dark mode');bibleModeButton.title=dark?'Switch the whole app to light mode':'Switch the whole app to dark mode';}
 }
-let savedBibleMode='light';try{savedBibleMode=localStorage.getItem('ped-talk-bible-mode')||'light';}catch(error){}
-setBibleMode(savedBibleMode==='dark'?'dark':'light');
-bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classList.contains('bible-dark')?'light':'dark'));
+setBibleMode('light');
+bibleModeButton?.addEventListener('click',()=>applyAppTheme(document.body.classList.contains('app-dark')?'light':'dark'));
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home',null,false,{history:button.closest('.bottom-nav')?'replace':'push'});}));
 document.querySelectorAll('[data-view="explore-bible"],[data-view="home"]:not(.bottom-nav button),[data-view="episodes"]:not(.bottom-nav button)').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 const exploreHomeTile=document.querySelector('.explore-promo');
@@ -762,7 +785,7 @@ document.querySelectorAll('.reading-stats-open,[data-reading-home]').forEach(but
 /* PED-Talk appearance controller: one saved preference, one live system listener. */
 const APP_THEME_KEY='ped-talk-app-theme';
 const APP_THEME_ASSETS={
- light:{giftOfHope:'../assets/gift-of-hope-day.svg',voiceOfHealing:'../assets/voice-of-healing.jpg'},
+ light:{giftOfHope:'../assets/gift-of-hope-day.svg',voiceOfHealing:'../assets/ped-talk-healing-story.jpg'},
  dark:{giftOfHope:'../assets/gift-of-hope-sky.svg',voiceOfHealing:'../assets/voice-of-healing.jpg'}
 };
 const appSettingsModal=document.getElementById('appSettingsModal');
@@ -776,7 +799,12 @@ function applyAppTheme(choice){
  const assets=APP_THEME_ASSETS[effective];
  document.documentElement.style.setProperty('--gift-of-hope-image','url("'+assets.giftOfHope+'")');
  document.documentElement.style.setProperty('--voice-of-healing-image','url("'+assets.voiceOfHealing+'")');
- document.documentElement.style.setProperty('--voice-of-healing-filter',effective==='light'?'brightness(1.2) saturate(1.08) contrast(1.02)':'brightness(.96) saturate(.98) contrast(1.05)');
+ document.documentElement.style.setProperty('--voice-of-healing-filter',effective==='light'?'brightness(1.02) saturate(1.04) contrast(1.02)':'brightness(.96) saturate(.98) contrast(1.05)');
+ const voiceImage=document.querySelector('.app-showcase-voice>img');
+ if(voiceImage&&voiceImage.getAttribute('src')!==assets.voiceOfHealing){
+  voiceImage.setAttribute('src',assets.voiceOfHealing);
+  voiceImage.alt=effective==='light'?'A moment of comfort and care in warm natural light':'A person speaking into a microphone in a quiet recording studio';
+ }
  if(typeof setBibleMode==='function')setBibleMode(effective);
  appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
  const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#071b31':'#f5f8f5';
@@ -800,11 +828,13 @@ function closeAppSettings(fromHistory=false){
  appSettingsModal.hidden=true;document.body.classList.remove('settings-open');
  document.getElementById('appSettingsButton')?.focus({preventScroll:true});window.PEDShowcase?.resume();window.PEDDevotional?.sync();
 }
-function settingsNavigateHome(){
- if(!appSettingsModal||appSettingsModal.hidden)return;
- appSettingsModal.hidden=true;document.body.classList.remove('settings-open');
- window.history.replaceState({pedTalkApp:true,view:'home'},'',window.location.href);
+function settingsNavigateHome(event){
+ event?.preventDefault();event?.stopPropagation();
+ if(!appSettingsModal)return;
+ if(!appSettingsModal.hidden)closeAppSettings(true);
+ if(window.history)window.history.replaceState({pedTalkApp:true,view:'home'},'',window.location.href);
  showView('home',null,false,{history:'none',restoreFocus:true});
+ window.PEDShowcase?.resume();window.PEDDevotional?.sync();
 }
 document.getElementById('settingsClose')?.addEventListener('click',()=>closeAppSettings());
 document.getElementById('settingsHome')?.addEventListener('click',settingsNavigateHome);
@@ -818,16 +848,17 @@ const hopeModal=document.getElementById('hopeModal'),giftVerse=document.getEleme
 const hopeCard=document.querySelector('.hope-card'),giftDevotional=document.getElementById('giftDevotional'),giftVerseLabel=document.getElementById('giftVerseLabel');
 const devotionalStages=[
  {label:"TODAY'S SCRIPTURE",text:'“For God so loved the world, that he gave his one and only Son…”',reference:'John 3:16 · World English Bible',bible:'John:3:16',phase:'scripture'},
- {label:'AMAZING GRACE',text:'Grace meets us in our weakness, carries us through every trial, and leads us home in hope.',reference:'A reflection on the hymn Amazing Grace',bible:'John:3:16',phase:'grace'},
+ {label:'AMAZING GRACE',text:'“Amazing grace! how sweet the sound, that saved a wretch like me! I once was lost, but now am found; was blind, but now I see.”',reference:'Amazing Grace · John Newton (public-domain hymn)',bible:null,phase:'grace'},
  {label:'A PROMISE OF VICTORY',text:'He who overcomes, I will give to him to sit down with me on my throne, as I also overcame, and sat down with my Father on his throne.',reference:'Revelation 3:21 · World English Bible',bible:'REV:3:21',phase:'victory'}
 ];
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
 function renderDevotionalStage(index){
  const stage=devotionalStages[index];giftVerseLabel.textContent=stage.label;giftVerse.textContent=stage.text;giftReference.textContent=stage.reference;
  hopeCard.dataset.devotionalPhase=stage.phase;
- const cardLink=hopeCard.querySelector('.scripture-open');if(cardLink)cardLink.dataset.openBible=stage.bible;
+ const cardLink=hopeCard.querySelector('.scripture-open');if(cardLink){cardLink.hidden=!stage.bible;if(stage.bible)cardLink.dataset.openBible=stage.bible;else cardLink.removeAttribute('data-open-bible');}
  const modalLabel=document.getElementById('modalGiftVerseLabel'),modalVerse=document.getElementById('modalGiftVerse'),modalRef=document.getElementById('modalGiftReference'),modalLink=document.getElementById('hopeModalBibleLink');
- if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;if(modalLink)modalLink.dataset.openBible=stage.bible;
+ if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;
+ if(modalLink){modalLink.hidden=!stage.bible;if(stage.bible)modalLink.dataset.openBible=stage.bible;else modalLink.removeAttribute('data-open-bible');}
 }
 function devotionalCanRun(){return !document.hidden&&hopeCardVisible&&!homeView.hidden&&hopeModal.hidden&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
 function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');}
