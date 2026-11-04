@@ -844,9 +844,9 @@ const devotionalStages=[
 ];
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
 function renderDevotionalStage(index){
- const stage=devotionalStages[index];giftVerseLabel.textContent=stage.label;giftVerse.textContent=stage.text;giftReference.textContent=stage.reference;
- hopeCard.dataset.devotionalPhase=stage.phase;
- const cardLink=hopeCard.querySelector('.scripture-open');if(cardLink){cardLink.hidden=!stage.bible;if(stage.bible)cardLink.dataset.openBible=stage.bible;else cardLink.removeAttribute('data-open-bible');}
+ const stage=devotionalStages[index];
+ // The compact Home tile remains a fixed preview of today's scripture.
+ // Only the expanded devotional card advances through the reflection stages.
  const modalLabel=document.getElementById('modalGiftVerseLabel'),modalVerse=document.getElementById('modalGiftVerse'),modalRef=document.getElementById('modalGiftReference'),modalLink=document.getElementById('hopeModalBibleLink');
  if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;
  if(modalLink){modalLink.hidden=!stage.bible;if(stage.bible)modalLink.dataset.openBible=stage.bible;else modalLink.removeAttribute('data-open-bible');}
@@ -856,14 +856,13 @@ function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTim
 function scheduleDevotional(){if(!devotionalTimer&&devotionalCanRun())devotionalTimer=window.setTimeout(advanceDevotional,7200);}
 function advanceDevotional(){
  devotionalTimer=null;if(!devotionalCanRun())return;
- giftDevotional.classList.remove('is-entering');giftDevotional.classList.add('is-leaving');modalDevotional?.classList.remove('is-entering');modalDevotional?.classList.add('is-leaving');
+ modalDevotional?.classList.remove('is-entering');modalDevotional?.classList.add('is-leaving');
  devotionalTimer=window.setTimeout(()=>{
-  devotionalTimer=null;if(!devotionalCanRun()){giftDevotional.classList.remove('is-leaving');return;}
+  devotionalTimer=null;if(!devotionalCanRun())return;
   devotionalIndex=(devotionalIndex+1)%devotionalStages.length;renderDevotionalStage(devotionalIndex);
-  giftDevotional.classList.remove('is-leaving');giftDevotional.classList.add('is-entering');modalDevotional?.classList.remove('is-leaving');modalDevotional?.classList.add('is-entering');scheduleDevotional();
+  modalDevotional?.classList.remove('is-leaving');modalDevotional?.classList.add('is-entering');scheduleDevotional();
  },680);
 }
-giftDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')giftDevotional.classList.remove('is-entering');});
 modalDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')modalDevotional.classList.remove('is-entering');});
 if('IntersectionObserver' in window){const hopeObserver=new IntersectionObserver(entries=>{hopeCardVisible=!!entries[0]?.isIntersecting;if(hopeCardVisible)scheduleDevotional();else pauseDevotional();},{threshold:.12});hopeObserver.observe(hopeCard);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevotional();else scheduleDevotional();});
