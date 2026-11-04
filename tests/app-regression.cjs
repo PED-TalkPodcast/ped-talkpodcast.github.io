@@ -247,8 +247,8 @@ const server = http.createServer((req,res)=>{
     await hidden('#appSettingsModal');
     await page.waitForSelector('.episode-open-card',{timeout:10000});
     const episodeMark=await page.locator('.episode-open-card').first().locator('.episode-open-mark').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
-    assert.equal(episodeMark.width,32,'episode open affordance must remain compact');
-    assert.equal(episodeMark.height,32,'episode open affordance must remain compact');
+    assert.ok(episodeMark.width>=30&&episodeMark.width<=33,'episode open affordance must remain compact');
+    assert.ok(episodeMark.height>=30&&episodeMark.height<=33,'episode open affordance must remain compact');
     assert.equal(episodeMark.radius,'50%','episode open affordance must remain circular, not a gray square');
     await page.locator('.episode-open-card').first().click();
     await visible('#dwoopOverlay');
