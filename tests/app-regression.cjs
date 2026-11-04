@@ -91,10 +91,12 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
     await page.waitForTimeout(500);
     const compactBoxBefore=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
-    const compactGlass=await page.locator('.hope-scripture').evaluate(el=>getComputedStyle(el).backgroundColor);
-    assert.equal(compactGlass,'rgba(239, 248, 255, 0.68)','compact scripture surface should use light glass styling');
+    const scriptureSurface=await page.locator('.hope-scripture').evaluate(el=>({background:getComputedStyle(el).backgroundColor,border:getComputedStyle(el).borderTopWidth,shadow:getComputedStyle(el).boxShadow}));
+    assert.equal(scriptureSurface.background,'rgba(0, 0, 0, 0)','scripture must sit directly on the unified Gift of Hope card');
+    assert.equal(scriptureSurface.border,'0px','scripture must not render as a separate template card');
     assert.ok(compactBoxBefore.height>=280&&compactBoxBefore.height<=290,'compact Home card should have a fixed mobile height');
     await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:12000});
+    assert.equal(await page.locator('#giftDevotional').evaluate(el=>el.classList.contains('is-entering')||getComputedStyle(el).opacity==='1'),true,'Home scripture must return visibly after its fade');
     assert.match(await page.locator('#giftVerse').textContent(),/Amazing grace! how sweet the sound/);
     const compactBoxAfter=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
     assert.equal(compactBoxAfter.height,compactBoxBefore.height,'compact card height must not change as devotional text changes');
@@ -154,6 +156,20 @@ const server = http.createServer((req,res)=>{
     await page.locator('button[data-app-theme="light"]').click();
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
+
+    // Upcoming carousel must adopt both app themes rather than retaining a dark-only surface.
+    await page.locator('#appSettingsButton').click();
+    await page.locator('button[data-app-theme="dark"]').click();
+    await page.locator('#settingsHome').click();
+    const darkUpcoming=await page.locator('.app-showcase-upcoming .upcoming-card').evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(darkUpcoming,/linear-gradient/,'dark Upcoming card must have a theme-specific surface');
+    const darkUpcomingTitle=await page.locator('.app-showcase-upcoming .upcoming-card-head h2').evaluate(el=>getComputedStyle(el).color);
+    assert.equal(darkUpcomingTitle,'rgb(241, 246, 250)','dark Upcoming title must be light and readable');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('button[data-app-theme="light"]').click();
+    await page.locator('#settingsHome').click();
+    const lightUpcomingTitle=await page.locator('.app-showcase-upcoming .upcoming-card-head h2').evaluate(el=>getComputedStyle(el).color);
+    assert.equal(lightUpcomingTitle,'rgb(38, 60, 48)','light Upcoming title must be dark and readable');
 
     // Automatic carousel without manual controls, retained index after theme changes, no unintended Episodes navigation.
     assert.equal(await page.locator('.showcase-controls,.showcase-arrow,.showcase-dots,[data-showcase-slide],[data-showcase-prev],[data-showcase-next]').count(),0,'manual carousel controls must not exist');
