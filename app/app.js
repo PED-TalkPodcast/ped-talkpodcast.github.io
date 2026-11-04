@@ -482,7 +482,7 @@ function universalSaveProgress(item){
 function universalTouch(){universalLastActivity=Date.now();}
 function universalFlushTick(){
  if(!activeUniversalSession)return;
- const now=Date.now(),visible=!document.hidden&&document.getElementById('bibleReader')?.hidden===false;
+ const now=Date.now(),visible=!document.hidden&&(activeUniversalSession.sourceType==='bible'?document.getElementById('bibleReader')?.hidden===false:true);
  if(visible&&now-universalLastActivity<=UNIVERSAL_IDLE_LIMIT){
   const elapsed=Math.max(0,Math.min(30,Math.round((now-universalLastTick)/1000)));
   if(elapsed){
