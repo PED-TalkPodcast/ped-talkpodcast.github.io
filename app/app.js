@@ -208,7 +208,7 @@ function renderEpisodeGroups(root,list,emptyMessage){
   return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
    const index=allEpisodes.indexOf(ep),number=episodeNumber(ep),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
-   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span></button>'
+   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span><span class="episode-open-mark" aria-hidden="true"></span></button>'
   }).join('')+'</div></section>'
  }).join('');
 }
@@ -228,7 +228,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const audio=typeof ep.audio==='string'&&/^https:\/\//i.test(ep.audio)?ep.audio:'';
  const link=typeof ep.link==='string'&&/^https:\/\//i.test(ep.link)?ep.link:'';
  const previousAudio=document.querySelector('.episode-page-audio');if(previousAudio){previousAudio.pause();previousAudio.removeAttribute('src');}
- card.classList.add('dwoop-light','dwoop-page-card');overlay.classList.add('dwoop-page-mode','dwoop-episode-mode');
+ card.classList.add('dwoop-light');card.classList.remove('dwoop-page-card');overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode');overlay.classList.add('dwoop-episode-mode');
  document.getElementById('dwoopEyebrow').textContent='PED-TALK · SEASON '+episodeSeason(ep);
  document.getElementById('dwoopTitle').textContent=title;
  document.getElementById('dwoopIntro').textContent=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep);
@@ -243,11 +243,11 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
   const label=playButton.querySelector('.episode-play-label'),symbol=playButton.querySelector('.episode-play-symbol'),current=content.querySelector('[data-player-current]'),duration=content.querySelector('[data-player-duration]'),track=content.querySelector('.episode-player-track span');
   const clock=value=>{if(!Number.isFinite(value))return'--:--';const m=Math.floor(value/60),s=Math.floor(value%60);return m+':'+String(s).padStart(2,'0');};
   playButton.addEventListener('click',()=>{if(audioEl.paused){const result=audioEl.play();if(result?.catch)result.catch(()=>{label.textContent='Tap to try again';});}else audioEl.pause();});
-  audioEl.addEventListener('play',()=>{label.textContent='Pause episode';symbol.textContent='Ⅱ';});
-  audioEl.addEventListener('pause',()=>{label.textContent='Play episode';symbol.textContent='▶';});
+  audioEl.addEventListener('play',()=>{label.textContent='Pause episode';playButton.setAttribute('aria-label','Pause episode');symbol.textContent='Ⅱ';});
+  audioEl.addEventListener('pause',()=>{label.textContent='Play episode';playButton.setAttribute('aria-label','Play episode');symbol.textContent='▶';});
   audioEl.addEventListener('loadedmetadata',()=>{duration.textContent=clock(audioEl.duration);});
   audioEl.addEventListener('timeupdate',()=>{current.textContent=clock(audioEl.currentTime);track.style.width=(audioEl.duration?audioEl.currentTime/audioEl.duration*100:0)+'%';});
-  audioEl.addEventListener('ended',()=>{label.textContent='Play again';symbol.textContent='▶';});
+  audioEl.addEventListener('ended',()=>{label.textContent='Play again';playButton.setAttribute('aria-label','Play episode again');symbol.textContent='▶';});
  }
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=true;
  if(!overlayWasOpen){const y=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');}
@@ -320,7 +320,8 @@ async function refreshEpisodeCatalogue(showError=false){
  }
 }
 refreshEpisodeCatalogue(true);
-window.setInterval(()=>refreshEpisodeCatalogue(false),15*60*1000);
+// Check for newly published Spotify episodes frequently while the app is visible.
+window.setInterval(()=>{if(!document.hidden)refreshEpisodeCatalogue(false);},15*1000);
 window.addEventListener('focus',()=>refreshEpisodeCatalogue(false));
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshEpisodeCatalogue(false);});
 
