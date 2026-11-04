@@ -71,7 +71,7 @@ function openDwoopModal(kind='upcoming'){
 function closeDwoopModal(){
  const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
  const player=overlay.querySelector('.episode-page-audio');if(player){player.pause();player.removeAttribute('src');}
- overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light','dwoop-page-card');
+ overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light','dwoop-page-card','episode-swipe-next','episode-swipe-prev');
  overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  overlay.classList.remove('active');document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');
@@ -120,9 +120,15 @@ function renderEpisodeGroups(root,list,emptyMessage){
   }).join('')+'</div></section>'
  }).join('');
 }
-function openEpisodeModal(ep,seasonEpisodes){
+let activeEpisodeSequence=[],activeEpisodeIndex=0;
+function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
  if(!overlay||!card||!ep)return;
+ const wasOpen=!overlay.hidden&&overlay.classList.contains('dwoop-episode-mode');
+ const previousIndex=activeEpisodeIndex;
+ activeEpisodeSequence=sortedEpisodes(seasonEpisodes&&seasonEpisodes.length?seasonEpisodes:[ep]);
+ activeEpisodeIndex=Math.max(0,activeEpisodeSequence.findIndex(item=>item===ep));
+ const direction=slideDirection||(wasOpen&&activeEpisodeIndex!==previousIndex?(activeEpisodeIndex>previousIndex?1:-1):0);
  const title=displayEpisodeTitle(ep),number=episodeNumber(ep),image=ep.image||'../icons/ped-talk-icon.svg';
  const audio=typeof ep.audio==='string'&&/^https:\/\//i.test(ep.audio)?ep.audio:'';
  const link=typeof ep.link==='string'&&/^https:\/\//i.test(ep.link)?ep.link:'';
@@ -133,7 +139,7 @@ function openEpisodeModal(ep,seasonEpisodes){
  document.getElementById('dwoopIntro').textContent=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep);
  const artwork=document.getElementById('dwoopArtwork');
  if(artwork)artwork.innerHTML='<img class="episode-feature-art" src="'+escapeBibleHTML(image)+'" alt="'+escapeBibleHTML(title)+' artwork">';
- const description=plainText(ep.description),others=sortedEpisodes(seasonEpisodes||[]).filter(item=>item!==ep);
+ const description=plainText(ep.description),others=activeEpisodeSequence.filter(item=>item!==ep);
  const content=document.getElementById('dwoopContent');
  const player=audio?'<div class="episode-player-window"><audio class="episode-page-audio" preload="none" playsinline src="'+escapeBibleHTML(audio)+'"></audio><button type="button" class="episode-play-button" data-episode-play aria-label="Play episode"><span class="episode-play-symbol">▶</span><span class="episode-play-label">Play episode</span></button><div class="episode-player-meta"><div class="episode-player-track"><span></span></div><div class="episode-player-times"><span data-player-current>0:00</span><span data-player-duration>--:--</span></div></div></div>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>';
  content.innerHTML='<div class="episode-feature-panel">'+(description?'<p class="episode-feature-description">'+escapeBibleHTML(description)+'</p>':'<p class="episode-feature-description">A PED-Talk conversation. Press play when you are ready to listen.</p>')+player+(link?'<a class="episode-detail-link" href="'+escapeBibleHTML(link)+'" target="_blank" rel="noopener">More episode details ↗</a>':'')+'</div>'+(others.length?'<div class="episode-more-heading"><span>CONTINUE EXPLORING</span><strong>More from Season '+episodeSeason(ep)+'</strong></div><div class="episode-more-tiles">'+others.map(item=>'<button type="button" class="episode-more-tile" data-episode-index="'+allEpisodes.indexOf(item)+'"><img src="'+escapeBibleHTML(item.image||'../icons/ped-talk-icon.svg')+'" alt=""><span><small>EPISODE '+String(episodeNumber(item)||'—').padStart(2,'0')+'</small><strong>'+escapeBibleHTML(displayEpisodeTitle(item))+'</strong></span><b aria-hidden="true">›</b></button>').join('')+'</div>':'');
@@ -150,13 +156,32 @@ function openEpisodeModal(ep,seasonEpisodes){
  }
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=true;
  const y=window.scrollY||window.pageYOffset||0;
- document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');
- overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+ if(!wasOpen){document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');}
+ overlay.hidden=false;
+ card.scrollTop=0;
+ if(wasOpen){card.classList.remove('episode-swipe-next','episode-swipe-prev');void card.offsetWidth;card.classList.add(direction<0?'episode-swipe-prev':'episode-swipe-next');}
+ requestAnimationFrame(()=>overlay.classList.add('active'));
+ if(!wasOpen)document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
 document.getElementById('dwoopContent')?.addEventListener('click',event=>{
  const tile=event.target.closest('[data-episode-index]');if(!tile)return;
  const ep=allEpisodes[Number(tile.dataset.episodeIndex)];if(ep)openEpisodeModal(ep,allEpisodes.filter(item=>episodeSeason(item)===episodeSeason(ep)));
 });
+// Swipe left for the next episode and right for the previous one.
+(()=>{
+ const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');if(!overlay||!card)return;
+ let startX=0,startY=0,startTarget=null;
+ card.addEventListener('pointerdown',event=>{if(!overlay.classList.contains('dwoop-episode-mode')||event.pointerType==='mouse'&&event.button!==0)return;startX=event.clientX;startY=event.clientY;startTarget=event.target;},{passive:true});
+ card.addEventListener('pointerup',event=>{
+  if(!startTarget||!overlay.classList.contains('dwoop-episode-mode'))return;
+  const dx=event.clientX-startX,dy=event.clientY-startY,target=startTarget;startTarget=null;
+  if(target.closest('button,a,audio,input,textarea,select,[data-no-episode-swipe]'))return;
+  if(Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;
+  const nextIndex=activeEpisodeIndex+(dx<0?1:-1);if(nextIndex<0||nextIndex>=activeEpisodeSequence.length)return;
+  openEpisodeModal(activeEpisodeSequence[nextIndex],activeEpisodeSequence,dx<0?1:-1);
+ },{passive:true});
+ card.addEventListener('pointercancel',()=>{startTarget=null;},{passive:true});
+})();
 function renderHomeSeason(){
  const currentSeason=allEpisodes.reduce((max,ep)=>Math.max(max,episodeSeason(ep)),1);
  const current=allEpisodes.filter(ep=>episodeSeason(ep)===currentSeason&& (activeCategory==='All'||categoryFor(ep)===activeCategory));
