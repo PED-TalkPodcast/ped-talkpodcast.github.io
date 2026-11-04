@@ -1,3 +1,52 @@
+/* v87 — install the actual /app PWA, never the brochure website. */
+let deferredAppInstallPrompt = null;
+const appInstallButton = document.getElementById('appInstallButton');
+const installGuide = document.getElementById('installGuide');
+const installStatus = document.getElementById('installStatus');
+const appIsInstalled = () => window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+if (new URLSearchParams(window.location.search).get('install') === '1' && installGuide) installGuide.hidden = false;
+if (appIsInstalled() && appInstallButton) {
+ appInstallButton.hidden = true;
+ if (installStatus) installStatus.textContent = 'PED-Talk is already installed on this device.';
+}
+window.addEventListener('beforeinstallprompt', event => {
+ event.preventDefault();
+ deferredAppInstallPrompt = event;
+ if (appInstallButton) { appInstallButton.hidden = false; appInstallButton.textContent = 'Install'; }
+ if (installStatus) installStatus.textContent = 'PED-Talk is ready to install. Tap Install to add it to your home screen.';
+});
+appInstallButton?.addEventListener('click', async () => {
+ if (appIsInstalled()) {
+  appInstallButton.hidden = true;
+  if (installStatus) installStatus.textContent = 'PED-Talk is already installed on this device.';
+  return;
+ }
+ if (!deferredAppInstallPrompt) {
+  if (installStatus) installStatus.textContent = /iphone|ipad|ipod/i.test(navigator.userAgent)
+   ? 'On your iPhone, tap Share, then choose Add to Home Screen.'
+   : 'In Chrome, open the ⋮ menu and choose Install app or Add to Home screen. If that option is missing, make sure you are online and try again shortly.';
+  if (installGuide) installGuide.hidden = false;
+  return;
+ }
+ const promptEvent = deferredAppInstallPrompt;
+ deferredAppInstallPrompt = null;
+ try {
+  await promptEvent.prompt();
+  const choice = await promptEvent.userChoice;
+  if (installStatus) installStatus.textContent = choice?.outcome === 'accepted'
+   ? 'Installation accepted. Follow the phone prompt to finish adding PED-Talk.'
+   : 'Installation was cancelled. You can tap Install whenever you are ready.';
+ } catch (error) {
+  console.warn('PED-Talk install prompt was not completed', error);
+  if (installStatus) installStatus.textContent = 'Open Chrome’s ⋮ menu and choose Install app or Add to Home screen.';
+ }
+});
+window.addEventListener('appinstalled', () => {
+ deferredAppInstallPrompt = null;
+ if (appInstallButton) appInstallButton.hidden = true;
+ if (installGuide) installGuide.hidden = false;
+ if (installStatus) installStatus.textContent = 'PED-Talk has been added to your phone.';
+});
 const appUpcomingList=document.getElementById('appUpcomingList');
 let upcomingScheduleRows=[];
 async function renderAppUpcoming(){
