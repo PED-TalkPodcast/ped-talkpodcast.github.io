@@ -45,6 +45,10 @@ jobs:
           for item in channel.findall("item"):
               enclosure = item.find("enclosure")
               artwork = item.find("{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
+              if artwork is None:
+                  artwork = item.find("image")
+              if artwork is None:
+                  artwork = channel.find("{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
               description = item.find("description")
               published = item.find("pubDate")
 
@@ -70,6 +74,8 @@ jobs:
               json.dump(data, file, ensure_ascii=False, indent=2)
 
           print(f"Found {len(episodes)} episodes.")
+          for episode in episodes[:5]:
+              print(f"Artwork check: {episode['title']} -> {episode['image'] or 'NO EPISODE/CHANNEL ARTWORK'}")
           PY
 
       - name: Save updated episode catalogue
