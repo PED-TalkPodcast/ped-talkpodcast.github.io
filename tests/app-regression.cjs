@@ -89,7 +89,8 @@ const server = http.createServer((req,res)=>{
     // Compact Home card cycles content but has a fixed geometry and glass scripture treatment.
     assert.equal(await page.locator('.hope-card').getAttribute('data-presentation'),'compact');
     assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
-    await page.waitForTimeout(500);\n    const compactBoxBefore=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
+    await page.waitForTimeout(500);
+    const compactBoxBefore=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
     const compactGlass=await page.locator('.hope-scripture').evaluate(el=>getComputedStyle(el).backgroundColor);
     assert.equal(compactGlass,'rgba(239, 248, 255, 0.68)','compact scripture surface should use light glass styling');
     assert.ok(compactBoxBefore.height>=280&&compactBoxBefore.height<=290,'compact Home card should have a fixed mobile height');
