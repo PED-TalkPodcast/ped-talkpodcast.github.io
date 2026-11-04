@@ -259,6 +259,9 @@ document.getElementById('dwoopContent')?.addEventListener('click',event=>{
   openEpisodeModal(activeEpisodeSequence[nextIndex],activeEpisodeSequence,dx<0?1:-1);
  },{passive:true});
  card.addEventListener('pointercancel',()=>{startTarget=null;},{passive:true});
+ let touchStart=null;
+ card.addEventListener('touchstart',event=>{const t=event.changedTouches[0];if(!t)return;touchStart={x:t.clientX,y:t.clientY,scrollTop:card.scrollTop,target:event.target};},{passive:true});
+ card.addEventListener('touchend',event=>{if(!touchStart)return;const t=event.changedTouches[0],start=touchStart;touchStart=null;if(!t||start.scrollTop>2||start.target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe]'))return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(dy>88&&dy>Math.abs(dx)*1.25)closeDwoopModal();},{passive:true});
 })();
 function renderHomeSeason(){
  const currentSeason=allEpisodes.reduce((max,ep)=>Math.max(max,episodeSeason(ep)),1);
@@ -853,6 +856,9 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!hopeModal.
 let hopeSwipeStart=null;
 hopeModal.querySelector('.hope-modal-panel')?.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;hopeSwipeStart={y:event.clientY,x:event.clientX,scrollTop:event.currentTarget.scrollTop,target:event.target};},{passive:true});
 hopeModal.querySelector('.hope-modal-panel')?.addEventListener('pointerup',event=>{if(!hopeSwipeStart)return;const start=hopeSwipeStart;hopeSwipeStart=null;if(start.scrollTop>2||start.target.closest('button,a,summary,input,textarea,select'))return;const dy=event.clientY-start.y,dx=event.clientX-start.x;if(dy>88&&dy>Math.abs(dx)*1.25)closeHope();},{passive:true});
+let hopeTouchStart=null;
+hopeModal.querySelector('.hope-modal-panel')?.addEventListener('touchstart',event=>{const t=event.changedTouches[0];if(t)hopeTouchStart={x:t.clientX,y:t.clientY,scrollTop:event.currentTarget.scrollTop,target:event.target};},{passive:true});
+hopeModal.querySelector('.hope-modal-panel')?.addEventListener('touchend',event=>{if(!hopeTouchStart)return;const t=event.changedTouches[0],start=hopeTouchStart;hopeTouchStart=null;if(!t||start.scrollTop>2||start.target.closest('button,a,summary,input,textarea,select'))return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(dy>88&&dy>Math.abs(dx)*1.25)closeHope();},{passive:true});
 const likeButton=document.getElementById('hopeLike'),likeKey='ped-talk-gift-hope-liked';
 function safeStorageGet(key,fallback=null){try{const value=localStorage.getItem(key);return value===null?fallback:value;}catch(error){return fallback;}}
 function safeStorageSet(key,value){try{localStorage.setItem(key,value);return true;}catch(error){return false;}}
