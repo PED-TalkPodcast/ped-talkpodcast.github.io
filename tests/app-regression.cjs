@@ -253,7 +253,7 @@ const server = http.createServer((req,res)=>{
     assert.ok(episodeWindow.width<=episodeWindow.viewportWidth,'episode window must fit the viewport');
     assert.ok(episodeWindow.height<=episodeWindow.viewportHeight,'episode window must fit the viewport');
     assert.match(episodeWindow.overlayClasses,/dwoop-episode-mode/,'episode must open in its own dedicated window/page');
-    const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,label:getComputedStyle(el.querySelector('.episode-play-label')).display}));
+    const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,hasTextLabel:!!el.querySelector('.episode-play-label')}));
     assert.ok(compactPlay.width>=48&&compactPlay.width<=58&&compactPlay.height>=48&&compactPlay.height<=58,'player play control must be a refined circular button');
     assert.equal(compactPlay.radius,'50%','player play control must be circular');
     assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
