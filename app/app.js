@@ -845,13 +845,15 @@ const devotionalStages=[
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
 function renderDevotionalStage(index){
  const stage=devotionalStages[index];
- // The compact Home tile remains a fixed preview of today's scripture.
- // Only the expanded devotional card advances through the reflection stages.
+ // Both presentation variants share the devotional stage but retain independent layouts.
+ if(giftVerseLabel)giftVerseLabel.textContent=stage.label;
+ if(giftVerse)giftVerse.textContent=stage.text;
+ if(giftReference)giftReference.textContent=stage.reference;
  const modalLabel=document.getElementById('modalGiftVerseLabel'),modalVerse=document.getElementById('modalGiftVerse'),modalRef=document.getElementById('modalGiftReference'),modalLink=document.getElementById('hopeModalBibleLink');
  if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;
  if(modalLink){modalLink.hidden=!stage.bible;if(stage.bible)modalLink.dataset.openBible=stage.bible;else modalLink.removeAttribute('data-open-bible');}
 }
-function devotionalCanRun(){return !document.hidden&&(hopeCardVisible||!hopeModal.hidden)&&!homeView.hidden&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
+function devotionalCanRun(){return !document.hidden&&((!homeView.hidden&&hopeCardVisible)||!hopeModal.hidden)&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
 function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');modalDevotional?.classList.remove('is-leaving','is-entering');}
 function scheduleDevotional(){if(!devotionalTimer&&devotionalCanRun())devotionalTimer=window.setTimeout(advanceDevotional,7200);}
 function advanceDevotional(){
@@ -869,6 +871,7 @@ document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevoti
 renderDevotionalStage(devotionalIndex);scheduleDevotional();
 window.PEDDevotional={sync:()=>{if(devotionalCanRun())scheduleDevotional();else pauseDevotional();},get phase(){return devotionalStages[devotionalIndex].phase;}};
 function openGiftHope(){
+ hopeModal.dataset.presentation='expanded';
  if(!hopeModal||!homeView||!hopeCard||!giftVerse||!giftVerseLabel||!giftReference){
   console.error('Gift of Hope could not open: required devotional elements are missing.');
   return;
