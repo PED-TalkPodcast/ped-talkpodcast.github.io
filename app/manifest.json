@@ -7,8 +7,8 @@
   "scope": "../",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#071b31",
-  "theme_color": "#071b31",
+  "background_color": "#020504",
+  "theme_color": "#020504",
   "icons": [
     {
       "src": "../icons/ped-talk-icon-192.png",
