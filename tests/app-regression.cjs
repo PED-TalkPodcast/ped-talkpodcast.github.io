@@ -86,22 +86,14 @@ const server = http.createServer((req,res)=>{
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
 
-    // Devotional cycle: John 3:16 → Amazing Grace → Revelation 3:21 WEB → repeat.
-    let phase=await page.locator('#giftVerseLabel').textContent();
-    if(phase==='A PROMISE OF VICTORY')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
-    phase=await page.locator('#giftVerseLabel').textContent();
-    if(phase!=='AMAZING GRACE')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
-    assert.match(await page.locator('#giftVerse').textContent(),/Amazing grace! how sweet the sound/);
-    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
-    assert.match(await page.locator('#giftVerse').textContent(),/He who overcomes/);
-    assert.match(await page.locator('#giftReference').textContent(),/Revelation 3:21.*World English Bible/);
-    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
-
-    // Home preview remains fixed; the devotional stages belong only to the expanded card.
+    // The compact Home tile is a fixed John 3:16 preview; it must not cycle to Amazing Grace.
     assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE");
     assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
+    await page.waitForTimeout(8500);
+    assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE",'Home preview must stay fixed while the devotional timer advances');
+    assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
 
-    // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
+    // Gift of Hope expanded card owns the Scripture → Amazing Grace → victory sequence.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
     const lightGlassSurface=await page.locator('.hope-modal-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
