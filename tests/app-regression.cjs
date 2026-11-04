@@ -33,7 +33,7 @@ const server = http.createServer((req,res)=>{
     const hidden=async selector=>assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('[data-app-theme="'+theme+'"]').click();};
-    const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate(el=>el.classList.contains(cls)),true,'body should have '+cls);
+    const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
 
     // Settings Home and Android Back.
     await page.locator('#appSettingsButton').click();
