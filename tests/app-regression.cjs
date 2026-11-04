@@ -32,7 +32,7 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
-    const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('[data-app-theme="'+theme+'"]').click();};
+    const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('button[data-app-theme="'+theme+'"]').click();};
     const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
 
     // Settings Home and Android Back.
@@ -57,15 +57,15 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.body.classList.contains('app-dark'),null,{timeout:2000});
     const nightAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
     assert.match(nightAsset,/gift-of-hope-sky\.svg/);
-    await page.locator('[data-app-theme="light"]').click();
+    await page.locator('button[data-app-theme="light"]').click();
     await bodyHas('app-light');
     await page.reload({waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     await bodyHas('app-light');
     await page.locator('#appSettingsButton').click();
-    await page.locator('[data-app-theme="dark"]').click();
+    await page.locator('button[data-app-theme="dark"]').click();
     await bodyHas('app-dark');
-    await page.locator('[data-app-theme="system"]').click();
+    await page.locator('button[data-app-theme="system"]').click();
     await page.emulateMedia({colorScheme:'light'});
     await page.waitForFunction(()=>document.body.classList.contains('app-light'),null,{timeout:2000});
     const dayAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
@@ -136,7 +136,7 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('[data-showcase-slide="2"]')?.getAttribute('aria-pressed')==='true',null,{timeout:2000});
     await page.locator('[data-showcase-slide="1"]').click();
     await page.locator('#appSettingsButton').click();
-    await page.locator('[data-app-theme="light"]').click();
+    await page.locator('button[data-app-theme="light"]').click();
     await page.locator('#settingsClose').click();
     assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-showcase-slide="2"]').click();
