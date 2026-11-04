@@ -132,7 +132,7 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-showcase-slide="2"]').click();
     const voiceFilter=await page.locator('.app-showcase-voice>img').evaluate(el=>getComputedStyle(el).filter);
-    assert.match(voiceFilter,/brightness\(1\.06/);
+    assert.match(voiceFilter,/brightness\\(1\\.2/);
     await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
     await visible('#dwoopOverlay');
     assert.equal(await page.evaluate(()=>history.state?.view),'home','opening a feature must not navigate to Episodes');
