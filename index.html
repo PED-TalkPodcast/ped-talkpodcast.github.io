@@ -93,6 +93,7 @@
     .hero-note::before { content: ""; width: 26px; height: 1px; background: var(--lime); }
     .install-prompt { display: none; margin-top: 20px; padding: 12px 14px; border: 1px solid rgba(200,231,142,.3); border-radius: 14px; background: rgba(255,255,255,.06); color: #c7d8c9; font-size: 12px; }
     .install-prompt.visible { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .install-prompt[hidden] { display: none !important; }
     .install-prompt button { border: 0; cursor: pointer; white-space: nowrap; }
     .hero-card { position: relative; min-height: 430px; padding: 25px; border: 1px solid rgba(200,231,142,.42); border-radius: 28px; background: linear-gradient(145deg, #39754e 0%, #1d4d33 51%, #102d20 100%); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; transform: rotate(1.2deg); }
     .hero-card::before { content: ""; position: absolute; inset: 13px; border: 1px solid rgba(255,255,255,.16); border-radius: 19px; pointer-events: none; }
