@@ -1594,3 +1594,73 @@ body.app-light .dwoop-card-expanded.dwoop-light .dwoop-episode{background:#fff!i
 body.app-light .dwoop-card-expanded.dwoop-light .dwoop-close{background:#f3f6ef!important;color:#294632!important;border-color:#dce5d8!important}
 body.app-dark .dwoop-card-expanded{background:linear-gradient(155deg,#102c43,#071b2c 76%)!important;color:#edf5f8!important}
 body.dwoop-locked .bottom-nav,body.hope-open .bottom-nav{display:none!important}
+
+
+/* v98 — theme-aware Gift of Hope conversation, imagery and dismissal polish. */
+.hope-card .hope-devotional{min-width:0;max-width:100%}
+.hope-card .hope-devotional blockquote{overflow-wrap:anywhere;hyphens:auto}
+.hope-card .hope-devotional .verse-label{color:var(--app-accent)}
+.hope-modal-panel{
+ background-image:linear-gradient(145deg,rgba(7,24,38,.78),rgba(7,24,38,.9)),var(--gift-of-hope-image,url('../assets/gift-of-hope-sky.svg'))!important;
+ background-size:cover!important;background-position:center!important;
+}
+body.app-light .welcome.hope-card{
+ background-image:linear-gradient(180deg,rgba(255,252,242,.18),rgba(244,248,237,.82)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important;
+}
+body.app-dark .welcome.hope-card{
+ background-image:linear-gradient(180deg,rgba(4,13,27,.18),rgba(4,13,27,.82)),var(--gift-of-hope-image,url('../assets/gift-of-hope-sky.svg'))!important;
+}
+body.app-light .hope-modal-panel{
+ background-image:linear-gradient(145deg,rgba(255,253,246,.88),rgba(244,249,240,.92)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important;
+ border-color:rgba(92,126,86,.28)!important;color:var(--app-text-primary)!important;
+}
+body.app-light .hope-modal-panel h2,
+body.app-light .hope-modal-panel blockquote{color:#263c30!important}
+body.app-light .hope-modal-panel .verse-label{color:#55784c!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#647568!important}
+body.app-dark .hope-modal-panel{
+ border-color:rgba(220,237,255,.2)!important;color:#f4f7fa!important;
+}
+.hope-comments{
+ background:var(--app-surface-elevated)!important;border:1px solid var(--app-border)!important;
+ border-radius:18px;padding:16px;color:var(--app-text-primary)!important;
+}
+.hope-comments h3{color:var(--app-text-primary)!important;margin:0 0 12px}
+.hope-comments .empty{color:var(--app-text-muted)!important}
+.hope-comments textarea{
+ display:block;min-height:104px;background:var(--app-surface)!important;
+ border:1px solid var(--app-border)!important;color:var(--app-text-primary)!important;
+ border-radius:13px;padding:13px;font:500 13px/1.55 'DM Sans',sans-serif;
+}
+.hope-comments textarea::placeholder{color:var(--app-text-muted)!important;opacity:1}
+.hope-comments textarea:focus-visible{outline:2px solid var(--app-accent);outline-offset:2px}
+.hope-comments form button{
+ min-height:44px;padding:0 18px;border-radius:24px;
+ background:var(--app-button-background)!important;color:var(--app-button-text)!important;
+}
+.hope-comment{border-color:var(--app-border)!important}
+.hope-comment p{color:var(--app-text-primary)!important;overflow-wrap:anywhere}
+.hope-comment small,.hope-local-note{color:var(--app-text-muted)!important}
+body.app-light .hope-comments{background:#f8faf6!important;border-color:#dce7d8!important}
+body.app-light .hope-comment{background:rgba(255,255,255,.7);border-radius:12px;padding:12px;margin-top:8px}
+body.app-dark .hope-comments{background:#102b43!important;border-color:rgba(220,237,255,.16)!important}
+body.app-dark .hope-comment p{color:#edf4fa!important}
+body.app-dark .hope-comment small,body.app-dark .hope-local-note{color:#aebfd0!important}
+body.app-light .app-showcase-voice>img{
+ filter:brightness(1.02) saturate(1.04) contrast(1.02)!important;
+}
+body.app-light .app-showcase-voice .voice-shade{
+ background:linear-gradient(180deg,rgba(29,43,35,.02) 24%,rgba(29,43,35,.08) 52%,rgba(29,43,35,.62) 100%)!important;
+}
+body.app-light .app-showcase-voice .voice-copy .eyebrow{color:#e8f1dc!important}
+body.app-light .app-showcase-voice .voice-copy h2,
+body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,.38)!important}
+.dwoop-card-expanded{touch-action:pan-y;overscroll-behavior:contain}
+.dwoop-overlay{overscroll-behavior:contain}
+.dwoop-card-expanded:focus{outline:none}
+.settings-home{min-height:44px;cursor:pointer;touch-action:manipulation}
+.settings-home:focus-visible{outline:2px solid var(--app-accent);outline-offset:3px}
+[hidden]{display:none!important}
+@media(prefers-reduced-motion:reduce){
+ .hope-devotional,.hope-devotional.is-leaving,.hope-devotional.is-entering{transition:none!important;animation:none!important;transform:none!important}
+}
