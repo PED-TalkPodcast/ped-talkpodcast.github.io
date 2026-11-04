@@ -93,6 +93,17 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE",'Home preview must stay fixed while the devotional timer advances');
     assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
 
+    // Mobile compact presentation is fixed-size and visually treated as a glass sky card.
+    assert.equal(await page.locator('.hope-card').getAttribute('data-presentation'),'compact');
+    const compactBoxBefore=await page.locator('.hope-card').boundingBox();
+    const compactGlass=await page.locator('.hope-scripture').evaluate(el=>getComputedStyle(el).backgroundColor);
+    assert.equal(compactGlass,'rgba(239, 248, 255, 0.68)','compact scripture surface should use light glass styling');
+    assert.equal(Math.round(compactBoxBefore.height),286,'compact Home card should have a stable mobile height');
+    await page.waitForTimeout(8500);
+    const compactBoxAfter=await page.locator('.hope-card').boundingBox();
+    assert.equal(Math.round(compactBoxAfter.height),Math.round(compactBoxBefore.height),'compact card height must not change as devotional timer advances');
+    assert.ok(Math.abs(compactBoxAfter.y-compactBoxBefore.y)<1,'compact card position must remain stable');
+    assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
     // Gift of Hope expanded card owns the Scripture → Amazing Grace → victory sequence.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
