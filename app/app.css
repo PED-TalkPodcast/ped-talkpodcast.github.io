@@ -2282,3 +2282,147 @@ body.app-dark .reading-breakdown-button strong{color:#f5fff8!important}
 body.app-dark .bible-promo p,body.app-dark .explore-promo p,body.app-dark .home-tile p,
 body.app-dark .home-feature-card p{color:#a8b8af!important}
 body.app-dark .bible-mark{color:rgba(0,230,118,.14)!important}
+
+
+/* v112 — complete PED-TALK broadcast-studio component finish.
+   This is a visual layer only: existing screens, DOM order, routes and actions remain unchanged. */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+body.app-dark{
+ color-scheme:dark!important;
+ --ped-canvas:#020504;--ped-background:#030806;--ped-secondary:#07110d;
+ --ped-surface:#0b1712;--ped-elevated:#102119;--ped-interactive:#152b20;
+ --ped-emerald:#00e676;--ped-emerald-deep:#00a85a;--ped-mint:#b8f5cc;
+ --ped-primary:#f4fff7;--ped-secondary-text:#a4b5aa;--ped-muted:#718178;
+ --ped-line:rgba(184,245,204,.12);--ped-focus:#58f59a;
+ --ped-error:#ff6b6b;--ped-warning:#ffc857;
+ --ped-background:#030806!important;--ped-surface:#0b1712!important;
+ --ped-surface-elevated:#102119!important;--ped-text-primary:#f4fff7!important;
+ --ped-text-secondary:#a4b5aa!important;--ped-text-muted:#718178!important;
+ --ped-accent:#00e676!important;--ped-accent-deep:#00a85a!important;
+ --ped-border:rgba(184,245,204,.12)!important;--app-accent:#00e676!important;
+ font-family:Inter,"DM Sans",system-ui,sans-serif!important;
+ background-color:#020504!important;
+ background-image:radial-gradient(ellipse at 82% -8%,rgba(0,168,90,.12),transparent 42%),radial-gradient(ellipse at 8% 38%,rgba(0,230,118,.035),transparent 34%),linear-gradient(155deg,#07110d 0%,#020504 58%,#050b08 100%)!important;
+ color:#f4fff7!important;
+}
+body.app-dark::before{opacity:.055!important;background-size:7px 7px!important}
+body.app-dark :is(main,.bible-view,.books-view,.episodes-view,.bible-library-view,.reading-stats-view,.explore-view){background:transparent!important;color:#f4fff7!important}
+body.app-dark :is(.topbar,.bottom-nav){
+ background:linear-gradient(180deg,rgba(10,24,17,.96),rgba(2,5,4,.985))!important;
+ border-color:var(--ped-line)!important;
+ box-shadow:0 10px 30px rgba(0,0,0,.24)!important;
+}
+body.app-dark .topbar{backdrop-filter:blur(16px) saturate(1.12)!important;-webkit-backdrop-filter:blur(16px) saturate(1.12)!important}
+body.app-dark .bottom-nav{backdrop-filter:blur(18px) saturate(1.1)!important;-webkit-backdrop-filter:blur(18px) saturate(1.1)!important}
+body.app-dark .bottom-nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+body.app-dark .bottom-nav button{min-height:46px!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important}
+body.app-dark .bottom-nav button.selected{color:#00e676!important}
+body.app-dark :is(.section-head h2,.season-title,.bible-head h2,.bible-reader-top h3,.bible-picker-heading h3,.bible-stage-heading h3,.bible-library-page-head h2,.reading-stats-head h2,.explore-section-intro h3,.settings-heading h2){color:#f4fff7!important}
+body.app-dark :is(.eyebrow,.reader-kicker,.season-heading .eyebrow){color:#8be7ad!important}
+body.app-dark :is(.intro,.bible-intro,.bible-controls label,.bible-bookmark-note,.bible-pager span,.loading,.empty,.upcoming-note,.season-count,.episode .desc,.book-category p,.settings-heading p:not(.eyebrow),.settings-section>p,.settings-footnote,.reading-stats-head p,.reading-local-note,.bible-library-subtitle,.explore-section-intro>p){color:#a4b5aa!important}
+body.app-dark :is(.episode,.episode-open-card,.episode-feature-panel,.episode-player-window,.episode-more-tile,.book-category,.playlist-coming,.reading-summary-card,.reading-time-card,.reading-progress-card,.reading-snippet,.reading-section,.reading-breakdown,.bible-reader,.bible-highlights-panel,.bible-search-results,.bible-library-card,.bible-library-panel,.bible-reading-card,.bible-progress-card,.reading-detail-total,.reading-period-total,.reading-detail-book,.reading-session-row,.reading-breakdown-row,.bible-promo,.explore-promo,.explore-story-card,.explore-story-detail,.explore-category-tabs,.upcoming-card){
+ background:linear-gradient(145deg,rgba(16,33,25,.98),rgba(7,17,13,.99))!important;
+ border:1px solid var(--ped-line)!important;border-radius:20px!important;color:#f4fff7!important;
+ box-shadow:0 12px 30px rgba(0,0,0,.22),inset 0 1px 0 rgba(220,255,230,.025)!important;
+}
+body.app-dark :is(.episode h3,.episode-feature-panel h2,.episode-feature-panel h3,.episode-more-heading strong,.book-category h3,.reading-summary-card h3,.reading-section h3,.bible-highlights-head h3,.explore-story-card h3,.explore-story-detail h2){color:#f4fff7!important}
+body.app-dark :is(.episode .tag,.episode-more,.book-category>span,.book-category small,.reading-card-type,.reading-section-head>span){color:#8be7ad!important}
+body.app-dark :is(.episode-art,.episode-art img,.upcoming-artwork){background:#102119!important}
+body.app-dark .episode-player-window{
+ padding:20px!important;border-radius:24px!important;
+ background:radial-gradient(ellipse at 50% 0%,rgba(0,168,90,.18),transparent 60%),linear-gradient(145deg,#102119,#030806 85%)!important;
+ border:1px solid rgba(184,245,204,.16)!important;
+ box-shadow:0 18px 40px rgba(0,0,0,.32),inset 0 1px 0 rgba(220,255,230,.04)!important;
+}
+body.app-dark .episode-feature-art{border-radius:16px!important;box-shadow:0 14px 32px rgba(0,0,0,.28)!important}
+body.app-dark .episode-play-button{
+ min-width:56px!important;min-height:56px!important;border-radius:50%!important;
+ background:linear-gradient(145deg,#00e676,#00a85a)!important;color:#fff!important;
+ border:1px solid rgba(220,255,230,.32)!important;box-shadow:0 0 0 5px rgba(0,230,118,.07),0 8px 24px rgba(0,230,118,.2)!important;
+}
+body.app-dark .episode-player-track{height:4px!important;border-radius:8px!important;background:rgba(184,245,204,.15)!important;overflow:hidden}
+body.app-dark .episode-player-track span{height:100%!important;border-radius:8px!important;background:linear-gradient(90deg,#00a85a,#00e676)!important;box-shadow:0 0 12px rgba(0,230,118,.35)!important;transition:width .18s linear!important}
+body.app-dark .episode-player-times{color:#a4b5aa!important;font-variant-numeric:tabular-nums}
+body.app-dark :is(.episode-player-window button,.episode-feature-panel button,.episode-more-tile button){transition:transform .18s ease,background .2s ease,border-color .2s ease!important}
+body.app-dark :is(.episode-player-window button,.episode-feature-panel button):active{transform:scale(.97)!important}
+body.app-dark :is(.bible-controls select,.bible-search input,.bible-verse-comment-box textarea,.hope-comments textarea,.app-settings-panel input,.app-settings-panel select,.app-settings-panel textarea){
+ background:#07110d!important;border:1px solid var(--ped-line)!important;color:#f4fff7!important;
+ caret-color:#00e676!important;border-radius:13px!important;
+}
+body.app-dark :is(input,select,textarea)::placeholder{color:#718178!important;opacity:1!important}
+body.app-dark :is(.bible-home,.bible-back,.bible-pager button,.bible-mode-toggle,.bible-search button,.bible-floating-actions>button,.bible-library-return,.bible-library-tabs button,.explore-back,.reading-drill-back){
+ background:#102119!important;border:1px solid var(--ped-line)!important;color:#eaf8ef!important;border-radius:14px!important;
+}
+body.app-dark :is(.bible-floating-actions>#bibleHighlightButton,.bible-verse-comment-box button,.reading-continue-button,.button-link,.hope-comments form button){
+ background:linear-gradient(135deg,#00e676,#00a85a)!important;color:#031008!important;border:0!important;
+ box-shadow:0 7px 20px rgba(0,230,118,.14)!important;
+}
+body.app-dark :is(.testament-tile,.bible-book-tile,.bible-chapter-tile,.reading-time-card,.reading-progress-card,.reading-snippet,.reading-breakdown-row){
+ background:linear-gradient(145deg,#102119,#07110d)!important;border:1px solid var(--ped-line)!important;color:#f4fff7!important;border-radius:18px!important;
+}
+body.app-dark :is(.bible-library-tabs button.active,.bible-library-tabs button[aria-pressed="true"]){
+ background:rgba(0,230,118,.12)!important;border-color:rgba(0,230,118,.5)!important;color:#b8f5cc!important;
+}
+body.app-dark :is(.bible-highlight-palette,.bible-selection-actions,.bible-verse-comment-box){
+ background:#0b1712!important;border:1px solid var(--ped-line)!important;border-radius:16px!important;color:#f4fff7!important;
+}
+body.app-dark :is(.app-settings-overlay,.dwoop-overlay){background:rgba(1,5,3,.88)!important;backdrop-filter:blur(14px)!important;-webkit-backdrop-filter:blur(14px)!important}
+body.app-dark .app-settings-panel{
+ background:radial-gradient(ellipse at 88% 0%,rgba(0,168,90,.13),transparent 40%),linear-gradient(160deg,#07110d,#020504 68%,#08130d)!important;
+ color:#f4fff7!important;border:0!important;
+}
+body.app-dark .settings-section{
+ background:linear-gradient(145deg,rgba(16,33,25,.86),rgba(7,17,13,.94))!important;
+ border:1px solid var(--ped-line)!important;border-radius:20px!important;padding:18px!important;
+}
+body.app-dark .app-settings-panel .theme-options button{
+ background:linear-gradient(150deg,#152b20,#0a1510)!important;border:1px solid var(--ped-line)!important;
+ color:#f4fff7!important;border-radius:16px!important;
+}
+body.app-dark .app-settings-panel .theme-options button[aria-pressed="true"]{
+ background:linear-gradient(145deg,rgba(0,230,118,.18),rgba(7,24,15,.98))!important;
+ border-color:rgba(0,230,118,.58)!important;color:#b8f5cc!important;
+ box-shadow:inset 0 0 0 1px rgba(0,230,118,.14),0 8px 22px rgba(0,230,118,.08)!important;
+}
+body.app-dark .app-settings-panel .theme-options button[aria-pressed="true"] strong{color:#b8f5cc!important}
+body.app-dark .app-settings-panel .theme-options button[aria-pressed="true"] small{color:#a4b5aa!important}
+body.app-dark .app-settings-panel :is(.subscription-entry,.settings-home,.settings-close){
+ background:linear-gradient(145deg,#152b20,#0b1712)!important;border:1px solid var(--ped-line)!important;color:#f4fff7!important;border-radius:16px!important;
+}
+body.app-dark .app-settings-panel .subscription-notice{background:#0b1712!important;border:1px solid rgba(0,230,118,.24)!important;color:#b8f5cc!important}
+body.app-dark .dwoop-card-expanded{
+ background:radial-gradient(ellipse at 50% 0%,rgba(0,168,90,.14),transparent 52%),linear-gradient(155deg,#102119,#030806 75%)!important;
+ border:1px solid var(--ped-line)!important;border-radius:24px!important;color:#f4fff7!important;
+}
+body.app-dark :is(.dwoop-card-expanded h2,.dwoop-card-expanded h3,.dwoop-card-expanded strong){color:#f4fff7!important}
+body.app-dark :is(.dwoop-card-expanded p,.dwoop-card-expanded small){color:#a4b5aa!important}
+body.app-dark :is(.explore-category-tabs button,.bible-library-tabs button){
+ background:#0b1712!important;border:1px solid var(--ped-line)!important;color:#a4b5aa!important;border-radius:999px!important;
+}
+body.app-dark :is(.explore-category-tabs button.active,.bible-library-tabs button.active){
+ background:rgba(0,230,118,.13)!important;border-color:rgba(0,230,118,.48)!important;color:#b8f5cc!important;
+}
+body.app-dark :is(.explore-story-card,.explore-story-detail,.bible-highlights-panel){padding:16px!important}
+body.app-dark :is(.bible-highlights-empty,.reading-empty,.empty,.episode-audio-unavailable){color:#a4b5aa!important}
+body.app-dark :is(.install-guide,.subscription-notice){background:#0b1712!important;border:1px solid var(--ped-line)!important;color:#f4fff7!important;border-radius:16px!important}
+body.app-dark .app-install-button{background:#152b20!important;border:1px solid var(--ped-line)!important;color:#b8f5cc!important;border-radius:999px!important}
+body.app-dark :is(.filter,.bible-library-tabs button,.explore-category-tabs button){min-height:40px!important}
+body.app-dark :is(button,a,input,select,textarea,[tabindex]):focus-visible{outline:2px solid #58f59a!important;outline-offset:3px!important}
+body.app-dark button:disabled,body.app-dark [aria-disabled="true"]{opacity:.42!important;cursor:not-allowed!important;filter:saturate(.55)!important}
+body.app-dark :is(button,a,input,select,textarea){-webkit-tap-highlight-color:rgba(0,230,118,.12)}
+body.app-dark :is(button,a){transition:color .18s ease,background-color .18s ease,border-color .18s ease,box-shadow .18s ease,transform .18s ease!important}
+body.app-dark :is(button,a):active{transform:scale(.985)}
+body.app-dark ::selection{background:rgba(0,230,118,.3);color:#f4fff7}
+body.app-dark ::-webkit-scrollbar{width:6px;height:6px}
+body.app-dark ::-webkit-scrollbar-track{background:rgba(2,5,4,.4)}
+body.app-dark ::-webkit-scrollbar-thumb{background:rgba(184,245,204,.2);border-radius:99px}
+body.app-dark :is(.loading,.gradient-shimmer-bar)::after{background:linear-gradient(90deg,transparent,rgba(0,230,118,.12),transparent)!important}
+@media(prefers-reduced-motion:reduce){
+ body.app-dark *,body.app-dark *::before,body.app-dark *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
+}
+@media(max-width:520px){
+ body.app-dark .app-settings-panel{padding-left:18px!important;padding-right:18px!important}
+ body.app-dark .settings-section{padding:16px!important}
+ body.app-dark .episode-player-window{padding:16px!important}
+ body.app-dark .bible-view,body.app-dark .books-view,body.app-dark .reading-stats-view{padding-left:16px!important;padding-right:16px!important}
+}
