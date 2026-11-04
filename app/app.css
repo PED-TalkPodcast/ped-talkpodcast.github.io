@@ -2516,3 +2516,11 @@ body.app-dark .episode-play-button{background:linear-gradient(145deg,#00e676,#00
   .episode-open-card{grid-template-columns:62px minmax(0,1fr) 32px!important;gap:9px!important}
   .episode-open-card .episode-art{width:62px!important;height:62px!important}
 }
+
+/* v114 — the dark theme's more-specific legacy minimums must not enlarge the compact player control. */
+body.app-dark .dwoop-overlay.dwoop-episode-mode .episode-play-button{
+  display:grid!important;place-items:center!important;
+  width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;
+  max-width:40px!important;max-height:40px!important;flex:0 0 40px!important;
+  padding:0!important;border-radius:50%!important;
+}
