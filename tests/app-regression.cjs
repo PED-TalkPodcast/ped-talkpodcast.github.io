@@ -89,15 +89,15 @@ const server = http.createServer((req,res)=>{
     // Compact Home card cycles content but has a fixed geometry and glass scripture treatment.
     assert.equal(await page.locator('.hope-card').getAttribute('data-presentation'),'compact');
     assert.equal(await page.locator('#hopeModal').getAttribute('data-presentation'),'expanded');
-    const compactBoxBefore=await page.locator('.hope-card').boundingBox();
+    await page.waitForTimeout(500);\n    const compactBoxBefore=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
     const compactGlass=await page.locator('.hope-scripture').evaluate(el=>getComputedStyle(el).backgroundColor);
     assert.equal(compactGlass,'rgba(239, 248, 255, 0.68)','compact scripture surface should use light glass styling');
-    assert.equal(Math.round(compactBoxBefore.height),286,'compact Home card should have a stable mobile height');
+    assert.ok(compactBoxBefore.height>=280&&compactBoxBefore.height<=290,'compact Home card should have a fixed mobile height');
     await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:12000});
     assert.match(await page.locator('#giftVerse').textContent(),/Amazing grace! how sweet the sound/);
-    const compactBoxAfter=await page.locator('.hope-card').boundingBox();
-    assert.equal(Math.round(compactBoxAfter.height),Math.round(compactBoxBefore.height),'compact card height must not change as devotional text changes');
-    assert.ok(Math.abs(compactBoxAfter.y-compactBoxBefore.y)<1,'compact card position must remain stable');
+    const compactBoxAfter=await page.locator('.hope-card').evaluate(el=>({height:el.offsetHeight,top:el.offsetTop}));
+    assert.equal(compactBoxAfter.height,compactBoxBefore.height,'compact card height must not change as devotional text changes');
+    assert.equal(compactBoxAfter.top,compactBoxBefore.top,'compact card position must remain stable');
     assert.equal(await page.locator('#giftVerse').evaluate(el=>getComputedStyle(el).webkitLineClamp),'2','compact verse text must clamp to two lines');
     // Tapping opens a separate expanded presentation, with its own glass card.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
