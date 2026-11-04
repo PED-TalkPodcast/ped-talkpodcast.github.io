@@ -55,6 +55,7 @@ function openDwoopModal(kind='upcoming'){
  const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
+ const activePlayer=overlay.querySelector('.episode-page-audio');if(activePlayer){activePlayer.pause();activePlayer.removeAttribute('src');}
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
