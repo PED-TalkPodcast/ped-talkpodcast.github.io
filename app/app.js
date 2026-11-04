@@ -749,7 +749,7 @@ let savedBibleMode='light';try{savedBibleMode=localStorage.getItem('ped-talk-bib
 setBibleMode(savedBibleMode==='dark'?'dark':'light');
 bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classList.contains('bible-dark')?'light':'dark'));
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home',null,false,{history:button.closest('.bottom-nav')?'replace':'push'});}));
-document.querySelectorAll('[data-view="explore-bible"],[data-view="home"]:not(.bottom-nav button)').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
+document.querySelectorAll('[data-view="explore-bible"],[data-view="home"]:not(.bottom-nav button),[data-view="episodes"]:not(.bottom-nav button)').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 const exploreHomeTile=document.querySelector('.explore-promo');
 if(exploreHomeTile){exploreHomeTile.tabIndex=0;exploreHomeTile.setAttribute('role','button');exploreHomeTile.setAttribute('aria-label','Explore Bible stories and history');exploreHomeTile.addEventListener('click',()=>showView('explore-bible'));exploreHomeTile.addEventListener('keydown',event=>{if(event.target===exploreHomeTile&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('explore-bible');}});}
 const readingHomeTile=document.querySelector('.reading-stats-promo');
