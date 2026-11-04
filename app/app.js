@@ -1,4 +1,5 @@
 const appUpcomingList=document.getElementById('appUpcomingList');
+let upcomingScheduleRows=[];
 async function renderAppUpcoming(){
  const output=document.getElementById('appUpcomingGraphic');
  if(!output)return;
@@ -7,6 +8,7 @@ async function renderAppUpcoming(){
   if(!response.ok)throw new Error('Upcoming schedule unavailable');
   const schedule=await response.json();
   const rows=(Array.isArray(schedule.episodes)?schedule.episodes:[]).slice(0,5);
+  upcomingScheduleRows=rows;
   const count=document.getElementById('upcomingCount');
   if(count)count.textContent=rows.length+' upcoming';
   if(!rows.length){output.alt='No upcoming PED-Talk episodes have been announced yet';return;}
@@ -48,17 +50,39 @@ async function renderAppUpcoming(){
 }
 renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
-if(showcase){
- const track=document.getElementById('appShowcaseTrack');
- let slideIndex=0,slideTimer=null,touchStart=0;
- function showShowcaseSlide(index){
-  slideIndex=(index+3)%3;
-  track.style.transform='translateX(-'+(slideIndex*100)+'%)';
-  window.clearInterval(slideTimer);
-  slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),8000);
+function openDwoopModal(kind='upcoming'){
+ const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
+ if(!overlay||!title||!content)return;
+ if(kind==='upcoming'){
+  eyebrow.textContent='PED-TALK · COMING UP NEXT';title.textContent='Upcoming episodes';intro.textContent='A look at the conversations being prepared for you.';
+  content.innerHTML=upcomingScheduleRows.length?upcomingScheduleRows.map((ep,index)=>'<article class="dwoop-episode"><span class="dwoop-episode-number">EP '+String(Number(ep.number)||index+1).padStart(2,'0')+'</span><div><h3>'+escapeBibleHTML(ep.title||'Upcoming conversation')+'</h3>'+(ep.subtitle?'<p>'+escapeBibleHTML(ep.subtitle)+'</p>':'')+'</div><span class="dwoop-status">COMING SOON</span></article>').join(''):'<p class="dwoop-empty">The next conversations will appear here when they are announced.</p>';
+ }else if(kind==='anagkazo'){
+  eyebrow.textContent='THE HOUSE BEHIND THE VOICE';title.textContent='ANAGKAZO.';intro.textContent='Christian · Broadcasting · Media';content.innerHTML='<p class="dwoop-feature-copy">Stories that help the world see a brighter day. A growing media house for conversations, creativity and meaningful stories.</p>';
+ }else{
+  eyebrow.textContent='VOICE OF HEALING';title.textContent='There is power in being heard.';intro.textContent='Stories, sound and stillness for the moments that need a gentler place to land.';content.innerHTML='<p class="dwoop-feature-copy">A space for thoughtful conversations and stories that meet people with care.</p>';
  }
+ const scrollY=window.scrollY||window.pageYOffset||0;
+ document.body.style.setProperty('--dwoop-scroll-top',(-scrollY)+'px');document.body.dataset.dwoopScrollY=String(scrollY);document.body.classList.add('dwoop-locked');
+ overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+}
+function closeDwoopModal(){
+ const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
+ overlay.classList.remove('active');document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');
+ const y=Number(document.body.dataset.dwoopScrollY)||0;delete document.body.dataset.dwoopScrollY;
+ window.setTimeout(()=>{overlay.hidden=true;window.scrollTo(0,y);},320);
+}
+document.getElementById('dwoopClose')?.addEventListener('click',closeDwoopModal);
+document.getElementById('dwoopOverlay')?.addEventListener('click',event=>{if(event.target.id==='dwoopOverlay')closeDwoopModal();});
+document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!document.getElementById('dwoopOverlay')?.hidden)closeDwoopModal();});
+if(showcase){
+ const track=document.getElementById('appShowcaseTrack'),slides=[...track.querySelectorAll('.app-showcase-slide')];
+ slides.forEach(slide=>{slide.tabIndex=0;slide.setAttribute('role','button');slide.setAttribute('aria-haspopup','dialog');});
+ let slideIndex=0,slideTimer=null,touchStart=0,suppressClickUntil=0;
+ function showShowcaseSlide(index){slideIndex=(index+3)%3;track.style.transform='translateX(-'+(slideIndex*100)+'%)';window.clearInterval(slideTimer);slideTimer=window.setInterval(()=>showShowcaseSlide(slideIndex+1),8000);}
  showcase.addEventListener('touchstart',event=>{touchStart=event.changedTouches[0].clientX;window.clearInterval(slideTimer);},{passive:true});
- showcase.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>40)showShowcaseSlide(slideIndex+(delta<0?1:-1));else showShowcaseSlide(slideIndex);},{passive:true});
+ showcase.addEventListener('touchend',event=>{const delta=event.changedTouches[0].clientX-touchStart;if(Math.abs(delta)>40){suppressClickUntil=Date.now()+450;showShowcaseSlide(slideIndex+(delta<0?1:-1));}else showShowcaseSlide(slideIndex);},{passive:true});
+ showcase.addEventListener('click',event=>{if(Date.now()<suppressClickUntil)return;const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');});
+ showcase.addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':'voice');}});
  document.addEventListener('visibilitychange',()=>{if(document.hidden)window.clearInterval(slideTimer);else showShowcaseSlide(slideIndex);});
  showShowcaseSlide(0);
 }
@@ -314,6 +338,27 @@ function writeBibleCollection(key,items){try{localStorage.setItem(key,JSON.strin
 function getBibleHighlights(){return readBibleCollection(BIBLE_HIGHLIGHTS_KEY);}
 function saveBibleHighlights(items){return writeBibleCollection(BIBLE_HIGHLIGHTS_KEY,items);}
 function getSavedBibleScriptures(){return readBibleCollection(BIBLE_SAVED_SCRIPTURES_KEY);}
+function resolveSavedBibleTarget(item){
+ if(!item||typeof item!=='object')return null;
+ const parts=String(item.id||'').split(':');
+ for(const candidate of [item.bookCode,item.book,parts[0],item.bookName]){
+  if(candidate===undefined||candidate===null||String(candidate).trim()==='')continue;
+  const value=String(candidate).trim();
+  const meta=bibleBooks.find(book=>book[0]===value.toUpperCase()||normalizeBibleText(book[1])===normalizeBibleText(value));
+  if(meta){
+   const chapter=Number(item.chapter||parts[1]||1),verse=Number(item.verse||parts[2]||1);
+   return {book:meta[0],testament:meta[2],chapter:Number.isFinite(chapter)&&chapter>0?chapter:1,verse:Number.isFinite(verse)&&verse>0?verse:1};
+  }
+ }
+ return null;
+}
+function openSavedBibleItem(item){
+ const target=resolveSavedBibleTarget(item);
+ if(!target){console.warn('Saved Bible reference could not be resolved',item);return;}
+ document.getElementById('bibleTestament').value=target.testament;
+ showView('bible',null,true);
+ loadBibleBook(target.book,target.chapter,target.verse,true);
+}
 function applyBibleHighlightsToDOM(){
  const saved=new Map(getBibleHighlights().map(item=>[item.id,item]));
  document.querySelectorAll('#bibleVerses .bible-verse').forEach(verse=>{
@@ -383,7 +428,6 @@ function showBibleLibraryTab(tab){
  if(tab==='highlights')renderBibleHighlights();if(tab==='saved')renderSavedBibleScriptures();if(tab==='notes')renderBibleNotes();
 }
 document.getElementById('bibleLibraryToggle')?.addEventListener('click',()=>{renderBibleHighlights();renderSavedBibleScriptures();renderBibleNotes();showBibleLibraryTab('saved');showView('bible-library');});
-document.getElementById('bibleLibraryBack')?.addEventListener('click',()=>showView('bible',null,true));
 document.getElementById('bibleHighlightsToggle')?.addEventListener('click',()=>showBibleLibraryTab('highlights'));
 document.getElementById('bibleSavedToggle')?.addEventListener('click',()=>showBibleLibraryTab('saved'));
 function renderBibleNotes(){
@@ -402,14 +446,14 @@ bibleHighlightsList?.addEventListener('click',event=>{
  if(remove){saveBibleHighlights(getBibleHighlights().filter(item=>item.id!==remove.dataset.deleteHighlight));renderBibleHighlights();applyBibleHighlightsToDOM();return;}
  const open=event.target.closest('[data-open-highlight]');if(!open)return;
  const item=getBibleHighlights().find(saved=>saved.id===open.dataset.openHighlight);if(!item)return;
- showView('bible',null,true);loadBibleBook(item.book,item.chapter,item.verse,true);
+ openSavedBibleItem(item);
 });
 bibleSavedList?.addEventListener('click',event=>{
  const remove=event.target.closest('[data-delete-saved-scripture]');
  if(remove){writeBibleCollection(BIBLE_SAVED_SCRIPTURES_KEY,getSavedBibleScriptures().filter(item=>item.id!==remove.dataset.deleteSavedScripture));renderSavedBibleScriptures();return;}
  const open=event.target.closest('[data-open-saved-scripture]');if(!open)return;
  const item=getSavedBibleScriptures().find(saved=>saved.id===open.dataset.openSavedScripture);if(!item)return;
- showView('bible',null,true);loadBibleBook(item.book,item.chapter,item.verse,true);
+ openSavedBibleItem(item);
 });
 renderBibleHighlights();renderSavedBibleScriptures();
 document.getElementById('bibleSearchButton').addEventListener('click',searchInBible);
