@@ -1,0 +1,33 @@
+name: PED-Talk app regression
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'assets/gift-of-hope-day.svg'
+      - 'service-worker.js'
+      - 'tests/**'
+      - '.github/workflows/app-regression.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: ped-talk-app-regression
+  cancel-in-progress: false
+jobs:
+  browser-regression:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install browser test runtime
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Run PED-Talk browser flows
+        run: node tests/app-regression.cjs
