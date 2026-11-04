@@ -50,7 +50,9 @@ async function renderAppUpcoming(){
 }
 renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
-let dwoopTransitionToken=0;\nfunction openDwoopModal(kind='upcoming'){\n const transitionToken=++dwoopTransitionToken;
+let dwoopTransitionToken=0;
+function openDwoopModal(kind='upcoming'){
+ const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light');
@@ -64,19 +66,21 @@ let dwoopTransitionToken=0;\nfunction openDwoopModal(kind='upcoming'){\n const t
  }else{
   eyebrow.textContent='VOICE OF HEALING';title.textContent='There is power in being heard.';intro.textContent='Stories, sound and stillness for the moments that need a gentler place to land.';content.innerHTML='<p class="dwoop-feature-copy">A space for thoughtful conversations and stories that meet people with care.</p>';
  }
- const scrollY=window.scrollY||window.pageYOffset||0;
- document.body.style.setProperty('--dwoop-scroll-top',(-scrollY)+'px');document.body.dataset.dwoopScrollY=String(scrollY);document.body.classList.add('dwoop-locked');
- overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+ const overlayWasOpen=!overlay.hidden;
+ if(!overlayWasOpen){const scrollY=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-scrollY)+'px');document.body.dataset.dwoopScrollY=String(scrollY);document.body.classList.add('dwoop-locked');}
+ overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-page-card','episode-swipe-next','episode-swipe-prev');overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
+ overlay.hidden=false;requestAnimationFrame(()=>{if(transitionToken===dwoopTransitionToken)overlay.classList.add('active');});document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
 function closeDwoopModal(){
+ const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
  const player=overlay.querySelector('.episode-page-audio');if(player){player.pause();player.removeAttribute('src');}
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light','dwoop-page-card','episode-swipe-next','episode-swipe-prev');
  overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
- overlay.classList.remove('active');document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');
- const y=Number(document.body.dataset.dwoopScrollY)||0;delete document.body.dataset.dwoopScrollY;
- window.setTimeout(()=>{overlay.hidden=true;window.scrollTo(0,y);},320);
+ overlay.classList.remove('active');
+ const y=Number(document.body.dataset.dwoopScrollY)||0;
+ window.setTimeout(()=>{if(transitionToken!==dwoopTransitionToken)return;overlay.hidden=true;document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');delete document.body.dataset.dwoopScrollY;window.scrollTo(0,y);},320);
 }
 document.getElementById('dwoopClose')?.addEventListener('click',closeDwoopModal);
 document.getElementById('dwoopOverlay')?.addEventListener('click',event=>{if(event.target.id==='dwoopOverlay')closeDwoopModal();});
@@ -122,9 +126,11 @@ function renderEpisodeGroups(root,list,emptyMessage){
 }
 let activeEpisodeSequence=[],activeEpisodeIndex=0;
 function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
+ const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
  if(!overlay||!card||!ep)return;
- const wasOpen=!overlay.hidden&&overlay.classList.contains('dwoop-episode-mode');
+ const overlayWasOpen=!overlay.hidden;
+ const wasOpen=overlayWasOpen&&overlay.classList.contains('dwoop-episode-mode');
  const previousIndex=activeEpisodeIndex;
  activeEpisodeSequence=sortedEpisodes(seasonEpisodes&&seasonEpisodes.length?seasonEpisodes:[ep]);
  activeEpisodeIndex=Math.max(0,activeEpisodeSequence.findIndex(item=>item===ep));
@@ -155,12 +161,12 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
   audioEl.addEventListener('ended',()=>{label.textContent='Play again';symbol.textContent='▶';});
  }
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=true;
- const y=window.scrollY||window.pageYOffset||0;
- if(!wasOpen){document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');}
+ if(!overlayWasOpen){const y=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');}
  overlay.hidden=false;
+ overlay.classList.remove('dwoop-reading-mode');
  card.scrollTop=0;
  if(wasOpen){card.classList.remove('episode-swipe-next','episode-swipe-prev');void card.offsetWidth;card.classList.add(direction<0?'episode-swipe-prev':'episode-swipe-next');}
- requestAnimationFrame(()=>overlay.classList.add('active'));
+ requestAnimationFrame(()=>{if(transitionToken===dwoopTransitionToken)overlay.classList.add('active');});
  if(!wasOpen)document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
 document.getElementById('dwoopContent')?.addEventListener('click',event=>{
@@ -696,6 +702,7 @@ function readingPeriodHeader(label,total,sessions,sub){
 }
 let activeReadingPeriod='today';
 function openReadingPeriod(period){
+ const transitionToken=++dwoopTransitionToken;
  activeReadingPeriod=period;
  const now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
  const start=period==='today'?todayStart:period==='week'?weekStart:monthStart;
