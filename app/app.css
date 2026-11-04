@@ -623,7 +623,7 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 .dwoop-card-expanded.dwoop-light .reading-period-total{background:#f5f8f4!important;border-color:#e1e9e1!important}
 .dwoop-card-expanded.dwoop-light .reading-period-total span,.dwoop-card-expanded.dwoop-light .reading-period-label{color:#66776b!important}
 .dwoop-card-expanded.dwoop-light .reading-period-total strong{color:#1d7044!important}
-.episode-open-card{display:grid;grid-template-columns:82px minmax(0,1fr) 28px;gap:13px;align-items:center;width:100%;padding:11px;border:1px solid rgba(169,200,229,.15);border-radius:16px;background:linear-gradient(145deg,#102b48,#0b2037);color:#edf4fa;text-align:left;cursor:pointer;font:inherit;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
+.episode-open-card{display:grid;grid-template-columns:82px minmax(0,1fr);gap:13px;align-items:center;width:100%;padding:11px;border:1px solid rgba(169,200,229,.15);border-radius:16px;background:linear-gradient(145deg,#102b48,#0b2037);color:#edf4fa;text-align:left;cursor:pointer;font:inherit;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease}
 .episode-open-card:active{transform:scale(.985)}
 .episode-open-card .episode-art{width:82px;height:82px;overflow:hidden;border-radius:11px;background:#f1f4f1}
 .episode-open-card .episode-art img{width:100%;height:100%;display:block;object-fit:cover}
@@ -631,7 +631,7 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 .episode-open-card .tag{margin:0;font-size:8px}
 .episode-card-title{font:700 14px/1.35 'DM Sans',sans-serif;color:#f4f8fb}
 .episode-card-prompt{font:500 9px/1.4 'DM Sans',sans-serif;color:#a9bdc9}
-.episode-open-mark{display:grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#b7d58a;color:#173d2b;font-size:10px}
+
 .episode-feature-art{display:block;width:100%;max-height:280px;object-fit:contain;background:#f2f4f2;border-radius:13px}
 .episode-feature-panel{display:grid;gap:14px}
 .episode-feature-description{margin:0;color:#4d5c52;font:400 13px/1.75 'DM Sans',sans-serif}
