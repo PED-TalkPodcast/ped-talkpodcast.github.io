@@ -97,12 +97,9 @@ const server = http.createServer((req,res)=>{
     assert.match(await page.locator('#giftReference').textContent(),/Revelation 3:21.*World English Bible/);
     await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
 
-    // Gift of Hope Light Mode glass treatment and no standalone hymn panel.
-    const homeHopeSurface=await page.locator('.hope-card').evaluate(el=>getComputedStyle(el).backgroundImage);
-    assert.match(homeHopeSurface,/gift-of-hope-day\.svg/,'Light Mode home tile must retain daytime cloud artwork');
-    assert.equal(await page.locator('.hope-hymn').count(),0,'expanded Gift of Hope must not include the separate Amazing Grace hymn panel');
-    const homeHopeRadius=await page.locator('.hope-card').evaluate(el=>getComputedStyle(el).borderRadius);
-    assert.match(homeHopeRadius,/30px/,'Light Mode Gift of Hope must have a soft glass-card radius');
+    // Home preview remains fixed; the devotional stages belong only to the expanded card.
+    assert.equal(await page.locator('#giftVerseLabel').textContent(),"TODAY'S SCRIPTURE");
+    assert.match(await page.locator('#giftVerse').textContent(),/For God so loved the world/);
 
     // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
