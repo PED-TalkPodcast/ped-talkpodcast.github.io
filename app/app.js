@@ -75,12 +75,8 @@ renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
 let dwoopTransitionToken=0;
 let lastDwoopTrigger=null;
-function currentAppView(){
- const state=window.history?.state;
- if(state?.pedTalkApp&&state.view)return state.view;
- const ids=[['home','homeView'],['episodes','episodesView'],['bible','bibleView'],['bible-library','bibleLibraryView'],['reading-stats','readingStatsView'],['books','booksView'],['explore-bible','exploreBibleView']];
- return ids.find(([,id])=>!document.getElementById(id)?.hidden)?.[0]||'home';
-}
+let activeAppView='home';
+function currentAppView(){return activeAppView;}
 function ensureAppHistory(){
  if(!window.history?.state?.pedTalkApp)window.history.replaceState({pedTalkApp:true,view:currentAppView()},'',window.location.href);
 }
@@ -325,6 +321,7 @@ const exploreBibleView=document.getElementById('exploreBibleView');
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false,options={}){
  const target=['home','episodes','bible','bible-library','reading-stats','books','explore-bible','hope'].includes(view)?view:'home';
+ activeAppView=target;
  const historyMode=options.history||'push';
  if(historyMode!=='none'){
   ensureAppHistory();
