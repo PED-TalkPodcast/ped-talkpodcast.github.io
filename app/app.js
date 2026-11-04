@@ -878,7 +878,11 @@ if('IntersectionObserver' in window){const hopeObserver=new IntersectionObserver
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevotional();else scheduleDevotional();});
 renderDevotionalStage(devotionalIndex);scheduleDevotional();
 window.PEDDevotional={sync:()=>{if(devotionalCanRun())scheduleDevotional();else pauseDevotional();},get phase(){return devotionalStages[devotionalIndex].phase;}};
-function openGiftHope(){renderDevotionalStage(devotionalIndex);showView('hope');renderHopeComments();}
+function openGiftHope(){
+ renderDevotionalStage(devotionalIndex);
+ const panel=hopeModal.querySelector('.hope-modal-panel');if(panel)panel.scrollTop=0;
+ showView('hope');renderHopeComments();
+}
 hopeCard.setAttribute('tabindex','0');hopeCard.setAttribute('role','button');hopeCard.setAttribute('aria-label','Open Gift of Hope');
 hopeCard.addEventListener('click',event=>{if(event.target.closest('a,button'))return;openGiftHope();});
 hopeCard.addEventListener('keydown',event=>{if(event.target===hopeCard&&(event.key==='Enter'||event.key===' ')){event.preventDefault();openGiftHope();}});
