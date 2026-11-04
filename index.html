@@ -291,6 +291,13 @@
       .carousel-track { transition: none; }
       .button, .episode { transition: none; }
     }
+
+    /* v88 — polished touch response and quiet, shape-following keyboard focus. */
+    a, button, [role="button"] { -webkit-tap-highlight-color: transparent; touch-action: manipulation; transition: transform .18s cubic-bezier(.2,.8,.25,1), background-color .18s ease, color .18s ease, box-shadow .18s ease; }
+    a:active, button:active, [role="button"]:active { transform: scale(.985); }
+    a:focus:not(:focus-visible), button:focus:not(:focus-visible), [role="button"]:focus:not(:focus-visible) { outline: none; }
+    a:focus-visible, button:focus-visible, [role="button"]:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(183,213,138,.58); }
+    @media (prefers-reduced-motion: reduce) { a, button, [role="button"] { transition: none !important; } a:active, button:active, [role="button"]:active { transform: none; } }
   </style>
 </head>
 <body>
@@ -319,7 +326,7 @@
   <main>
     <section class="hero" id="home">
       <div class="wrap hero-grid">
-        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt visible" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><a class="button" id="installButton" href="./app/">Install the app</a></div></div>
+        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt visible" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><a class="button" id="installButton" href="./app/?install=1">Continue to install</a></div></div>
         <div class="hero-showcase" id="heroShowcase" aria-label="PED-Talk visual story">
           <div class="hero-track" id="heroTrack">
             <article class="hero-slide hero-slide--podcast"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></article>
