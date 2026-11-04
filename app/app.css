@@ -1149,7 +1149,7 @@ body.app-dark .reading-drill-back,body.app-dark .dwoop-close{background:#173d2b!
 .bible-promo.explore-promo .button-link{border:0;cursor:pointer}
 .bible-reader-home{display:flex;align-items:center;gap:5px;border:1px solid #dfe5e1;border-radius:30px;background:#f3f7f3;color:#245b3c;padding:9px 12px;font:800 10px 'DM Sans',sans-serif}
 .bible-reader-home span{display:inline}
-body.app-light .explore-bible-view{color:#203128}
+body.app-light .explore-bible-view{background:#f7faf7;color:#203128}
 body.app-light .explore-page-head>div>p:last-child,body.app-light .explore-section-intro>p{color:#68786d}
 body.app-light .explore-back{background:#fff;border-color:#dce6dc;color:#245b3c}
 body.app-light .explore-category-tabs{border-color:#dfe8df}
