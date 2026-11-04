@@ -2529,3 +2529,69 @@ body.app-dark .dwoop-overlay.dwoop-episode-mode .episode-play-button{
 .episode-open-card .episode-info{grid-column:2}
 .episode-open-card .episode-open-mark{display:none!important}
 @media(max-width:520px){.episode-open-card{grid-template-columns:62px minmax(0,1fr)!important}}
+
+
+/* v116 — dedicated episode window and refined broadcast player. */
+.dwoop-overlay.dwoop-episode-mode{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:stretch;justify-content:center;
+  padding:0;background:rgba(1,7,4,.94);backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  overflow:hidden;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+  position:relative;width:min(100%,980px);height:100%;max-height:100%;min-height:100%;margin:0 auto;
+  padding:calc(26px + env(safe-area-inset-top)) clamp(20px,5vw,54px) calc(32px + env(safe-area-inset-bottom));
+  overflow-y:auto;overscroll-behavior:contain;border:1px solid rgba(112,176,133,.17);border-top:0;border-bottom:0;
+  border-radius:0;background:linear-gradient(155deg,#07130d 0%,#0b1b13 54%,#07100c 100%)!important;
+  color:#eff9f1!important;box-shadow:0 22px 90px rgba(0,0,0,.55);
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .gradient-shimmer-bar{height:3px;border-radius:99px;background:linear-gradient(90deg,#00a85a,#8be6a8,#00a85a)}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-close{
+ position:sticky;float:right;top:0;z-index:5;width:42px;height:42px;margin:-8px -4px 8px 12px;
+ border:1px solid rgba(190,245,205,.18)!important;border-radius:50%;background:rgba(255,255,255,.07)!important;
+ color:#e8f8ec!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .eyebrow{color:#8fe5a8!important;letter-spacing:.16em}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded h2{color:#f3fff5!important;font-size:clamp(27px,5vw,42px);line-height:1.12;letter-spacing:-.035em}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-intro{color:#9fb8a6!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-artwork{max-width:520px;margin:24px auto 28px;background:transparent;border-radius:22px}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-art{width:min(100%,520px);max-height: min(42vh,440px);margin:auto;object-fit:contain;border-radius:22px;background:#0b1711;box-shadow:0 18px 55px rgba(0,0,0,.34)}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-panel{gap:20px;max-width:720px;margin:0 auto}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-description{color:#b8cdbd!important;font-size:14px;line-height:1.8}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window{
+ display:grid;grid-template-columns:minmax(0,1fr);gap:13px;padding:18px 18px 14px;
+ border:1px solid rgba(160,224,178,.2);border-radius:22px;
+ background:linear-gradient(145deg,rgba(23,51,35,.82),rgba(7,22,13,.94));
+ box-shadow:0 18px 45px rgba(0,0,0,.25),inset 0 1px rgba(255,255,255,.06);
+ touch-action:pan-y;user-select:none;-webkit-user-select:none;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-controls{display:grid;grid-template-columns:58px minmax(0,1fr);align-items:center;gap:17px}
+.dwoop-overlay.dwoop-episode-mode .episode-play-button{
+ display:grid!important;place-items:center!important;width:54px!important;height:54px!important;min-width:54px!important;min-height:54px!important;
+ max-width:54px!important;max-height:54px!important;flex:0 0 54px!important;padding:0!important;
+ border:1px solid rgba(184,245,204,.38);border-radius:50%!important;
+ background:radial-gradient(circle at 32% 24%,#40c879 0%,#087b43 58%,#064c2c 100%);
+ color:#f5fff7;box-shadow:0 8px 25px rgba(0,180,91,.23),inset 0 1px 2px rgba(255,255,255,.32);
+ transition:transform .18s ease,filter .18s ease;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-play-button:active{transform:scale(.93);filter:brightness(1.12)}
+.dwoop-overlay.dwoop-episode-mode .episode-play-symbol{display:block;width:auto;height:auto;background:none;box-shadow:none;font:700 20px/1 'DM Sans',sans-serif}
+.dwoop-overlay.dwoop-episode-mode .episode-player-meta{min-width:0}
+.dwoop-overlay.dwoop-episode-mode .episode-player-track{height:7px;border-radius:20px;background:rgba(211,239,219,.17);cursor:pointer;touch-action:pan-y}
+.dwoop-overlay.dwoop-episode-mode .episode-player-track span{background:linear-gradient(90deg,#00b965,#a0efb6);box-shadow:0 0 12px rgba(0,224,112,.25)}
+.dwoop-overlay.dwoop-episode-mode .episode-player-times{margin-top:9px;color:#a9c5b1;font-size:11px}
+.dwoop-overlay.dwoop-episode-mode .episode-player-hint{margin:0;color:#789784;text-align:center;font-size:9px;letter-spacing:.04em}
+.dwoop-overlay.dwoop-episode-mode .episode-detail-link{color:#8de4a7}
+.dwoop-overlay.dwoop-episode-mode .episode-more-heading{border-color:rgba(177,225,190,.15)}
+.dwoop-overlay.dwoop-episode-mode .episode-more-heading strong{color:#eff9f1}
+.dwoop-overlay.dwoop-episode-mode .episode-more-tile{border-color:rgba(177,225,190,.14);background:rgba(255,255,255,.045);color:#eaf6ed}
+.dwoop-overlay.dwoop-episode-mode .episode-more-tile small{color:#8fe5a8}
+.dwoop-overlay.dwoop-episode-mode .episode-more-tile strong{color:#eaf6ed}
+.dwoop-overlay.dwoop-episode-mode .episode-more-tile b{color:#8fb69a}
+@media(min-width:760px){
+ .dwoop-overlay.dwoop-episode-mode{align-items:center;padding:24px}
+ .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{height:min(92vh,980px);min-height:0;border:1px solid rgba(112,176,133,.2);border-radius:26px}
+}
+@media(max-width:520px){
+ .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{padding-left:18px;padding-right:18px}
+ .dwoop-overlay.dwoop-episode-mode .episode-player-controls{grid-template-columns:54px minmax(0,1fr);gap:13px}
+}
