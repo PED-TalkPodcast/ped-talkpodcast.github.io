@@ -279,6 +279,7 @@ function showView(view,reference=null,preserveBible=false){
  [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
  hopeModal.hidden=target!=='hope';
  document.body.classList.remove('modal-open');
+ if(target!=='bible')document.body.classList.remove('scripture-reading');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
  const token=++viewTransitionToken;
  if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
