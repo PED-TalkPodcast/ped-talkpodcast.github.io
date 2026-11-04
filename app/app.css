@@ -383,7 +383,6 @@ body.bible-dark #bibleReader .bible-verse p{color:#e9edf0}
 body.bible-dark #bibleReader .bible-verse.verse-selected{background:rgba(183,213,138,.2)!important}
 body.bible-dark #bibleReader .bible-pager button{border-color:#34434e;background:#1b2933;color:#e9edf0}
 body.bible-dark #bibleReader .bible-pager button:active{background:#263a35}
-#appShowcase .app-showcase-controls,#appShowcase .app-showcase-dots{display:none!important}
 #appShowcase .app-showcase-track{transition:transform 1.05s cubic-bezier(.22,.72,.2,1);will-change:transform}
 #appShowcase .app-showcase-slide{backface-visibility:hidden}
 @media(max-width:420px){
@@ -1204,7 +1203,6 @@ body.app-dark .settings-heading h2,body.app-dark .settings-section h3,body.app-d
 body.app-dark .settings-heading p:not(.eyebrow),body.app-dark .settings-section>p,body.app-dark .theme-options small,body.app-dark .subscription-copy small,body.app-dark .settings-footnote{color:#b4c3c8!important}
 body.app-dark .settings-heading{border-color:rgba(226,238,227,.13)}
 body.app-dark .settings-section{border-color:rgba(226,238,227,.13)}
-body.app-dark .settings-close{background:#17384b!important;color:#edf4fa!important;border-color:rgba(226,238,227,.18)!important}
 body.app-dark .theme-options button{background:#17384b!important;color:#edf4fa!important;border-color:rgba(226,238,227,.16)!important}
 body.app-dark .theme-options button.active{background:#254c39!important;border-color:#a6ca83!important}
 body.app-dark .subscription-entry{border-color:rgba(226,238,227,.13)!important;color:#edf4fa!important}
