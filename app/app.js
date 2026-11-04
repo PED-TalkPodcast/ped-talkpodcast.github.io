@@ -799,7 +799,7 @@ function applyAppTheme(choice){
  }
  if(typeof setBibleMode==='function')setBibleMode(effective);
  appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
- const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#071b31':'#f5f8f5';
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#020504':'#f5f8f5';
  try{localStorage.setItem(APP_THEME_KEY,theme);}catch(error){}
  window.PEDDevotional?.sync();
 }
