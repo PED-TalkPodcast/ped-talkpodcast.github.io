@@ -527,3 +527,44 @@ body.bible-dark #bibleReader .verse-focus-arrival .verse-text{box-shadow:0 0 0 5
 .reading-empty{padding:18px;border:1px dashed rgba(170,200,226,.24);border-radius:15px;color:#aabaca;font-size:11px;line-height:1.6}.reading-snippets-list{display:grid;gap:9px}.reading-snippet{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid rgba(170,200,226,.15);border-radius:14px;background:#0d2742}.reading-snippet>span{font-size:20px;color:#b7d58a}.reading-snippet strong{font-size:11px}.reading-snippet p{font-size:10px;line-height:1.5;color:#b0c1d0;margin:5px 0 0}.reading-local-note{margin:24px 0 0;color:#8098ad;font-size:9px;line-height:1.6}
 .reading-stats-view[hidden]{display:none!important}
 @media(max-width:520px){.reading-stats-promo{padding:21px 18px}.reading-stats-promo h2{font-size:22px}.reading-stats-promo-mark{font-size:54px}.reading-stats-view{padding-left:16px;padding-right:16px}.reading-summary-card{padding:18px}.reading-summary-top h3{font-size:19px}.reading-time-grid{gap:6px}.reading-time-grid article{padding:10px 6px}.reading-time-grid strong{font-size:15px}.reading-continue-grid{grid-template-columns:1fr}}
+
+
+/* v75: typography-first Saved Scriptures, without nested grey boxes. */
+.bible-library-view .bible-saved-highlight{display:flex!important;align-items:flex-start;gap:12px;margin:0!important;padding:17px 2px!important;border:0!important;border-bottom:1px solid #e7ece7!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important}
+.bible-library-view .bible-saved-highlight-open{display:flex!important;flex:1 1 auto;flex-direction:column;align-items:flex-start;gap:8px;min-width:0;width:100%;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;color:#27372d!important;text-align:left!important;white-space:normal!important;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.bible-library-view .saved-highlight-ref{display:block!important;margin:0!important;color:#27744e!important;font:800 10px/1.3 'DM Sans',sans-serif!important;letter-spacing:.075em;text-transform:uppercase}
+.bible-library-view .saved-highlight-text{display:block!important;padding:0!important;margin:0!important;border:0!important;border-radius:0!important;background:transparent!important;color:#344238!important;font:400 15px/1.7 'DM Sans',sans-serif!important}
+.bible-library-view .bible-saved-highlight-delete{flex:0 0 32px;width:32px;height:32px;display:grid;place-items:center;margin:0!important;border:1px solid #e2e9e2!important;border-radius:50%!important;background:transparent!important;color:#758276!important;font-size:17px!important;-webkit-tap-highlight-color:transparent}
+.bible-library-view .bible-saved-highlight-open:active{transform:scale(.985);opacity:.86}
+.bible-library-subtitle{margin:8px 0 0;color:#718075;font:400 12px/1.5 'DM Sans',sans-serif}
+.bible-library-view .bible-library-page-head{padding-bottom:18px}
+.bible-library-view .bible-highlights-panel{background:transparent!important}
+
+/* Dwoop spring zoom, gradient shimmer and scroll-locked backdrop. */
+.dwoop-overlay[hidden]{display:none!important}
+.dwoop-overlay{position:fixed;inset:0;z-index:500;display:flex;align-items:center;justify-content:center;padding:22px 16px calc(22px + env(safe-area-inset-bottom));background:rgba(2,10,18,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);opacity:0;pointer-events:none;transition:opacity .28s ease}
+.dwoop-overlay.active{opacity:1;pointer-events:auto}
+.dwoop-card-expanded{position:relative;width:min(100%,440px);max-height:min(82vh,760px);overflow-y:auto;overscroll-behavior:contain;padding:27px 22px 24px;border:1px solid rgba(211,230,247,.16);border-radius:25px;background:radial-gradient(ellipse at 85% 0%,rgba(45,105,83,.25),transparent 42%),linear-gradient(145deg,#102c43,#071b2c 76%);color:#edf5f8;box-shadow:0 28px 80px rgba(0,0,0,.48);transform:scale(.82) translateY(24px);opacity:.7;transition:transform .42s cubic-bezier(.175,.885,.32,1.275),opacity .28s ease}
+.dwoop-overlay.active .dwoop-card-expanded{transform:scale(1) translateY(0);opacity:1}
+.dwoop-close{position:absolute;top:12px;right:13px;width:34px;height:34px;border:1px solid rgba(226,239,245,.18);border-radius:50%;background:rgba(255,255,255,.06);color:#eaf3f6;font-size:23px;line-height:1;cursor:pointer}
+.gradient-shimmer-bar{height:4px;width:100%;margin:0 0 20px;border-radius:6px;background:linear-gradient(90deg,#10b981,#3b82f6,#8b5cf6,#10b981);background-size:300% 300%;animation:dwoopGradient 4s ease infinite}
+@keyframes dwoopGradient{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.dwoop-card-expanded .eyebrow{color:#b7d58a;margin:0 40px 8px 0;font-size:9px;letter-spacing:.14em}
+.dwoop-card-expanded h2{margin:0;font:600 clamp(25px,7vw,34px)/1.1 'Playfair Display',Georgia,serif;letter-spacing:-.045em}
+.dwoop-intro{margin:10px 0 20px;color:#b8cbd6;font:400 12px/1.65 'DM Sans',sans-serif}
+.dwoop-content{display:grid;gap:9px}
+.dwoop-episode{display:grid;grid-template-columns:54px minmax(0,1fr);gap:11px;align-items:center;padding:13px 12px;border:1px solid rgba(210,230,240,.13);border-radius:15px;background:rgba(255,255,255,.035)}
+.dwoop-episode-number{color:#b7d58a;font:800 9px 'DM Sans',sans-serif;letter-spacing:.04em}
+.dwoop-episode h3{margin:0;color:#f0f6f8;font:700 12px/1.35 'DM Sans',sans-serif}
+.dwoop-episode p{margin:4px 0 0;color:#a9bdc9;font:400 10px/1.4 'DM Sans',sans-serif}
+.dwoop-status{grid-column:2;color:#86c9a9;font:800 8px 'DM Sans',sans-serif;letter-spacing:.12em}
+.dwoop-feature-copy,.dwoop-empty{margin:0;padding:15px;border:1px solid rgba(210,230,240,.12);border-radius:15px;color:#c4d4dc;font:400 12px/1.7 'DM Sans',sans-serif}
+.coming-soon-indicator{margin:20px 0 0;color:#b7d58a;font:700 10px 'DM Sans',sans-serif;letter-spacing:.04em}
+body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;width:100%;overflow:hidden;touch-action:none}
+.dwoop-overlay,.dwoop-card-expanded{touch-action:pan-y}
+.app-showcase-slide{cursor:zoom-in;-webkit-tap-highlight-color:transparent;user-select:none}
+.app-showcase-slide:focus{outline:none}
+.app-showcase-slide:focus-visible{outline:2px solid rgba(183,213,138,.8);outline-offset:-5px}
+*{-webkit-tap-highlight-color:transparent}
+@media(prefers-reduced-motion:reduce){.dwoop-overlay,.dwoop-card-expanded{transition:none!important}.gradient-shimmer-bar{animation:none!important}.app-showcase-slide:active{transform:none!important}}
+@media(max-width:420px){.dwoop-card-expanded{padding:24px 17px 20px}.dwoop-overlay{padding-left:12px;padding-right:12px}}
