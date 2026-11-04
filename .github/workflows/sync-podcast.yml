@@ -3,7 +3,7 @@ name: Sync PED-Talk Podcast Episodes
 
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 concurrency:
@@ -65,15 +65,25 @@ jobs:
                   )
               })
 
-          data = {
-              "updated": datetime.now(timezone.utc).isoformat(),
-              "episodes": episodes
-          }
+          existing_episodes = []
+          try:
+              with open("episodes.json", "r", encoding="utf-8") as file:
+                  existing_episodes = json.load(file).get("episodes", [])
+          except (FileNotFoundError, json.JSONDecodeError, AttributeError):
+              pass
 
-          with open("episodes.json", "w", encoding="utf-8") as file:
-              json.dump(data, file, ensure_ascii=False, indent=2)
+          if episodes == existing_episodes:
+              print(f"No catalogue changes. {len(episodes)} episodes are already synced.")
+          else:
+              data = {
+                  "updated": datetime.now(timezone.utc).isoformat(),
+                  "episodes": episodes
+              }
+              with open("episodes.json", "w", encoding="utf-8") as file:
+                  json.dump(data, file, ensure_ascii=False, indent=2)
+              print(f"Podcast catalogue updated: {len(episodes)} episodes.")
 
-          print(f"Found {len(episodes)} episodes.")
+          print(f"Latest RSS episode: {episodes[0]['title'] if episodes else 'none'}")
           for episode in episodes[:5]:
               print(f"Artwork check: {episode['title']} -> {episode['image'] or 'NO EPISODE/CHANNEL ARTWORK'}")
           PY
