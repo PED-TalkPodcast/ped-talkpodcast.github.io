@@ -14,7 +14,7 @@
   <meta name="twitter:title" content="PED-Talk — Real conversations. Brighter days.">
   <meta name="twitter:description" content="Personal Education Daily by Anagkazo Media.">
   <link rel="canonical" href="https://ped-talkpodcast.github.io/">
-  <link rel="manifest" href="./manifest.json">
+  <link rel="manifest" href="./app/manifest.json">
   <link rel="icon" href="./icons/ped-talk-icon.svg" type="image/svg+xml">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -326,7 +326,7 @@
   <main>
     <section class="hero" id="home">
       <div class="wrap hero-grid">
-        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt visible" id="installPrompt"><span>Open PED-Talk, then tap Install to add the app to your phone.</span><a class="button" id="installButton" href="./app/?install=1">Continue to install</a></div></div>
+        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt visible" id="installPrompt"><span id="installMessage">Add PED-Talk directly to your phone.</span><button class="button" id="installButton" type="button">Install App</button></div></div>
         <div class="hero-showcase" id="heroShowcase" aria-label="PED-Talk visual story">
           <div class="hero-track" id="heroTrack">
             <article class="hero-slide hero-slide--podcast"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></article>
@@ -489,6 +489,51 @@
     async function loadEpisodes() { try { const response = await fetch(`${FEED_URL}?v=${Date.now()}`); if (!response.ok) throw new Error("Catalogue unavailable"); const data = await response.json(); allEpisodes = (data.episodes || []).map((episode, index) => ({ ...episode, catalogIndex: index })); renderHeroUpcoming(allEpisodes); renderLibraryFilters(allEpisodes); displayEpisodes(allEpisodes); renderCarousel(allEpisodes); document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`; } catch (error) { container.textContent = "We couldn't load episodes right now. Please try again later."; featured.textContent = "Featured episode unavailable."; console.error(error); } }
     const menuBtn = document.getElementById("menuBtn"); const navLinks = document.getElementById("navLinks"); menuBtn.addEventListener("click", () => { const isOpen = navLinks.classList.toggle("open"); menuBtn.textContent = isOpen ? "✕" : "☰"; menuBtn.setAttribute("aria-expanded", String(isOpen)); menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu"); }); navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => { navLinks.classList.remove("open"); menuBtn.textContent = "☰"; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "Open menu"); }));
     document.getElementById("year").textContent = new Date().getFullYear(); updateCountdown(); setInterval(updateCountdown, 1000); loadEpisodes();
+  </script>
+
+  <script>
+    // One-tap installation: the website uses the app manifest, whose start_url opens /app/.
+    let deferredInstallPrompt = null;
+    const installButton = document.getElementById("installButton");
+    const installMessage = document.getElementById("installMessage");
+    const installPrompt = document.getElementById("installPrompt");
+    const isStandalone = () => window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+    if (isStandalone() && installPrompt) installPrompt.hidden = true;
+    window.addEventListener("beforeinstallprompt", event => {
+      event.preventDefault();
+      deferredInstallPrompt = event;
+      if (installButton) {
+        installButton.disabled = false;
+        installButton.textContent = "Install App";
+      }
+      if (installMessage) installMessage.textContent = "PED-Talk is ready to add to your phone.";
+    });
+    installButton?.addEventListener("click", async () => {
+      if (isStandalone()) {
+        if (installMessage) installMessage.textContent = "PED-Talk is already installed on this device.";
+        return;
+      }
+      if (!deferredInstallPrompt) {
+        if (installMessage) installMessage.textContent = "Installation is not available yet. Open this website in Chrome, ensure you are online, and try again shortly. You can also use Chrome’s menu → Install app.";
+        return;
+      }
+      const promptEvent = deferredInstallPrompt;
+      deferredInstallPrompt = null;
+      try {
+        await promptEvent.prompt();
+        const choice = await promptEvent.userChoice;
+        if (installMessage) installMessage.textContent = choice?.outcome === "accepted"
+          ? "PED-Talk installation accepted. Finish the confirmation on your phone."
+          : "Installation cancelled. You can tap Install App again when ready.";
+      } catch (error) {
+        console.error("PED-Talk installation prompt failed:", error);
+        if (installMessage) installMessage.textContent = "Chrome could not open the installation prompt. Please try again from Chrome’s menu.";
+      }
+    });
+    window.addEventListener("appinstalled", () => {
+      deferredInstallPrompt = null;
+      if (installPrompt) installPrompt.hidden = true;
+    });
   </script>
   <script>if ("serviceWorker" in navigator) window.addEventListener("load", () => navigator.serviceWorker.register("./service-worker.js").catch(error => console.error("Service worker registration failed:", error)));</script>
 </body>
