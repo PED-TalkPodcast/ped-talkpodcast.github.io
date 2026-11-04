@@ -50,52 +50,26 @@ window.addEventListener('appinstalled', () => {
 const appUpcomingList=document.getElementById('appUpcomingList');
 let upcomingScheduleRows=[];
 async function renderAppUpcoming(){
- const output=document.getElementById('appUpcomingGraphic');
- if(!output)return;
+ const list=document.getElementById('appUpcomingList');
+ if(!list)return;
  try{
-  const response=await fetch('../upcoming.json',{cache:'no-store'});
+  const response=await fetch('../upcoming.json?refresh='+Date.now(),{cache:'no-store'});
   if(!response.ok)throw new Error('Upcoming schedule unavailable');
   const schedule=await response.json();
   const rows=(Array.isArray(schedule.episodes)?schedule.episodes:[]).slice(0,5);
   upcomingScheduleRows=rows;
   const count=document.getElementById('upcomingCount');
   if(count)count.textContent=rows.length+' upcoming';
-  if(!rows.length){output.alt='No upcoming PED-Talk episodes have been announced yet';return;}
-  const template=new Image();
-  template.onload=()=>{
-   try{
-    const canvas=document.createElement('canvas');canvas.width=1024;canvas.height=1024;
-    const ctx=canvas.getContext('2d');if(!ctx)throw new Error('Canvas is unavailable');
-    ctx.drawImage(template,0,0,1024,1024);
-    const rowY=[379,466,553,640,727];
-    const rounded=(x,y,w,h,r)=>{
-     ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);
-     ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
-     ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);
-     ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();
-    };
-    rows.forEach((episode,index)=>{
-     const y=rowY[index],tileY=y+4,tileH=65;
-     const title=String(episode.title||'UPCOMING EPISODE').toUpperCase();
-     rounded(240,y,544,73,37);ctx.fillStyle='#17120f';ctx.fill();
-     rounded(240,tileY,544,tileH,33);ctx.fillStyle='#211a15';ctx.fill();
-     ctx.lineWidth=2;ctx.strokeStyle='#e9dfce';ctx.stroke();
-     ctx.save();rounded(240,tileY,143,tileH,32);ctx.clip();
-     ctx.fillStyle='#b8e64f';ctx.fillRect(240,tileY,143,tileH);ctx.restore();
-     ctx.fillStyle='#10130c';ctx.font='900 27px Arial,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-     ctx.fillText('EP '+String(Number(episode.number)||index+1).padStart(2,'0'),311,tileY+tileH/2);
-     ctx.fillStyle='#fff1dc';ctx.textAlign='left';let size=25;
-     ctx.font='900 '+size+'px Arial,sans-serif';
-     while(ctx.measureText(title).width>335&&size>15){size--;ctx.font='900 '+size+'px Arial,sans-serif';}
-     ctx.fillText(title,414,tileY+tileH/2);
-    });
-    output.src=canvas.toDataURL('image/jpeg',.94);
-    output.alt='PED-Talk upcoming episodes: '+rows.map(e=>'Episode '+e.number+', '+e.title).join('; ');
-   }catch(error){console.warn('Schedule artwork could not be updated',error);output.alt='PED-Talk upcoming schedule';}
-  };
-  template.onerror=()=>{output.alt='PED-Talk schedule artwork unavailable';};
-  template.src='../assets/up-next-template.jpg';
- }catch(error){output.alt='PED-Talk upcoming schedule unavailable';console.warn(error);}
+  list.innerHTML=rows.length?rows.map((episode,index)=>{
+   const number=String(Number(episode.number)||index+1).padStart(2,'0');
+   return '<article class="upcoming-row"><span class="upcoming-episode">EP '+number+'</span><span class="upcoming-row-copy"><strong class="upcoming-title">'+escapeBibleHTML(episode.title||'Upcoming conversation')+'</strong>'+(episode.subtitle?'<small class="upcoming-subtitle">'+escapeBibleHTML(episode.subtitle)+'</small>':'')+'</span><span class="upcoming-row-arrow" aria-hidden="true">↗</span></article>';
+  }).join(''):'<p class="upcoming-empty">New conversations will appear here when they are announced.</p>';
+  list.hidden=false;
+ }catch(error){
+  list.innerHTML='<p class="upcoming-empty">Upcoming conversations are temporarily unavailable. Please try again shortly.</p>';
+  list.hidden=false;
+  console.warn('Upcoming schedule could not be refreshed',error);
+ }
 }
 renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
@@ -173,7 +147,7 @@ function renderEpisodeGroups(root,list,emptyMessage){
   return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
    const index=allEpisodes.indexOf(ep),number=episodeNumber(ep),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
-   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span></button>'
+   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span></button>'
   }).join('')+'</div></section>'
  }).join('');
 }
@@ -188,7 +162,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  activeEpisodeSequence=sortedEpisodes(seasonEpisodes&&seasonEpisodes.length?seasonEpisodes:[ep]);
  activeEpisodeIndex=Math.max(0,activeEpisodeSequence.findIndex(item=>item===ep));
  const direction=slideDirection||(wasOpen&&activeEpisodeIndex!==previousIndex?(activeEpisodeIndex>previousIndex?1:-1):0);
- const title=displayEpisodeTitle(ep),number=episodeNumber(ep),image=ep.image||'../icons/ped-talk-icon.svg';
+ const title=displayEpisodeTitle(ep),number=episodeNumber(ep),image=episodeArtworkUrl(ep.image);
  const audio=typeof ep.audio==='string'&&/^https:\/\//i.test(ep.audio)?ep.audio:'';
  const link=typeof ep.link==='string'&&/^https:\/\//i.test(ep.link)?ep.link:'';
  const previousAudio=document.querySelector('.episode-page-audio');if(previousAudio){previousAudio.pause();previousAudio.removeAttribute('src');}
@@ -201,7 +175,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const description=plainText(ep.description),others=activeEpisodeSequence.filter(item=>item!==ep);
  const content=document.getElementById('dwoopContent');
  const player=audio?'<div class="episode-player-window"><audio class="episode-page-audio" preload="none" playsinline src="'+escapeBibleHTML(audio)+'"></audio><button type="button" class="episode-play-button" data-episode-play aria-label="Play episode"><span class="episode-play-symbol">▶</span><span class="episode-play-label">Play episode</span></button><div class="episode-player-meta"><div class="episode-player-track"><span></span></div><div class="episode-player-times"><span data-player-current>0:00</span><span data-player-duration>--:--</span></div></div></div>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>';
- content.innerHTML='<div class="episode-feature-panel">'+(description?'<p class="episode-feature-description">'+escapeBibleHTML(description)+'</p>':'<p class="episode-feature-description">A PED-Talk conversation. Press play when you are ready to listen.</p>')+player+(link?'<a class="episode-detail-link" href="'+escapeBibleHTML(link)+'" target="_blank" rel="noopener">More episode details ↗</a>':'')+'</div>'+(others.length?'<div class="episode-more-heading"><span>CONTINUE EXPLORING</span><strong>More from Season '+episodeSeason(ep)+'</strong></div><div class="episode-more-tiles">'+others.map(item=>'<button type="button" class="episode-more-tile" data-episode-index="'+allEpisodes.indexOf(item)+'"><img src="'+escapeBibleHTML(item.image||'../icons/ped-talk-icon.svg')+'" alt=""><span><small>EPISODE '+String(episodeNumber(item)||'—').padStart(2,'0')+'</small><strong>'+escapeBibleHTML(displayEpisodeTitle(item))+'</strong></span><b aria-hidden="true">›</b></button>').join('')+'</div>':'');
+ content.innerHTML='<div class="episode-feature-panel">'+(description?'<p class="episode-feature-description">'+escapeBibleHTML(description)+'</p>':'<p class="episode-feature-description">A PED-Talk conversation. Press play when you are ready to listen.</p>')+player+(link?'<a class="episode-detail-link" href="'+escapeBibleHTML(link)+'" target="_blank" rel="noopener">More episode details ↗</a>':'')+'</div>'+(others.length?'<div class="episode-more-heading"><span>CONTINUE EXPLORING</span><strong>More from Season '+episodeSeason(ep)+'</strong></div><div class="episode-more-tiles">'+others.map(item=>'<button type="button" class="episode-more-tile" data-episode-index="'+allEpisodes.indexOf(item)+'"><img src="'+escapeBibleHTML(episodeArtworkUrl(item.image))+'" alt=""><span><small>EPISODE '+String(episodeNumber(item)||'—').padStart(2,'0')+'</small><strong>'+escapeBibleHTML(displayEpisodeTitle(item))+'</strong></span><b aria-hidden="true">›</b></button>').join('')+'</div>':'');
  const audioEl=content.querySelector('.episode-page-audio'),playButton=content.querySelector('[data-episode-play]');
  if(audioEl&&playButton){
   const label=playButton.querySelector('.episode-play-label'),symbol=playButton.querySelector('.episode-play-symbol'),current=content.querySelector('[data-player-current]'),duration=content.querySelector('[data-player-duration]'),track=content.querySelector('.episode-player-track span');
@@ -254,7 +228,36 @@ function renderArchive(){
 }
 function render(){renderHomeSeason();renderArchive()}
 document.getElementById('archiveFilters').addEventListener('click',event=>{const button=event.target.closest('button[data-category]');if(!button)return;archiveCategory=button.dataset.category;document.querySelectorAll('#archiveFilters .filter').forEach(item=>item.classList.toggle('active',item===button));renderArchive()});
-fetch('../episodes.json',{cache:'no-store'}).then(response=>{if(!response.ok)throw new Error('Could not load episodes');return response.json()}).then(data=>{allEpisodes=data.episodes||[];render()}).catch(()=>{groupRoot.innerHTML='<p class="empty">Your episode library could not load just now. Please check your connection and try again.</p>';archiveRoot.innerHTML='<p class="empty">The season archive could not load just now. Please try again.</p>'});
+let episodeCatalogueUpdated='';
+function episodeArtworkUrl(source){
+ const value=typeof source==='string'&&source?source:'../icons/ped-talk-icon.svg';
+ try{const url=new URL(value,window.location.href);if(episodeCatalogueUpdated)url.searchParams.set('pedtalk-art',episodeCatalogueUpdated);return url.href;}catch(error){return value;}
+}
+async function refreshEpisodeCatalogue(showError=false){
+ try{
+  const response=await fetch('../episodes.json?refresh='+Date.now(),{cache:'no-store'});
+  if(!response.ok)throw new Error('Could not load episodes');
+  const data=await response.json();
+  const updated=String(data.updated||'');
+  if(updated!==episodeCatalogueUpdated||!allEpisodes.length){
+   episodeCatalogueUpdated=updated||String(Date.now());
+   allEpisodes=Array.isArray(data.episodes)?data.episodes:[];
+   render();
+  }
+  return true;
+ }catch(error){
+  if(showError||!allEpisodes.length){
+   groupRoot.innerHTML='<p class="empty">Your episode library could not load just now. Please check your connection and try again.</p>';
+   archiveRoot.innerHTML='<p class="empty">The season archive could not load just now. Please try again.</p>';
+  }
+  console.warn('Episode catalogue refresh failed',error);
+  return false;
+ }
+}
+refreshEpisodeCatalogue(true);
+window.setInterval(()=>refreshEpisodeCatalogue(false),15*60*1000);
+window.addEventListener('focus',()=>refreshEpisodeCatalogue(false));
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshEpisodeCatalogue(false);});
 
 const homeView=document.getElementById('homeView');
 const episodesView=document.getElementById('episodesView');
