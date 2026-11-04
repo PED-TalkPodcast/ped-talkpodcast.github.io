@@ -690,8 +690,6 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 /* v80 — precisely align the episode-card play affordance. */
 .episode-open-card{grid-template-columns:68px minmax(0,1fr) 40px;align-items:center}
 .episode-open-card .episode-info{align-self:center;justify-content:center;min-height:68px}
-.episode-open-card .episode-open-mark{justify-self:center;align-self:center;display:flex;flex:0 0 36px;width:36px;height:36px;min-width:36px;min-height:36px;box-sizing:border-box;margin:0;padding:0;border:1px solid rgba(23,61,43,.12);border-radius:50%;align-items:center;justify-content:center;line-height:1;font-size:0;transform:none}
-.episode-open-card .episode-open-mark::before{content:"";display:block;width:0;height:0;margin-left:3px;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid #173d2b}
 .episode-open-card:focus-visible .episode-open-mark{outline:3px solid rgba(183,213,138,.65);outline-offset:3px}
 @media(max-width:520px){.episode-open-card{grid-template-columns:68px minmax(0,1fr) 40px;gap:10px;padding:9px}.episode-open-card .episode-art{width:68px;height:68px}}
 
@@ -2430,7 +2428,7 @@ body.app-dark :is(.loading,.gradient-shimmer-bar)::after{background:linear-gradi
 /* v113 — episode cards open a centered player window with compact glass controls. */
 .episode-open-card{
   -webkit-appearance:none!important;appearance:none!important;
-  grid-template-columns:68px minmax(0,1fr) 34px!important;
+  grid-template-columns:68px minmax(0,1fr)!important;
   align-items:center!important;gap:10px!important;
   text-align:left!important;
 }
@@ -2513,7 +2511,7 @@ body.app-dark .episode-play-button{background:linear-gradient(145deg,#00e676,#00
   }
   .episode-player-window{grid-template-columns:42px minmax(0,1fr)!important;gap:12px!important;padding:13px!important}
   .episode-play-button{width:40px!important;height:40px!important;min-width:40px!important;min-height:40px!important;max-width:40px!important;flex-basis:40px!important}
-  .episode-open-card{grid-template-columns:62px minmax(0,1fr) 32px!important;gap:9px!important}
+  .episode-open-card{grid-template-columns:62px minmax(0,1fr)!important;gap:9px!important}
   .episode-open-card .episode-art{width:62px!important;height:62px!important}
 }
 
@@ -2524,3 +2522,10 @@ body.app-dark .dwoop-overlay.dwoop-episode-mode .episode-play-button{
   max-width:40px!important;max-height:40px!important;flex:0 0 40px!important;
   padding:0!important;border-radius:50%!important;
 }
+
+/* v115 — small episode tiles are tap targets only; no play icon/button on the tile. */
+.episode-open-card{grid-template-columns:68px minmax(0,1fr)!important}
+.episode-open-card .episode-art{grid-column:1}
+.episode-open-card .episode-info{grid-column:2}
+.episode-open-card .episode-open-mark{display:none!important}
+@media(max-width:520px){.episode-open-card{grid-template-columns:62px minmax(0,1fr)!important}}
