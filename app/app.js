@@ -624,8 +624,18 @@ function startBibleReadingSession(code,title,chapter,verseCount,focusVerse){
  startUniversalReading({bookId:'bible-web-'+code,title:bookName,subtitle:bookName+' · Chapter '+chapter,sourceType:'bible',location:{bookCode:code,bookName,chapter,verse:focusVerse||1},progress:chapterProgress,displayText:'Chapter '+chapter+' of '+totalChapters,wordsRead:null});
 }
 function formatUniversalTime(seconds){
- const mins=Math.floor(Math.max(0,seconds)/60),hours=Math.floor(mins/60),remaining=mins%60;
+ const value=Math.max(0,Math.floor(Number(seconds)||0)),mins=Math.floor(value/60),hours=Math.floor(mins/60),remaining=mins%60;
+ if(value<60)return value+'s';
  return hours?hours+'h '+remaining+'m':mins+'m';
+}
+function formatDetailedReadingTime(seconds){
+ const value=Math.max(0,Math.floor(Number(seconds)||0)),hours=Math.floor(value/3600),mins=Math.floor((value%3600)/60),secs=value%60;
+ return hours?hours+'h '+mins+'m':mins?mins+'m '+secs+'s':secs+'s';
+}
+function universalDurationInRange(item,start,end){
+ const sessionStart=Number(item.startTime),sessionEnd=Number(item.endTime),duration=Math.max(0,Number(item.durationSeconds)||0);
+ const overlap=Math.max(0,Math.min(end,sessionEnd)-Math.max(start,sessionStart)),span=Math.max(0,sessionEnd-sessionStart);
+ return span?Math.min(duration,Math.round(duration*overlap/span)):((sessionStart>=start&&sessionStart<=end)?duration:0);
 }
 function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate()).getTime();}
 function startOfLocalWeek(date){const day=(date.getDay()+6)%7;return startOfLocalDay(new Date(date.getFullYear(),date.getMonth(),date.getDate()-day));}
@@ -673,7 +683,7 @@ function openReadingPeriod(period){
  const content=document.getElementById('dwoopContent');
  content.innerHTML='<section class="reading-detail-total"><span>Total time read</span><strong>'+escapeBibleHTML(formatUniversalTime(total))+'</strong><small>'+sessions.length+' recorded '+(sessions.length===1?'session':'sessions')+'</small></section>'+
   (grouped.size?'<section class="reading-detail-books"><h3>Books read</h3>'+[...grouped.entries()].map(([name,seconds])=>'<div class="reading-detail-book"><span>'+escapeBibleHTML(name)+'</span><strong>'+escapeBibleHTML(formatUniversalTime(seconds))+'</strong></div>').join('')+'</section>':'')+
-  '<section class="reading-detail-sessions"><h3>Reading sessions</h3>'+(sessions.length?sessions.map(item=>'<article class="reading-session-row"><div><strong>'+escapeBibleHTML(readingSessionTitle(item,progress))+'</strong><span>'+escapeBibleHTML(readingDateTime(item.displayStart))+' – '+escapeBibleHTML(readingClock(item.displayEnd))+'</span></div><b>'+escapeBibleHTML(formatUniversalTime(item.displayDuration))+'</b></article>').join(''):'<p class="reading-detail-empty">No completed reading time has been recorded for this period yet. Your sessions will appear here as you read.</p>')+'</section>';
+  '<section class="reading-detail-sessions"><h3>Reading sessions</h3>'+(sessions.length?sessions.map(item=>'<article class="reading-session-row"><div><strong>'+escapeBibleHTML(readingSessionTitle(item,progress))+'</strong><span>'+escapeBibleHTML(readingDateTime(item.displayStart))+' – '+escapeBibleHTML(readingClock(item.displayEnd))+'</span></div><b>'+escapeBibleHTML(formatDetailedReadingTime(item.displayDuration))+'</b></article>').join(''):'<p class="reading-detail-empty">No completed reading time has been recorded for this period yet. Your sessions will appear here as you read.</p>')+'</section>';
  const y=window.scrollY||window.pageYOffset||0;
  document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');
  overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
@@ -681,7 +691,7 @@ function openReadingPeriod(period){
 document.querySelectorAll('[data-reading-period]').forEach(button=>button.addEventListener('click',()=>openReadingPeriod(button.dataset.readingPeriod)));
 function renderReadingDashboard(){
  const sessions=universalSessions(),now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
- const totalSince=start=>sessions.reduce((sum,item)=>sum+(Number(item.durationSeconds)||0)*(Number(item.endTime)>=start?1:0),0);
+ const totalSince=start=>sessions.reduce((sum,item)=>sum+universalDurationInRange(item,start,now.getTime()),0);
  const today=totalSince(todayStart),week=totalSince(weekStart),month=totalSince(monthStart);
  const progress=universalProgressItems().sort((a,b)=>(b.lastAccessedTimestamp||0)-(a.lastAccessedTimestamp||0));
  const activeBooks=new Set(sessions.filter(item=>Number(item.durationSeconds)>0&&Number(item.startTime)>=monthStart).map(item=>item.bookId));
