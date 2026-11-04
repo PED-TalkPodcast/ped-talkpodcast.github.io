@@ -1288,7 +1288,7 @@ body.app-light .app-showcase-slide .eyebrow{color:#17365d!important}
 body.app-light .hope-card .eyebrow,
 body.app-light .hope-card .verse-label{color:#e4edf6!important}
 @media(max-width:520px){
- #appShowcase .app-showcase-slide{aspect-ratio:1.23/1}
+ #appShowcase .app-showcase-slide{aspect-ratio:1.38/1}
  .app-showcase-upcoming{padding:9px!important}
  .app-showcase-upcoming .upcoming-card{padding:12px 13px!important;border-radius:14px}
  .app-showcase-upcoming .upcoming-card-head{margin-bottom:7px}
