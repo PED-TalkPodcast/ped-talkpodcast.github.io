@@ -275,7 +275,7 @@ function showView(view,reference=null,preserveBible=false){
  const readingStatsView=document.getElementById('readingStatsView');
  const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
- [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView].forEach(el=>{if(el){el.hidden=el!==next;el.classList.remove('view-enter');}});
+ [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
  hopeModal.hidden=target!=='hope';
  document.body.classList.remove('modal-open');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
@@ -616,6 +616,7 @@ function applyAppTheme(choice){
  const theme=['system','light','dark'].includes(choice)?choice:'system';
  const effective=theme==='system'?(systemPrefersDark()?'dark':'light'):theme;
  document.body.dataset.appTheme=effective;
+ if(typeof setBibleMode==='function')setBibleMode(effective);
  document.body.classList.toggle('app-light',effective==='light');
  document.body.classList.toggle('app-dark',effective==='dark');
  appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
