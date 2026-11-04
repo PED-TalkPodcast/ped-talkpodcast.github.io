@@ -848,7 +848,7 @@ const hopeModal=document.getElementById('hopeModal'),giftVerse=document.getEleme
 const hopeCard=document.querySelector('.hope-card'),giftDevotional=document.getElementById('giftDevotional'),giftVerseLabel=document.getElementById('giftVerseLabel');
 const devotionalStages=[
  {label:"TODAY'S SCRIPTURE",text:'“For God so loved the world, that he gave his one and only Son…”',reference:'John 3:16 · World English Bible',bible:'John:3:16',phase:'scripture'},
- {label:'AMAZING GRACE',text:'“Amazing grace! how sweet the sound, that saved a wretch like me! I once was lost, but now am found; was blind, but now I see.”',reference:'John Newton · Amazing Grace (public-domain hymn)',bible:'REV:3:21',phase:'grace'},
+ {label:'AMAZING GRACE',text:'“Amazing grace! how sweet the sound, that saved a wretch like me! I once was lost, but now am found; was blind, but now I see.” Grace meets us in our weakness, carries us through every trial, and leads us home in hope.',reference:'John Newton · Amazing Grace (public-domain hymn)',bible:'REV:3:21',phase:'grace'},
  {label:'A PROMISE OF VICTORY',text:'He who overcomes, I will give to him to sit down with me on my throne, as I also overcame, and sat down with my Father on his throne.',reference:'Revelation 3:21 · World English Bible',bible:'REV:3:21',phase:'victory'}
 ];
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
