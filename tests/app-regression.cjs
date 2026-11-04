@@ -250,13 +250,14 @@ const server = http.createServer((req,res)=>{
     await page.locator('.episode-open-card').first().click();
     await visible('#dwoopOverlay');
     const episodeWindow=await page.locator('.dwoop-card-expanded').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,viewportWidth:innerWidth,viewportHeight:innerHeight,classes:el.className,overlayClasses:el.parentElement.className}));
-    assert.ok(episodeWindow.width<episodeWindow.viewportWidth,'episode details must appear in a bounded window');
-    assert.ok(episodeWindow.height<episodeWindow.viewportHeight,'episode details must not become a full-screen tab');
-    assert.doesNotMatch(episodeWindow.overlayClasses,/dwoop-page-mode/,'episode details must not use the full-page reading layout');
+    assert.ok(episodeWindow.width<=episodeWindow.viewportWidth,'episode window must fit the viewport');
+    assert.ok(episodeWindow.height<=episodeWindow.viewportHeight,'episode window must fit the viewport');
+    assert.match(episodeWindow.overlayClasses,/dwoop-episode-mode/,'episode must open in its own dedicated window/page');
     const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,label:getComputedStyle(el.querySelector('.episode-play-label')).display}));
-    assert.ok(compactPlay.width<=42&&compactPlay.height<=42,'player play control must stay compact on mobile');
-    assert.equal(compactPlay.radius,'50%','player play control must be a circular modern button');
-    assert.equal(compactPlay.label,'none','player play control must not expand into a wide text button');
+    assert.ok(compactPlay.width>=48&&compactPlay.width<=58&&compactPlay.height>=48&&compactPlay.height<=58,'player play control must be a refined circular button');
+    assert.equal(compactPlay.radius,'50%','player play control must be circular');
+    assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
+    assert.equal(await page.locator('[data-episode-swipe-area]').count(),1,'episode audio surface must support swipe navigation');
     await page.locator('#dwoopClose').click();
     await hidden('#dwoopOverlay');
 
@@ -266,7 +267,7 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1,'autoplay should advance one slide');
 
     assert.deepEqual(errors,[],'browser JavaScript errors');
-    process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, centered episode player window and compact glass play controls.\n');
+    process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, dedicated episode window, refined circular glass play control, seek bar and swipe navigation.\n');
     await context.close();
   }catch(error){
     process.stderr.write((error&&error.stack)||String(error));
