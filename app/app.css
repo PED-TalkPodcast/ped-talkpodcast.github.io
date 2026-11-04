@@ -653,3 +653,37 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 
 .reading-stats-head .reader-kicker{color:#64806d!important}
 .reading-stats-view .reading-local-note{color:#7d897f!important}
+
+/* v79 — readable reading-session ledger and dedicated page windows. */
+.dwoop-overlay.dwoop-page-mode{align-items:stretch;justify-content:stretch;padding:0;background:#f7faf7;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;opacity:0;overflow:hidden}
+.dwoop-overlay.dwoop-page-mode.active{opacity:1}
+.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded.dwoop-page-card{width:100%;max-width:none;height:100%;max-height:none;min-height:100%;margin:0;padding:calc(28px + env(safe-area-inset-top)) max(20px,calc((100vw - 760px)/2)) calc(30px + env(safe-area-inset-bottom));border:0;border-radius:0;box-shadow:none;overflow-y:auto;overscroll-behavior:contain;background:#fff!important;color:#203128!important;transform:translateY(18px);opacity:1;transition:transform .28s ease}
+.dwoop-overlay.dwoop-page-mode.active .dwoop-card-expanded.dwoop-page-card{transform:translateY(0)}
+.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded .gradient-shimmer-bar{background:linear-gradient(90deg,#1d7044,#b7d58a)}
+.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded .dwoop-close{position:sticky;float:right;top:0;z-index:3;margin-top:-8px;background:#f1f5f1!important;color:#26382d!important;border:1px solid #e2eae2!important}
+.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded .dwoop-intro{color:#6c7b70!important}
+.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded .coming-soon-indicator{display:none}
+.dwoop-overlay.dwoop-reading-mode .dwoop-card-expanded{max-width:760px!important;margin:0 auto!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{max-width:820px!important;margin:0 auto!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-artwork{max-height:none;background:#f3f6f3;margin:12px 0 22px}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-art{width:100%;height:min(42vh,340px);max-height:none;object-fit:contain;background:#f3f6f3}
+.reading-detail-total{display:grid;gap:5px;padding:22px;border:1px solid #e1eae1;border-radius:18px;background:#f4f8f4}
+.reading-detail-total span{color:#617468;font-size:11px;font-weight:700}
+.reading-detail-total strong{color:#17643d;font-size:34px;letter-spacing:-.05em;font-variant-numeric:tabular-nums}
+.reading-detail-total small{color:#87958a;font-size:10px}
+.reading-detail-books,.reading-detail-sessions{margin-top:25px}
+.reading-detail-books h3,.reading-detail-sessions h3{margin:0 0 11px;color:#27392e;font-size:17px}
+.reading-detail-book,.reading-session-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 2px;border-bottom:1px solid #e9eee9}
+.reading-detail-book span,.reading-session-row strong{color:#304237;font-size:13px;font-weight:650}
+.reading-detail-book strong,.reading-session-row>b{color:#26734a;font-size:12px;font-variant-numeric:tabular-nums}
+.reading-session-row>div{display:grid;gap:5px;min-width:0}
+.reading-session-row span{color:#829087;font-size:10px}
+.reading-detail-empty{padding:17px;border-radius:13px;background:#f5f8f5;color:#7b897f;font-size:12px;line-height:1.6}
+.episode-player-window{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:16px;padding:16px;border:1px solid #e2eae2;border-radius:17px;background:#f6f9f6}
+.episode-play-button{display:flex;align-items:center;gap:10px;min-height:48px;padding:0 18px;border:0;border-radius:28px;background:#173d2b;color:#fff;font:700 12px 'DM Sans',sans-serif;cursor:pointer}
+.episode-play-symbol{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;background:rgba(255,255,255,.16);font-size:11px}
+.episode-player-meta{min-width:0}
+.episode-player-track{height:5px;overflow:hidden;border-radius:9px;background:#dfe8df}
+.episode-player-track span{display:block;width:0;height:100%;border-radius:9px;background:#28734b}
+.episode-player-times{display:flex;justify-content:space-between;margin-top:7px;color:#718176;font-size:10px;font-variant-numeric:tabular-nums}
+@media(max-width:520px){.dwoop-overlay.dwoop-page-mode .dwoop-card-expanded.dwoop-page-card{padding-left:18px;padding-right:18px}.episode-player-window{grid-template-columns:1fr;gap:12px}.episode-play-button{justify-content:center;width:100%}}
