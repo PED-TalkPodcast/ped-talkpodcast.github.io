@@ -1780,3 +1780,26 @@ body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-v
 
 /* v101 — prevent scroll anchoring from restoring the comments position on modal reopen. */
 .hope-modal-panel{overflow-anchor:none!important;scroll-behavior:auto!important}
+
+
+/* v102 — clear blue daytime sky for Gift of Hope, with a readable frosted devotional surface. */
+body.app-light .welcome.hope-card{
+ background-color:#78bce9!important;
+ background-image:linear-gradient(180deg,rgba(255,255,255,.015),rgba(255,255,255,.07)),var(--gift-of-hope-image)!important;
+ background-position:center 48%!important;background-size:cover!important;
+}
+body.app-light .hope-modal{
+ background-color:#78bce9!important;
+ background-image:linear-gradient(180deg,rgba(18,77,125,.015),rgba(18,77,125,.13)),var(--gift-of-hope-image)!important;
+ background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important;
+}
+body.app-light .hope-modal-panel{
+ background:rgba(255,255,255,.78)!important;background-image:none!important;
+ border:1px solid rgba(255,255,255,.78)!important;border-radius:28px!important;
+ color:#263c30!important;
+ box-shadow:0 18px 52px rgba(37,83,119,.18),inset 0 1px 0 rgba(255,255,255,.92)!important;
+ backdrop-filter:blur(24px) saturate(1.35)!important;-webkit-backdrop-filter:blur(24px) saturate(1.35)!important;
+}
+body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#203a2b!important;text-shadow:none!important}
+body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#315f78!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#526a62!important}
