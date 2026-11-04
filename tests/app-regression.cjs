@@ -240,13 +240,36 @@ const server = http.createServer((req,res)=>{
     await hidden('#appSettingsModal');
     await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
 
+    // Episode cards must open a centered modal window, not expand into a full-screen tab.
+    await page.locator('#appSettingsButton').click();
+    await page.locator('button[data-app-theme="dark"]').click();
+    await page.locator('#settingsHome').click();
+    await hidden('#appSettingsModal');
+    await page.waitForSelector('.episode-open-card',{timeout:10000});
+    const episodeMark=await page.locator('.episode-open-card').first().locator('.episode-open-mark').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
+    assert.equal(episodeMark.width,32,'episode open affordance must remain compact');
+    assert.equal(episodeMark.height,32,'episode open affordance must remain compact');
+    assert.equal(episodeMark.radius,'50%','episode open affordance must remain circular, not a gray square');
+    await page.locator('.episode-open-card').first().click();
+    await visible('#dwoopOverlay');
+    const episodeWindow=await page.locator('.dwoop-card-expanded').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,viewportWidth:innerWidth,viewportHeight:innerHeight,classes:el.className,overlayClasses:el.parentElement.className}));
+    assert.ok(episodeWindow.width<episodeWindow.viewportWidth,'episode details must appear in a bounded window');
+    assert.ok(episodeWindow.height<episodeWindow.viewportHeight,'episode details must not become a full-screen tab');
+    assert.doesNotMatch(episodeWindow.overlayClasses,/dwoop-page-mode/,'episode details must not use the full-page reading layout');
+    const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,label:getComputedStyle(el.querySelector('.episode-play-label')).display}));
+    assert.ok(compactPlay.width<=42&&compactPlay.height<=42,'player play control must stay compact on mobile');
+    assert.equal(compactPlay.radius,'50%','player play control must be a circular modern button');
+    assert.equal(compactPlay.label,'none','player play control must not expand into a wide text button');
+    await page.locator('#dwoopClose').click();
+    await hidden('#dwoopOverlay');
+
     // One autoplay timeout advances exactly one slide.
     await page.evaluate(()=>window.PEDShowcase.goTo(0));
     await page.waitForTimeout(8300);
     assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1,'autoplay should advance one slide');
 
     assert.deepEqual(errors,[],'browser JavaScript errors');
-    process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay.\n');
+    process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, centered episode player window and compact glass play controls.\n');
     await context.close();
   }catch(error){
     process.stderr.write((error&&error.stack)||String(error));
