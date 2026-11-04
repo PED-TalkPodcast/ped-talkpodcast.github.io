@@ -1664,3 +1664,67 @@ body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important
 @media(prefers-reduced-motion:reduce){
  .hope-devotional,.hope-devotional.is-leaving,.hope-devotional.is-entering{transition:none!important;animation:none!important;transform:none!important}
 }
+
+/* v99 — semantic theme surfaces for Gift of Hope, comments and featured artwork. */
+:root{
+ --ped-background:#071b31;--ped-surface:#102c43;--ped-surface-elevated:#173d60;
+ --ped-text-primary:#f4f7f4;--ped-text-secondary:#c2d0dc;--ped-text-muted:#9aafc0;
+ --ped-accent:#b7d58a;--ped-border:rgba(226,239,245,.18);--ped-overlay:rgba(3,12,25,.78);
+ --ped-button-background:#d5e7f7;--ped-button-text:#0a2038;
+ --gift-of-hope-image:url('../assets/gift-of-hope-sky.svg');
+}
+body.app-dark{--ped-background:#071b31;--ped-surface:#102c43;--ped-surface-elevated:#173d60;--ped-text-primary:#f4f7f4;--ped-text-secondary:#c2d0dc;--ped-text-muted:#9aafc0;--ped-border:rgba(226,239,245,.18);--ped-overlay:rgba(3,12,25,.78)}
+body.app-light{
+ color-scheme:light;--ped-background:#f3f6ef;--ped-surface:#fffdf7;--ped-surface-elevated:#f8f1e4;
+ --ped-text-primary:#263c30;--ped-text-secondary:#536858;--ped-text-muted:#758477;--ped-accent:#47784e;
+ --ped-border:#dce5d8;--ped-overlay:rgba(37,54,42,.42);--ped-button-background:#24583a;--ped-button-text:#fff;
+ --gift-of-hope-image:url('../assets/gift-of-hope-day.svg');
+}
+/* The active theme image is shared by compact and expanded Gift of Hope. */
+.welcome.hope-card{background-image:linear-gradient(180deg,rgba(4,13,27,.18),rgba(4,13,27,.72)),var(--gift-of-hope-image)!important;background-position:center 48%!important;background-size:cover!important}
+body.app-light .welcome.hope-card{background-image:linear-gradient(180deg,rgba(255,250,239,.08),rgba(245,248,238,.18)),var(--gift-of-hope-image)!important;background-color:#e9efe2!important}
+.hope-modal::before{background-image:var(--gift-of-hope-image)!important;background-repeat:no-repeat!important;background-size:cover!important;background-position:center 48%!important}
+body.app-light .hope-modal{background:#e9efe2!important}
+body.app-light .hope-modal::before{background-image:var(--gift-of-hope-image)!important;opacity:1!important;animation:none!important}
+body.app-light .hope-modal::after{background:linear-gradient(180deg,rgba(250,248,238,.12),rgba(242,246,235,.48) 60%,rgba(238,244,232,.78))!important}
+body.app-dark .hope-modal::after{background:linear-gradient(180deg,rgba(3,12,25,.16),rgba(3,12,25,.82))!important}
+body.app-light .hope-modal-panel{color:var(--ped-text-primary)!important;background:rgba(255,255,255,.16)!important;border:1px solid rgba(255,255,255,.48)!important;border-radius:28px!important;box-shadow:0 18px 52px rgba(54,75,55,.16),inset 0 1px 0 rgba(255,255,255,.6)!important;backdrop-filter:blur(18px) saturate(1.15)!important;-webkit-backdrop-filter:blur(18px) saturate(1.15)!important}
+body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#557451!important}
+body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#263c30!important;text-shadow:none!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#657568!important}
+body.app-light .hope-actions{border-color:var(--ped-border)!important}
+body.app-light .hope-actions button{background:rgba(255,255,255,.82)!important;border:1px solid #d5dfd1!important;color:#31533b!important;box-shadow:0 2px 8px rgba(45,72,48,.06)!important}
+body.app-light .hope-actions button:active{background:#e9f1e5!important}
+body.app-light .hope-actions button[aria-pressed=true]{background:#f8e8eb!important;color:#a33d55!important;border-color:#e8cbd2!important}
+body.app-light .hope-comments{background:rgba(255,255,255,.88)!important;border:1px solid #dce5d8!important;color:#263c30!important;box-shadow:0 8px 24px rgba(45,72,48,.06)!important}
+body.app-light .hope-comments h3{color:#284b34!important}
+body.app-light .hope-comments textarea{background:#fff!important;color:#24382b!important;border:1px solid #cbd9c8!important;caret-color:#24583a!important}
+body.app-light .hope-comments textarea:focus{outline:2px solid rgba(71,120,78,.3)!important;border-color:#6e966f!important}
+body.app-light .hope-comments textarea::placeholder{color:#819084!important;opacity:1}
+body.app-light .hope-comments form button{background:#24583a!important;color:#fff!important}
+body.app-light .hope-comment{border-color:#dce5d8!important}
+body.app-light .hope-comment p{color:#304638!important}
+body.app-light .hope-comment small,body.app-light .hope-local-note{color:#748477!important}
+body.app-light .hope-comments .empty{color:#68796b!important}
+body.app-light .hope-modal-panel .button-link{background:#24583a!important;color:#fff!important}
+/* Keep the upward fade consistent in the home tile and enlarged view. */
+.hope-modal-devotional{transition:opacity .68s ease,transform .68s cubic-bezier(.22,.7,.2,1);will-change:opacity,transform}
+.hope-modal-devotional.is-leaving{opacity:0;transform:translateY(-18px)}
+.hope-modal-devotional.is-entering{animation:hopeScriptureEnter .68s cubic-bezier(.22,.7,.2,1) both}
+@media(prefers-reduced-motion:reduce){.hope-modal-devotional,.hope-modal-devotional.is-entering{animation:none!important;transition:none!important;transform:none!important}}
+/* Voice of Healing: natural midtones with a restrained lower text scrim in Light Mode. */
+body.app-light .app-showcase-voice>img{filter:brightness(1.06) saturate(1.08) contrast(1.04)!important}
+body.app-light .app-showcase-voice .voice-shade{background:linear-gradient(0deg,rgba(8,24,23,.66),rgba(8,24,23,.12) 54%,transparent 100%)!important}
+body.app-light .app-showcase-voice .voice-copy .eyebrow{color:#e5efd9!important}
+body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,.42)!important}
+/* Upcoming artwork and dynamic schedule rows share the landscape card width. */
+.app-showcase-upcoming .upcoming-card{display:grid!important;grid-template-columns:minmax(112px,.82fr) minmax(0,1.18fr)!important;grid-template-rows:auto minmax(0,1fr)!important;align-items:stretch!important;gap:10px 14px!important;width:100%!important;max-width:none!important;min-height:0!important}
+.app-showcase-upcoming .upcoming-card-head{grid-column:1/-1!important;width:100%!important;margin:0!important}
+.app-showcase-upcoming .upcoming-artwork{display:block!important;grid-column:1!important;grid-row:2!important;min-width:0!important;min-height:0!important;align-self:stretch!important;overflow:hidden!important;border-radius:10px!important}
+.app-showcase-upcoming .upcoming-artwork img{display:block!important;width:100%!important;height:100%!important;max-height:none!important;min-height:116px!important;object-fit:cover!important;object-position:center!important;mix-blend-mode:normal!important;filter:none!important}
+.app-showcase-upcoming .upcoming-list{display:flex!important;grid-column:2!important;grid-row:2!important;flex-direction:column!important;justify-content:center!important;min-width:0!important}
+.app-showcase-upcoming .upcoming-row{min-width:0!important;padding:7px 0!important}
+.app-showcase-upcoming .upcoming-row-copy{min-width:0!important}
+.app-showcase-upcoming .upcoming-title,.app-showcase-upcoming .upcoming-subtitle{overflow-wrap:anywhere!important}
+body.app-light .app-showcase-upcoming .upcoming-artwork{background:#eee5d4!important;border-color:#e2d8c5!important}
+@media(max-width:390px){.app-showcase-upcoming .upcoming-card{grid-template-columns:minmax(94px,.72fr) minmax(0,1.28fr)!important;gap:8px 10px!important;padding:11px!important}.app-showcase-upcoming .upcoming-artwork img{min-height:106px!important}.app-showcase-upcoming .upcoming-row{padding:5px 0!important}}
