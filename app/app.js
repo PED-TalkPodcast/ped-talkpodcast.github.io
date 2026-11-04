@@ -660,7 +660,9 @@ function openReadingPeriod(period){
  sessions.forEach(item=>{const name=readingSessionTitle(item,progress);grouped.set(name,(grouped.get(name)||0)+item.displayDuration);});
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
  if(!overlay||!card)return;
- closeDwoopModal();
+ const existingPlayer=overlay.querySelector('.episode-page-audio');if(existingPlayer){existingPlayer.pause();existingPlayer.removeAttribute('src');}
+ card.classList.remove('dwoop-page-card');
+ overlay.classList.remove('dwoop-episode-mode');
  const artwork=document.getElementById('dwoopArtwork');artwork?.replaceChildren();
  card.classList.add('dwoop-light','dwoop-page-card');
  overlay.classList.add('dwoop-page-mode','dwoop-reading-mode');
