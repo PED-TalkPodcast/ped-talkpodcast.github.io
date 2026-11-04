@@ -50,7 +50,7 @@ async function renderAppUpcoming(){
 }
 renderAppUpcoming();
 const showcase=document.getElementById('appShowcase');
-function openDwoopModal(kind='upcoming'){
+let dwoopTransitionToken=0;\nfunction openDwoopModal(kind='upcoming'){\n const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light');
@@ -722,7 +722,7 @@ function openReadingPeriod(period){
   breakdown='<section class="reading-breakdown"><h3>This month · weekly totals</h3>'+rows.join('')+'</section><p class="reading-period-label">Tap a week to see each day and its reading sessions.</p>';
  }
  content.innerHTML=readingPeriodHeader('Total time read',total,sessions,period==='today'?'Today':period==='week'?'This week':'This month')+breakdown;
- const y=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+ if(overlay.hidden){const y=window.scrollY||window.pageYOffset||0;document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');}overlay.hidden=false;requestAnimationFrame(()=>{if(transitionToken===dwoopTransitionToken)overlay.classList.add('active');});document.getElementById('dwoopClose')?.focus({preventScroll:true});
 }
 function openReadingDrill(start,end,kind){
  const sessions=readingRangeSessions(start,end),total=readingRangeTotal(sessions),progress=universalProgressItems(),startDate=new Date(start),endDate=new Date(Math.max(start,end-1)),overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
