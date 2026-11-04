@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+<defs>
+ <linearGradient id="daySky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#8ebbd3"/><stop offset=".48" stop-color="#d9e6dc"/><stop offset="1" stop-color="#f5dfbd"/></linearGradient>
+ <radialGradient id="sunGlow"><stop stop-color="#fff4d6" stop-opacity=".9"/><stop offset=".48" stop-color="#f8d99b" stop-opacity=".48"/><stop offset="1" stop-color="#f8d99b" stop-opacity="0"/></radialGradient>
+ <linearGradient id="hills" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#a8c2a1"/><stop offset="1" stop-color="#789b83"/></linearGradient>
+ <filter id="softCloud"><feGaussianBlur stdDeviation="18"/></filter>
+</defs>
+<rect width="1600" height="900" fill="url(#daySky)"/>
+<circle cx="1160" cy="260" r="310" fill="url(#sunGlow)"/>
+<circle cx="1160" cy="260" r="94" fill="#fff0c8" opacity=".88"/>
+<g fill="#fffdf5" opacity=".68" filter="url(#softCloud)">
+ <ellipse cx="300" cy="270" rx="250" ry="58"/><ellipse cx="440" cy="250" rx="170" ry="70"/>
+ <ellipse cx="860" cy="430" rx="250" ry="48"/><ellipse cx="1010" cy="410" rx="160" ry="62"/>
+ <ellipse cx="1390" cy="520" rx="230" ry="50"/>
+</g>
+<g fill="#fffdf8" opacity=".56">
+ <path d="M70 325c38-75 125-81 174-27 54-31 121 3 126 60H70z"/>
+ <path d="M670 492c32-63 105-69 146-22 46-26 102 3 106 50H670z"/>
+</g>
+<path d="M0 670Q210 575 430 665T850 660T1260 620T1600 660V900H0Z" fill="#b6c8ae" opacity=".65"/>
+<path d="M0 750Q260 650 520 750T1030 730T1600 700V900H0Z" fill="url(#hills)" opacity=".7"/>
+<path d="M0 824Q250 760 480 825T950 820T1370 785T1600 810V900H0Z" fill="#6f927a" opacity=".42"/>
+<g fill="#fff7e6" opacity=".35"><circle cx="180" cy="160" r="3"/><circle cx="550" cy="110" r="2"/><circle cx="760" cy="205" r="3"/><circle cx="1430" cy="125" r="2"/></g>
+</svg>
