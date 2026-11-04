@@ -124,7 +124,7 @@ function renderEpisodeGroups(root,list,emptyMessage){
   return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
    const index=allEpisodes.indexOf(ep),number=episodeNumber(ep),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
-   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span><span class="episode-open-mark" aria-hidden="true">▶</span></button>'
+   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span></button>'
   }).join('')+'</div></section>'
  }).join('');
 }
