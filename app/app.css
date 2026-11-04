@@ -1778,3 +1778,7 @@ body.app-light .app-showcase-voice .voice-shade{background:linear-gradient(0deg,
 body.app-light .app-showcase-voice .voice-copy .eyebrow{color:#e5efd9!important}
 body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,.38)!important}
 @media(prefers-reduced-motion:reduce){.hope-devotional,.hope-devotional.is-leaving,.hope-devotional.is-entering,.hope-modal-devotional,.hope-modal-devotional.is-leaving,.hope-modal-devotional.is-entering{transition:none!important;animation:none!important;transform:none!important}}
+
+
+/* v101 — prevent scroll anchoring from restoring the comments position on modal reopen. */
+.hope-modal-panel{overflow-anchor:none!important;scroll-behavior:auto!important}
