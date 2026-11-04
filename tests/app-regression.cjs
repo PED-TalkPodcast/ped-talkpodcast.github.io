@@ -108,7 +108,7 @@ const server = http.createServer((req,res)=>{
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
     const lightGlassSurface=await page.locator('.hope-modal-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
-    assert.equal(lightGlassSurface,'rgba(255, 255, 255, 0.78)','Light Mode expanded card must remain translucent glass, not an opaque gray/white slab');
+    assert.equal(lightGlassSurface,'rgba(239, 248, 255, 0.66)','Light Mode expanded card must remain translucent sky glass, not an opaque slab');
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
     assert.match(await page.locator('#modalGiftVerse').textContent(),/Amazing grace! how sweet the sound/);
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
