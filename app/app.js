@@ -844,11 +844,11 @@ appThemeButtons.forEach(button=>button.addEventListener('click',()=>applyAppThem
 document.getElementById('subscriptionEntry')?.addEventListener('click',()=>{const note=document.getElementById('subscriptionNotice');if(note){note.hidden=false;note.textContent='PED-Talk subscriptions are being prepared. Membership options will appear here when available.';note.scrollIntoView({block:'nearest',behavior:'smooth'});}});
 
 // Gift of Hope: Scripture → Amazing Grace reflection → WEB victory promise.
-const hopeModal=document.getElementById('hopeModal'),giftVerse=document.getElementById('giftVerse'),giftReference=document.getElementById('giftReference');
+const hopeModal=document.getElementById('hopeModal'),giftVerse=document.getElementById('giftVerse'),giftReference=document.getElementById('giftReference'),modalDevotional=document.getElementById('modalGiftDevotional');
 const hopeCard=document.querySelector('.hope-card'),giftDevotional=document.getElementById('giftDevotional'),giftVerseLabel=document.getElementById('giftVerseLabel');
 const devotionalStages=[
  {label:"TODAY'S SCRIPTURE",text:'“For God so loved the world, that he gave his one and only Son…”',reference:'John 3:16 · World English Bible',bible:'John:3:16',phase:'scripture'},
- {label:'AMAZING GRACE',text:'“Amazing grace! how sweet the sound, that saved a wretch like me! I once was lost, but now am found; was blind, but now I see.”',reference:'Amazing Grace · John Newton (public-domain hymn)',bible:null,phase:'grace'},
+ {label:'AMAZING GRACE',text:'“Amazing grace! how sweet the sound, that saved a wretch like me! I once was lost, but now am found; was blind, but now I see.”',reference:'John Newton · Amazing Grace (public-domain hymn)',bible:'REV:3:21',phase:'grace'},
  {label:'A PROMISE OF VICTORY',text:'He who overcomes, I will give to him to sit down with me on my throne, as I also overcame, and sat down with my Father on his throne.',reference:'Revelation 3:21 · World English Bible',bible:'REV:3:21',phase:'victory'}
 ];
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
@@ -860,19 +860,20 @@ function renderDevotionalStage(index){
  if(modalLabel)modalLabel.textContent=stage.label;if(modalVerse)modalVerse.textContent=stage.text;if(modalRef)modalRef.textContent=stage.reference;
  if(modalLink){modalLink.hidden=!stage.bible;if(stage.bible)modalLink.dataset.openBible=stage.bible;else modalLink.removeAttribute('data-open-bible');}
 }
-function devotionalCanRun(){return !document.hidden&&hopeCardVisible&&!homeView.hidden&&hopeModal.hidden&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
-function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');}
+function devotionalCanRun(){return !document.hidden&&(hopeCardVisible||!hopeModal.hidden)&&!homeView.hidden&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
+function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');modalDevotional?.classList.remove('is-leaving','is-entering');}
 function scheduleDevotional(){if(!devotionalTimer&&devotionalCanRun())devotionalTimer=window.setTimeout(advanceDevotional,7200);}
 function advanceDevotional(){
  devotionalTimer=null;if(!devotionalCanRun())return;
- giftDevotional.classList.remove('is-entering');giftDevotional.classList.add('is-leaving');
+ giftDevotional.classList.remove('is-entering');giftDevotional.classList.add('is-leaving');modalDevotional?.classList.remove('is-entering');modalDevotional?.classList.add('is-leaving');
  devotionalTimer=window.setTimeout(()=>{
   devotionalTimer=null;if(!devotionalCanRun()){giftDevotional.classList.remove('is-leaving');return;}
   devotionalIndex=(devotionalIndex+1)%devotionalStages.length;renderDevotionalStage(devotionalIndex);
-  giftDevotional.classList.remove('is-leaving');giftDevotional.classList.add('is-entering');scheduleDevotional();
+  giftDevotional.classList.remove('is-leaving');giftDevotional.classList.add('is-entering');modalDevotional?.classList.remove('is-leaving');modalDevotional?.classList.add('is-entering');scheduleDevotional();
  },680);
 }
 giftDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')giftDevotional.classList.remove('is-entering');});
+modalDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')modalDevotional.classList.remove('is-entering');});
 if('IntersectionObserver' in window){const hopeObserver=new IntersectionObserver(entries=>{hopeCardVisible=!!entries[0]?.isIntersecting;if(hopeCardVisible)scheduleDevotional();else pauseDevotional();},{threshold:.12});hopeObserver.observe(hopeCard);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevotional();else scheduleDevotional();});
 renderDevotionalStage(devotionalIndex);scheduleDevotional();
