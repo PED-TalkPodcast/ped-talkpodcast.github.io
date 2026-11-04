@@ -127,7 +127,7 @@ const server = http.createServer((req,res)=>{
     });
     await page.waitForFunction(()=>document.querySelector('#hopeModal')?.hidden===true,null,{timeout:2000});
 
-    // Carousel controls, retained index after theme changes, no unintended Episodes navigation.
+    // Automatic carousel without manual controls, retained index after theme changes, no unintended Episodes navigation.
     assert.equal(await page.locator('.showcase-controls,.showcase-arrow,.showcase-dots,[data-showcase-slide],[data-showcase-prev],[data-showcase-next]').count(),0,'manual carousel controls must not exist');
     assert.equal(await page.locator('.showcase-controls').count(),0,'no carousel control layout space');
     await page.evaluate(()=>window.PEDShowcase.goTo(1));
@@ -141,7 +141,8 @@ const server = http.createServer((req,res)=>{
     await page.evaluate(()=>window.PEDShowcase.goTo(1));
     await page.locator('#appSettingsButton').click();
     await page.locator('button[data-app-theme="light"]').click();
-    await page.locator('#settingsClose').click();
+    await page.locator('#settingsHome').click();
+    await hidden('#appSettingsModal');
     assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1);
     await page.evaluate(()=>window.PEDShowcase.goTo(2));
     const voiceFilter=await page.locator('.app-showcase-voice>img').evaluate(el=>getComputedStyle(el).filter);
