@@ -2207,3 +2207,78 @@ body.app-dark .bottom-nav a,body.app-dark .bottom-nav button{
 @media(prefers-reduced-motion:reduce){
  body.app-dark *,body.app-dark *::before,body.app-dark *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* v111 — close the remaining dark-theme gaps in Settings and nested cards. */
+body.app-dark .app-settings-overlay{
+ background:rgba(1,5,3,.84)!important;backdrop-filter:blur(18px) saturate(1.15)!important;
+ -webkit-backdrop-filter:blur(18px) saturate(1.15)!important;
+}
+body.app-dark .app-settings-panel{
+ background:radial-gradient(ellipse at 88% 0%,rgba(0,168,90,.12),transparent 38%),linear-gradient(160deg,#07110d 0%,#030706 62%,#08130d 100%)!important;
+ color:#f5fff8!important;border:0!important;
+}
+body.app-dark .settings-heading{border-bottom-color:rgba(168,255,205,.14)!important}
+body.app-dark .settings-heading h2{color:#f5fff8!important}
+body.app-dark .settings-heading .eyebrow{color:#79dca5!important}
+body.app-dark .settings-heading p:not(.eyebrow),body.app-dark .settings-section>p,body.app-dark .settings-footnote{color:#a8b8af!important}
+body.app-dark .settings-section{
+ padding:18px!important;margin:0 0 20px!important;border:1px solid rgba(168,255,205,.12)!important;
+ border-radius:20px!important;background:linear-gradient(145deg,rgba(18,37,28,.78),rgba(8,17,13,.9))!important;
+ box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px 0 rgba(210,255,225,.025)!important;
+}
+body.app-dark .settings-section h3{color:#f5fff8!important}
+body.app-dark .theme-options button{
+ min-height:108px!important;background:linear-gradient(150deg,#12251c,#0a1510)!important;
+ border:1px solid rgba(168,255,205,.14)!important;border-radius:16px!important;color:#f5fff8!important;
+}
+body.app-dark .theme-options button[aria-pressed="true"],body.app-dark .theme-options button.active{
+ background:linear-gradient(145deg,rgba(0,230,118,.16),rgba(7,24,15,.96))!important;
+ border-color:rgba(0,230,118,.55)!important;color:#a5f5c4!important;
+ box-shadow:inset 0 0 0 1px rgba(0,230,118,.12),0 8px 22px rgba(0,230,118,.07)!important;
+}
+body.app-dark .theme-symbol{color:#00e676!important}
+body.app-dark .theme-options strong{color:#f5fff8!important}
+body.app-dark .theme-options small{color:#a8b8af!important}
+body.app-dark .subscription-entry{
+ margin-top:20px!important;padding:16px!important;border:1px solid rgba(168,255,205,.14)!important;
+ border-radius:18px!important;background:linear-gradient(145deg,#12251c,#09130e)!important;color:#f5fff8!important;
+}
+body.app-dark .subscription-ring{background:rgba(0,230,118,.12)!important}
+body.app-dark .subscription-ring circle{stroke:rgba(168,255,205,.22)!important}
+body.app-dark .subscription-ring .subscription-ring-progress{stroke:#00e676!important}
+body.app-dark .subscription-ring text{fill:#b9f8d0!important}
+body.app-dark .subscription-copy strong{color:#f5fff8!important}
+body.app-dark .subscription-copy small{color:#a8b8af!important}
+body.app-dark .subscription-arrow{color:#00e676!important}
+body.app-dark .subscription-notice{background:#0c1813!important;border:1px solid rgba(0,230,118,.22)!important;color:#a5f5c4!important;border-radius:14px!important}
+body.app-dark .settings-home{background:#12251c!important;border:1px solid rgba(168,255,205,.16)!important;color:#eafff1!important;border-radius:14px!important}
+/* Scripture is typography within the Gift of Hope tile, never a nested card. */
+body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-scripture,
+body.app-light .welcome.hope-card[data-presentation="compact"] .hope-scripture{
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ backdrop-filter:none!important;-webkit-backdrop-filter:none!important;padding:0!important;
+}
+body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-scripture{color:#f5fff8!important}
+body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional blockquote{color:#f5fff8!important}
+body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional .verse-label{color:#d4f5df!important}
+body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional p{color:#d4e7db!important}
+body.app-dark .welcome.hope-card[data-presentation="compact"] .scripture-open{color:#e0f8e9!important}
+/* Bring secondary study, reading and home tiles into the same tonal system. */
+body.app-dark .bible-promo,body.app-dark .bible-library-card,body.app-dark .bible-library-panel,
+body.app-dark .bible-reading-card,body.app-dark .bible-progress-card,body.app-dark .reading-breakdown-button,
+body.app-dark .reading-detail-empty,body.app-dark .reading-detail-total,body.app-dark .reading-period-total,
+body.app-dark .reading-detail-book,body.app-dark .reading-session-row,body.app-dark .reading-breakdown-row,
+body.app-dark .explore-promo,body.app-dark .explore-promo-card,body.app-dark .home-tile,
+body.app-dark .home-feature-card,body.app-dark .playlist-coming,body.app-dark .episode-more-tile{
+ background:linear-gradient(145deg,rgba(18,37,28,.96),rgba(7,17,13,.98))!important;
+ border:1px solid rgba(168,255,205,.12)!important;border-radius:20px!important;color:#f5fff8!important;
+ box-shadow:0 12px 28px rgba(0,0,0,.2),inset 0 1px 0 rgba(210,255,225,.025)!important;
+}
+body.app-dark .bible-promo h2,body.app-dark .bible-promo h3,body.app-dark .explore-promo h2,
+body.app-dark .explore-promo h3,body.app-dark .home-tile h2,body.app-dark .home-tile h3,
+body.app-dark .home-feature-card h2,body.app-dark .home-feature-card h3,
+body.app-dark .reading-breakdown-button strong{color:#f5fff8!important}
+body.app-dark .bible-promo p,body.app-dark .explore-promo p,body.app-dark .home-tile p,
+body.app-dark .home-feature-card p{color:#a8b8af!important}
+body.app-dark .bible-mark{color:rgba(0,230,118,.14)!important}
