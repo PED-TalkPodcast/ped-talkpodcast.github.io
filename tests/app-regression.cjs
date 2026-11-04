@@ -246,10 +246,7 @@ const server = http.createServer((req,res)=>{
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
     await page.waitForSelector('.episode-open-card',{timeout:10000});
-    const episodeMark=await page.locator('.episode-open-card').first().locator('.episode-open-mark').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
-    assert.ok(episodeMark.width>=30&&episodeMark.width<=33,'episode open affordance must remain compact');
-    assert.ok(episodeMark.height>=30&&episodeMark.height<=33,'episode open affordance must remain compact');
-    assert.equal(episodeMark.radius,'50%','episode open affordance must remain circular, not a gray square');
+    assert.equal(await page.locator('.episode-open-card .episode-open-mark').count(),0,'small episode cards must not show a play button; the whole card is the tap target');
     await page.locator('.episode-open-card').first().click();
     await visible('#dwoopOverlay');
     const episodeWindow=await page.locator('.dwoop-card-expanded').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,viewportWidth:innerWidth,viewportHeight:innerHeight,classes:el.className,overlayClasses:el.parentElement.className}));
