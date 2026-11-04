@@ -116,10 +116,11 @@
     .hero-story-kicker { color: var(--lime); font-size: 10px; font-weight: 850; letter-spacing: .18em; text-transform: uppercase; }
     .hero-story-copy h3 { max-width: 360px; margin: 9px 0 8px; color: var(--white); font-size: clamp(31px, 4vw, 49px); line-height: .94; letter-spacing: -.065em; }
     .hero-story-copy p { max-width: 380px; margin: 0; color: #c5d7ca; font-size: 13px; }
-    .hero-slide--upcoming { padding: 0; background: #17120f; }
-    .hero-slide--upcoming::before { display: none; }
-    .hero-slide--upcoming::after { display: none; }
-    .hero-upcoming-image { display: block; width: 100%; height: 100%; object-fit: fill; }
+    .hero-slide--upcoming { padding: 33px; background: #17120f url('./assets/up-next-template.jpg') center/cover no-repeat; }
+    .hero-slide--upcoming::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(12,10,8,.82) 0%, rgba(12,10,8,.24) 48%, rgba(12,10,8,.1) 100%); }
+    .hero-upcoming-list { display: grid; gap: 9px; margin-top: 17px; max-width: 390px; }
+    .hero-upcoming-item { display: flex; align-items: center; gap: 11px; padding: 10px 12px; border: 1px solid rgba(255,255,255,.15); border-radius: 12px; background: rgba(255,255,255,.06); color: #dcebdc; font-size: 12px; }
+    .hero-upcoming-item strong { color: var(--lime); font-size: 10px; letter-spacing: .08em; }
     .hero-slide--world { display: grid; place-items: center; background: #061329 url('./assets/across-every-room-blue.jpg') center/cover no-repeat; }
     .hero-slide--world::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(3,12,31,.04) 15%, rgba(3,12,31,.18) 45%, rgba(3,12,31,.9) 100%); }
     .hero-slide--world .hero-story-copy { bottom: 31px; text-align: center; }
@@ -142,39 +143,10 @@
     .carousel-slide h3 { max-width: 590px; margin: 0 0 8px; font-size: clamp(23px, 3vw, 34px); line-height: 1.03; letter-spacing: -.05em; }
     .carousel-slide p { max-width: 620px; margin: 0; color: #bfd1c2; font-size: 13px; }
     .carousel-slide a { width: fit-content; margin-top: 14px; color: var(--lime); font-size: 12px; font-weight: 800; }
-    .christmas-slide {
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      background: #f5f0df;
-      color: #30302d;
-    }
-    .hope-landscape {
-      position: absolute;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
-      pointer-events: none;
-    }
-    .hope-landscape svg { display: block; width: 100%; height: 100%; }
-    .hope-landscape .drifting-cloud {
-      animation: hopeCloudDrift 42s ease-in-out infinite alternate;
-      transform-origin: center;
-    }
-    .hope-landscape .slow-cloud {
-      animation: hopeCloudDrift 58s ease-in-out infinite alternate-reverse;
-      transform-origin: center;
-    }
-    @keyframes hopeCloudDrift {
-      0% { transform: translateX(-18px) translateY(0); }
-      100% { transform: translateX(24px) translateY(5px); }
-    }
-    .christmas-slide::before { content:""; position:absolute; z-index:1; inset:0; pointer-events:none; background:linear-gradient(90deg,rgba(255,253,242,.96) 0%,rgba(255,253,242,.88) 48%,rgba(255,253,242,.48) 76%,rgba(255,253,242,.12) 100%); }
-    .christmas-slide > :not(.hope-landscape) { position:relative; z-index:2; }
-    .christmas-slide .episode-meta { color:#514b3d; font-weight:850; }
-    .christmas-slide h3 { color:#20231f; text-shadow:0 1px 2px rgba(255,255,255,.95); }
-    .christmas-slide a { color:#294c35; font-weight:850; text-shadow:0 1px 2px rgba(255,255,255,.95); }
-    .christmas-slide p { color:#292d28; font-family:Georgia,serif; font-size:16px; line-height:1.5; text-shadow:0 1px 2px rgba(255,255,255,.95); }
+    .christmas-slide { background: radial-gradient(circle at 90% 10%, rgba(200,231,142,.24), transparent 35%), linear-gradient(135deg, #7d1f2a, #17372a 72%); }
+    .christmas-slide .episode-meta { color: #f7d28b; }
+    .christmas-slide h3 { color: #fff8e9; }
+    .christmas-slide p { color: #f3dcd0; font-family: Georgia, serif; font-size: 16px; }
     .library-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 18px; flex-wrap: wrap; margin: 0 0 25px; padding: 16px; border: 1px solid var(--line-dark); border-radius: 18px; background: rgba(255,253,248,.58); }
     .season-select { display: grid; gap: 6px; min-width: 170px; color: var(--green); font-size: 10px; font-weight: 850; letter-spacing: .14em; text-transform: uppercase; }
     .season-select select { padding: 10px 12px; border: 1px solid var(--line-dark); border-radius: 10px; background: var(--white); color: var(--ink); font: inherit; font-size: 13px; letter-spacing: normal; text-transform: none; }
@@ -189,6 +161,28 @@
     .carousel-dots { position: absolute; left: 27px; bottom: 22px; display: flex; gap: 6px; }
     .carousel-dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.35); cursor: pointer; }
     .carousel-dots button.active { width: 22px; border-radius: 10px; background: var(--lime); }
+    .hero-slide, .carousel-slide { cursor: zoom-in; -webkit-tap-highlight-color: transparent; transition: filter .25s ease, transform .25s ease; }
+    .hero-slide:active, .carousel-slide:active { filter: brightness(.78); transform: scale(.985); }
+    .dwoop-backdrop { position: fixed; inset: 0; z-index: 120; display: none; place-items: center; padding: 20px; background: rgba(3,12,8,.76); backdrop-filter: blur(18px); overscroll-behavior: contain; }
+    .dwoop-backdrop.open { display: grid; animation: dwoopFade .22s ease both; }
+    .dwoop-card { position: relative; width: min(760px, 100%); max-height: min(88vh, 760px); overflow: hidden; border: 1px solid rgba(255,255,255,.2); border-radius: 28px; background: #102018; color: var(--white); box-shadow: 0 30px 100px rgba(0,0,0,.42); animation: dwoopIn .34s cubic-bezier(.16,.8,.25,1) both; }
+    .dwoop-card::before { content: ""; position: absolute; inset: -40%; pointer-events: none; background: conic-gradient(from 30deg, transparent, rgba(200,231,142,.18), transparent 28%, rgba(75,160,210,.18), transparent 56%); animation: dwoopGlow 8s linear infinite; }
+    .dwoop-content { position: relative; z-index: 1; max-height: min(88vh,760px); overflow: auto; overscroll-behavior: contain; }
+    .dwoop-content .carousel-slide { min-height: 410px; cursor: default; transform: none; }
+    .dwoop-content .carousel-slide a { position: relative; z-index: 4; }
+    .dwoop-content .hero-slide { min-height: 520px; cursor: default; transform: none; }
+    .dwoop-close { position: absolute; z-index: 5; top: 14px; right: 14px; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,.24); border-radius: 50%; background: rgba(5,12,8,.54); color: #fff; font-size: 25px; line-height: 1; cursor: pointer; }
+    .dwoop-close:hover, .dwoop-close:active { background: var(--lime); color: var(--ink); transform: scale(.95); }
+    .dwoop-coming { min-height: 410px; display: grid; place-items: center; padding: 48px 26px; text-align: center; background: linear-gradient(135deg,#0a1e19,#163f32 40%,#102b42 70%,#061329); background-size: 260% 260%; animation: dwoopGradient 7s ease-in-out infinite; }
+    .dwoop-coming .hero-story-kicker { color: var(--lime); }
+    .dwoop-coming h2 { max-width: 550px; margin: 12px auto 10px; font-size: clamp(34px,7vw,68px); line-height: .95; letter-spacing: -.07em; }
+    .dwoop-coming p { max-width: 470px; margin: 0 auto; color: #c9ddd2; }
+    .dwoop-note { margin-top: 22px; color: var(--lime); font-size: 11px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+    @keyframes dwoopFade { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes dwoopIn { from { opacity: 0; transform: translateY(18px) scale(.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes dwoopGlow { to { transform: rotate(360deg); } }
+    @keyframes dwoopGradient { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    @media (prefers-reduced-motion: reduce) { .dwoop-backdrop.open, .dwoop-card, .dwoop-card::before, .dwoop-coming { animation: none; } }
 
     .section { padding: 92px 0; }
     .section-head { display: flex; align-items: end; justify-content: space-between; gap: 25px; margin-bottom: 32px; }
@@ -297,79 +291,9 @@
       .carousel-track { transition: none; }
       .button, .episode { transition: none; }
     }
-
-
-    /* Installed PWA: a dedicated app home, independent of the public website */
-    #pwaApp { display:none; min-height:100vh; background:#f5f3ec; color:#0b241a; }
-    .pwa-app #pwaApp { display:block !important; }
-    .pwa-app > :not(#pwaApp):not(script) { display:none !important; }
-    body.pwa-app { min-height:100vh; background:#f5f3ec !important; overflow-x:hidden; }
-    .pwa-app #pwaApp, .pwa-app #pwaApp * { box-sizing:border-box; }
-    .app-topbar { display:flex; align-items:center; justify-content:space-between; padding:14px 20px; background:#0b241a; color:#c8e78e; font-size:9px; font-weight:850; letter-spacing:.16em; }
-    .app-brand { display:flex; align-items:center; gap:9px; color:#fffdf8; font-size:17px; letter-spacing:-.04em; }
-    .app-brand img { width:34px; height:34px; object-fit:contain; border-radius:9px; }
-    .app-main { max-width:760px; margin:0 auto; padding:18px 16px 100px; }
-    .app-hope { position:relative; min-height:410px; overflow:hidden; display:flex; align-items:flex-end; padding:26px; border-radius:24px; background:#eae5d8; box-shadow:0 16px 40px rgba(11,36,26,.12); isolation:isolate; }
-    .app-hope-art { position:absolute; inset:0; z-index:-2; background-image:linear-gradient(0deg,rgba(255,253,242,.97) 0%,rgba(255,253,242,.82) 43%,rgba(255,253,242,.12) 100%),url('./assets/gift-of-hope-sky.svg'); background-size:cover; background-position:center; }
-    .app-hope::after { content:""; position:absolute; inset:0; z-index:-1; background:linear-gradient(135deg,rgba(255,253,242,.2),transparent 60%); pointer-events:none; }
-    .app-hope-copy { max-width:530px; }
-    .app-kicker { color:#47704f; font-size:9px; font-weight:900; letter-spacing:.17em; text-transform:uppercase; }
-    .app-hope h1 { margin:9px 0 12px; color:#20251f; font-size:clamp(34px,8vw,53px); line-height:.96; letter-spacing:-.07em; }
-    .app-verse { margin:0; color:#30342e; font:17px/1.55 Georgia,serif; text-shadow:0 1px 3px rgba(255,255,255,.9); }
-    .app-reference { margin-top:12px; color:#31583b; font-size:10px; font-weight:900; letter-spacing:.16em; }
-    .app-primary { display:inline-flex; align-items:center; gap:12px; margin-top:17px; padding:12px 17px; border-radius:999px; background:#0b241a; color:#c8e78e; font-size:12px; font-weight:850; }
-    .app-hope-note { margin:11px 0 0; color:#55594e; font-size:10px; }
-    .app-library { padding:30px 1px 12px; }
-    .app-section-heading { display:flex; align-items:end; justify-content:space-between; gap:12px; margin-bottom:16px; }
-    .app-section-heading h2,.app-bible h2 { margin:5px 0 0; font-size:29px; line-height:1; letter-spacing:-.06em; }
-    .app-season-label { color:#6b806f; font-size:9px; font-weight:900; letter-spacing:.12em; }
-    .app-category-row { display:flex; gap:7px; overflow-x:auto; padding:2px 0 14px; scrollbar-width:none; }
-    .app-category-row button { flex:0 0 auto; padding:8px 12px; border:1px solid rgba(11,36,26,.15); border-radius:999px; background:#fffdf8; color:#31583b; font-size:10px; font-weight:850; }
-    .app-category-row button.active { background:#0b241a; border-color:#0b241a; color:#c8e78e; }
-    .app-season-group { margin:10px 0 22px; }
-    .app-season-group h3 { margin:0 0 10px; color:#4b6553; font-size:11px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; }
-    .app-episode-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
-    .app-episode-card { min-width:0; overflow:hidden; padding:9px; border:1px solid rgba(11,36,26,.1); border-radius:16px; background:#fffdf8; box-shadow:0 5px 18px rgba(11,36,26,.045); }
-    .app-episode-card img { display:block; width:100%; aspect-ratio:1.35; object-fit:cover; border-radius:10px; background:#dce6d8; }
-    .app-episode-card .app-episode-meta { margin-top:9px; color:#5b7a60; font-size:8px; font-weight:900; letter-spacing:.1em; text-transform:uppercase; }
-    .app-episode-card h4 { margin:4px 0 7px; font-size:13px; line-height:1.2; letter-spacing:-.025em; }
-    .app-episode-card p { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; min-height:30px; margin:0; color:#68766b; font-size:10px; line-height:1.45; }
-    .app-episode-card audio { width:100%; height:32px; margin-top:8px; }
-    .app-episode-card a { display:inline-block; margin-top:7px; color:#31583b; font-size:10px; font-weight:900; }
-    .app-bible { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:22px; border-radius:20px; background:linear-gradient(135deg,#0b241a,#24563a); color:#fffdf8; }
-    .app-bible .app-kicker { color:#c8e78e; }
-    .app-bible h2 { max-width:380px; font-size:25px; }
-    .app-bible p { max-width:390px; margin:8px 0 0; color:#c7d8c9; font-size:12px; }
-    .app-bible-mark { color:#c8e78e; font-size:48px; opacity:.8; }
-    .app-bottom-nav { position:fixed; z-index:100; left:0; right:0; bottom:0; display:flex; justify-content:space-around; padding:9px 8px calc(9px + env(safe-area-inset-bottom)); border-top:1px solid rgba(11,36,26,.12); background:rgba(255,253,248,.96); backdrop-filter:blur(16px); }
-    .app-bottom-nav a { display:grid; justify-items:center; gap:2px; min-width:70px; color:#738276; font-size:9px; font-weight:850; }
-    .app-bottom-nav a span { font-size:20px; line-height:1.1; }
-    .app-bottom-nav a.active { color:#24563a; }
-    .app-loading { color:#6b806f; font-size:12px; }
-    @media(max-width:420px) { .app-main{padding:12px 12px 95px}.app-hope{min-height:420px;padding:21px}.app-episode-grid{gap:8px}.app-episode-card{padding:7px}.app-episode-card h4{font-size:12px} }
-    @media(prefers-reduced-motion:reduce){.app-hope-art{animation:none}}
-
   </style>
 </head>
 <body>
-  <script>if (window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || new URLSearchParams(window.location.search).get("app") === "1") document.body.classList.add("pwa-app");</script>
-
-  <div id="pwaApp" aria-label="PED-Talk app">
-    <header class="app-topbar"><a class="app-brand" href="#appHome"><img src="./icons/ped-talk-icon-512.png" alt=""> PED-Talk</a><span>BY ANAGKAZO MEDIA</span></header>
-    <main class="app-main">
-      <section class="app-hope" id="appHome">
-        <div class="app-hope-art" aria-hidden="true"></div>
-        <div class="app-hope-copy"><div class="app-kicker">A moment of hope · Gift of Hope</div><h1>The Gift of Hope</h1><p class="app-verse" id="appHopeVerse">“For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life.”</p><div class="app-reference" id="appHopeReference">JOHN 3:16</div><a class="app-primary" href="./bible.html#john-3-16">Read in the Bible <span>↗</span></a><p class="app-hope-note">A quiet moment in Scripture, refreshed in future app editions.</p></div>
-      </section>
-      <section class="app-library" id="appLibrary"><div class="app-section-heading"><div><div class="app-kicker">Listen. Reflect. Grow.</div><h2>Your conversations</h2></div><span class="app-season-label">PED-TALK</span></div>
-        <div class="app-category-row" id="appCategories" aria-label="Filter by category"></div>
-        <div id="appSeasonGroups"><p class="app-loading">Your episodes are on their way…</p></div>
-      </section>
-      <section class="app-bible" id="appBible"><div><div class="app-kicker">The Word, within reach</div><h2>Take a moment in the Word.</h2><p>Explore Scripture, choose a book and chapter, and continue reading.</p><a class="app-primary" href="./bible.html">Open PED-Talk Bible <span>↗</span></a></div><div class="app-bible-mark">✦</div></section>
-    </main>
-    <nav class="app-bottom-nav" aria-label="App navigation"><a class="active" href="#appHome"><span>⌂</span>Home</a><a href="#appLibrary"><span>▦</span>Episodes</a><a href="./bible.html"><span>✧</span>Bible</a></nav>
-  </div>
-
   <header>
     <div class="wrap nav">
       <a class="brand" href="#home" aria-label="PED-Talk home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a>
@@ -395,12 +319,12 @@
   <main>
     <section class="hero" id="home">
       <div class="wrap hero-grid">
-        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><a class="button" href="./app/">Open the PED-Talk app</a></div></div>
+        <div><div class="eyebrow">Anagkazo Media presents</div><h1>Real conversations.<br><em>Brighter days.</em></h1><p class="hero-copy">PED-Talk — Personal Education Daily — is a space for honest conversations about faith, relationships, growth and the everyday choices that shape who we become.</p><div class="actions"><a class="button" href="#featured">▶ Start listening</a><a class="button ghost" href="#about">Discover PED-Talk</a></div><div class="hero-note">New conversations for the journey ahead</div><div class="install-prompt" id="installPrompt"><span>Make PED-Talk part of your daily rhythm.</span><button class="button" id="installButton" type="button">Install the app</button></div></div>
         <div class="hero-showcase" id="heroShowcase" aria-label="PED-Talk visual story">
           <div class="hero-track" id="heroTrack">
             <article class="hero-slide hero-slide--podcast"><div class="hero-card-top"><span>Podcast & conversation</span><span>01</span></div><div class="hero-card-center"><div class="orb" aria-hidden="true"></div><div class="hero-wave" aria-hidden="true"><i style="--h:19px"></i><i style="--h:37px"></i><i style="--h:25px"></i><i style="--h:51px"></i><i style="--h:31px"></i><i style="--h:43px"></i><i style="--h:22px"></i><i style="--h:49px"></i><i style="--h:29px"></i><i style="--h:39px"></i><i style="--h:19px"></i></div><h2 class="hero-card-title">PED<span>-</span><br>TALK.</h2></div><div class="hero-card-bottom"><span>Personal education daily</span><span>Anagkazo</span></div></article>
             <article class="hero-slide hero-slide--voice"><div class="hero-story-copy"><div class="hero-story-kicker">02 · Voice of Healing</div><h3>There is power in being heard.</h3><p>Stories, sound and stillness for the moments that need a gentler place to land.</p></div></article>
-            <article class="hero-slide hero-slide--upcoming" aria-label="Upcoming PED-Talk episodes"><img class="hero-upcoming-image" id="heroUpcomingImage" alt="PED-Talk upcoming episodes artwork" src="./assets/up-next-template.jpg"></article>
+            <article class="hero-slide hero-slide--upcoming"><div class="hero-story-copy"><div class="hero-story-kicker">03 · Coming next</div><h3>Upcoming conversations.</h3><div class="hero-upcoming-list" id="heroUpcomingList"><div class="hero-upcoming-item"><strong>SOON</strong><span>New PED-Talk stories are on the way.</span></div></div></div></article>
             <article class="hero-slide hero-slide--world"><div class="hero-story-copy"><div class="hero-story-kicker">04 · Across every room</div><h3>One sound. A world of brighter days.</h3><p>Wherever you are listening from, you are welcome here.</p></div></article>
           </div>
         </div>
@@ -427,55 +351,11 @@
   </main>
 
   <footer><div class="wrap"><div class="footer-row"><a class="brand" href="#home"><img src="./icons/ped-talk-icon-512.png" alt=""><span>PED-Talk<small>BY ANAGKAZO MEDIA</small></span></a><div class="footer-links"><a href="#about">About</a><a href="#healing">Healing</a><a href="./bible.html">Bible</a><a href="#contact">Contact</a><a href="https://open.spotify.com/show/4HGHM4uZb0YqzZa4VoTEIP" target="_blank" rel="noopener">Spotify ↗</a></div></div><p>© <span id="year"></span> Anagkazo Media. All rights reserved. Built for brighter days.</p></div></footer>
+  <div class="dwoop-backdrop" id="dwoopBackdrop" role="dialog" aria-modal="true" aria-labelledby="dwoopTitle" aria-hidden="true"><div class="dwoop-card"><button class="dwoop-close" id="dwoopClose" type="button" aria-label="Close enlarged view">×</button><div class="dwoop-content" id="dwoopContent"></div></div></div>
 
   <script>
     const FEED_URL = "./episodes.json";
-
-    const installedPWA = window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true || new URLSearchParams(window.location.search).get("app") === "1";
-    if (installedPWA) document.body.classList.add("pwa-app");
-    let appActiveCategory = "All";
-    function appCategoryFor(episode) {
-      const text = ((episode.title || "") + " " + cleanDescription(episode.description)).toLowerCase();
-      if (/relationship|marriage|dating|couple|family|partner/.test(text)) return "Relationships";
-      if (/friend|friendship|together|companionship/.test(text)) return "Friendship";
-      if (/love|loving|beloved|compassion/.test(text)) return "Love";
-      return "Leadership";
-    }
-    function renderInstalledApp(episodes) {
-      if (!installedPWA) return;
-      const categories = ["All","Relationships","Friendship","Leadership","Love"];
-      const tabs = document.getElementById("appCategories");
-      tabs.replaceChildren();
-      categories.forEach(category => {
-        const button = document.createElement("button");
-        button.type = "button"; button.textContent = category;
-        button.classList.toggle("active", category === appActiveCategory);
-        button.addEventListener("click", () => { appActiveCategory = category; renderInstalledApp(episodes); });
-        tabs.appendChild(button);
-      });
-      const filtered = episodes.filter(episode => appActiveCategory === "All" || appCategoryFor(episode) === appActiveCategory);
-      const groups = new Map();
-      filtered.forEach(episode => { const season = episode.season || "Season 1"; if (!groups.has(season)) groups.set(season, []); groups.get(season).push(episode); });
-      const host = document.getElementById("appSeasonGroups"); host.replaceChildren();
-      if (!filtered.length) { host.textContent = "No episodes in this category yet."; return; }
-      groups.forEach((items, season) => {
-        const section = document.createElement("section"); section.className = "app-season-group";
-        const heading = document.createElement("h3"); heading.textContent = season; section.appendChild(heading);
-        const grid = document.createElement("div"); grid.className = "app-episode-grid";
-        items.forEach(episode => {
-          const card = document.createElement("article"); card.className = "app-episode-card";
-          if (episode.image) card.appendChild(makeArtwork(episode));
-          const meta = document.createElement("div"); meta.className = "app-episode-meta"; meta.textContent = appCategoryFor(episode); card.appendChild(meta);
-          const title = document.createElement("h4"); title.textContent = episode.title || "PED-Talk episode"; card.appendChild(title);
-          const description = document.createElement("p"); description.textContent = cleanDescription(episode.description); card.appendChild(description);
-          if (episode.audio) card.appendChild(makePlayer(episode));
-          const link = document.createElement("a"); link.href = "episode.html?episode=" + (episode.catalogIndex ?? 0); link.textContent = "Episode details →"; card.appendChild(link);
-          grid.appendChild(card);
-        });
-        section.appendChild(grid); host.appendChild(section);
-      });
-    }
-
+    let deferredInstallPrompt;
     let carouselIndex = 0;
     let carouselTimer;
     let carouselEpisodes = [];
@@ -487,6 +367,10 @@
     const carouselDots = document.getElementById("carouselDots");
     const heroShowcase = document.getElementById("heroShowcase");
     const heroTrack = document.getElementById("heroTrack");
+    const dwoopBackdrop = document.getElementById("dwoopBackdrop");
+    const dwoopContent = document.getElementById("dwoopContent");
+    let dwoopSource = null;
+    let dwoopWasLocked = false;
     let heroIndex = 0; let heroTimer; let heroTouchStartX = 0;
 
     function updateHeroStory() { heroTrack.style.transform = `translateX(-${heroIndex * 100}%)`; }
@@ -495,6 +379,39 @@
     heroShowcase.addEventListener("mouseenter", () => clearInterval(heroTimer)); heroShowcase.addEventListener("mouseleave", startHeroStory); heroShowcase.addEventListener("focusin", () => clearInterval(heroTimer)); heroShowcase.addEventListener("focusout", startHeroStory);
     heroShowcase.addEventListener("touchstart", event => { heroTouchStartX = event.changedTouches[0].screenX; clearInterval(heroTimer); }, { passive: true });
     heroShowcase.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - heroTouchStartX; if (Math.abs(distance) > 45) goToHeroStory(heroIndex + (distance < 0 ? 1 : -1)); else startHeroStory(); }, { passive: true });
+    function openDwoop(source) {
+      if (!source) return;
+      dwoopSource = source;
+      const isUpcoming = source.classList.contains("hero-slide--upcoming");
+      const isChristmas = source.classList.contains("christmas-slide");
+      if (isUpcoming) {
+        dwoopContent.innerHTML = '<div class="dwoop-coming"><div><div class="hero-story-kicker">03 · Coming next</div><h2>New conversations are on the way.</h2><p>The next PED-Talk stories are being prepared with care. Stay close for the next honest conversation.</p><div class="dwoop-note">Coming soon · Stay tuned</div></div></div>';
+      } else {
+        const clone = source.cloneNode(true);
+        clone.removeAttribute("id");
+        clone.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
+        dwoopContent.replaceChildren(clone);
+        dwoopContent.classList.toggle("no-scroll", isChristmas);
+      }
+      dwoopBackdrop.classList.add("open");
+      dwoopBackdrop.setAttribute("aria-hidden", "false");
+      dwoopWasLocked = document.body.style.overflow === "hidden";
+      document.body.style.overflow = "hidden";
+      document.getElementById("dwoopClose").focus({ preventScroll: true });
+      clearInterval(heroTimer); clearInterval(carouselTimer);
+    }
+    function closeDwoop() {
+      dwoopBackdrop.classList.remove("open");
+      dwoopBackdrop.setAttribute("aria-hidden", "true");
+      dwoopContent.replaceChildren();
+      document.body.style.overflow = dwoopWasLocked ? "hidden" : "";
+      if (dwoopSource?.closest("#heroShowcase")) startHeroStory(); else startCarousel();
+      dwoopSource = null;
+    }
+    document.getElementById("dwoopClose").addEventListener("click", closeDwoop);
+    dwoopBackdrop.addEventListener("click", event => { if (event.target === dwoopBackdrop) closeDwoop(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && dwoopBackdrop.classList.contains("open")) closeDwoop(); });
+    heroShowcase.addEventListener("click", event => { const slide = event.target.closest(".hero-slide"); if (!slide || event.target.closest(".dwoop-content")) return; openDwoop(slide); });
     updateHeroStory(); startHeroStory();
 
     function cleanDescription(value) { const el = document.createElement("div"); el.innerHTML = value || ""; return (el.textContent || "").trim(); }
@@ -513,38 +430,6 @@
       slides.forEach((item, index) => {
         const slide = document.createElement("article"); slide.className = `carousel-slide${item.christmas ? " christmas-slide" : ""}`; slide.setAttribute("aria-roledescription", "slide"); slide.setAttribute("aria-label", `${index + 1} of ${slides.length}`);
         if (item.christmas) {
-          const landscape = document.createElement("div");
-          landscape.className = "hope-landscape";
-          landscape.setAttribute("aria-hidden", "true");
-          landscape.innerHTML = `<svg viewBox="0 0 1200 440" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
-<defs>
- <linearGradient id="hopeSky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#fffdf4"/><stop offset=".55" stop-color="#f6f1e4"/><stop offset="1" stop-color="#e9e5d9"/></linearGradient>
- <radialGradient id="hopeLight"><stop stop-color="#fff9e5" stop-opacity=".9"/><stop offset="1" stop-color="#fff9e5" stop-opacity="0"/></radialGradient>
- <linearGradient id="farMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#b9b8ad"/><stop offset="1" stop-color="#d5d1c4"/></linearGradient>
- <linearGradient id="middleMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#858981"/><stop offset="1" stop-color="#b0aea1"/></linearGradient>
- <linearGradient id="nearMountains" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#515a54"/><stop offset="1" stop-color="#77796f"/></linearGradient>
- <filter id="paperTexture"><feTurbulence type="fractalNoise" baseFrequency=".72" numOctaves="3" seed="17"/><feColorMatrix type="saturate" values="0"/><feComponentTransfer><feFuncA type="table" tableValues="0 .12"/></feComponentTransfer></filter>
- <filter id="softWash"><feGaussianBlur stdDeviation="12"/></filter>
- <filter id="valleyMist"><feGaussianBlur stdDeviation="17"/></filter>
-</defs>
-<rect width="1200" height="440" fill="url(#hopeSky)"/>
-<ellipse cx="620" cy="125" rx="490" ry="220" fill="url(#hopeLight)"/>
-<g fill="#fffdf6" opacity=".48" filter="url(#softWash)"><path d="M-40 150 Q150 85 330 142 T690 132 T1240 115 L1240 205 Q1000 175 820 198 T430 190 T-40 210Z"/></g>
-<!-- distant, softly washed ridges -->
-<path d="M0 292 L115 220 195 252 315 168 405 245 520 112 635 238 735 165 830 250 960 181 1050 246 1140 190 1200 226 V440 H0Z" fill="url(#farMountains)" opacity=".82"/>
-<path d="M0 308 Q180 260 330 292 T650 278 T950 286 T1200 270 V440 H0Z" fill="#d8d4c8" opacity=".45" filter="url(#softWash)"/>
-<!-- central high massif and overlapping shoulders -->
-<path d="M0 345 L130 270 230 310 350 205 450 292 585 92 700 270 795 190 900 294 1025 205 1120 280 1200 238 V440 H0Z" fill="url(#middleMountains)"/>
-<path d="M350 205 L450 292 415 270 386 235Z M585 92 L700 270 655 230 620 157 585 92 552 164Z M795 190 L900 294 858 260 825 220Z M1025 205 L1120 280 1080 254 1050 224Z" fill="#eeeade" opacity=".72"/>
-<!-- darker foreground ridge, irregular rather than repeated peaks -->
-<path d="M0 390 L115 325 205 360 330 275 425 355 555 238 675 354 790 275 900 365 1035 280 1135 350 1200 320 V440 H0Z" fill="url(#nearMountains)"/>
-<path d="M330 275 L425 355 390 330 360 299Z M555 238 L675 354 630 322 595 278Z M790 275 L900 365 858 334 820 299Z M1035 280 L1135 350 1090 326 1060 300Z" fill="#e8e4d8" opacity=".55"/>
-<!-- mist in the valleys -->
-<g fill="none" stroke="#f8f5eb" stroke-linecap="round" filter="url(#valleyMist)" opacity=".72"><path d="M-20 325 Q180 285 340 322 T660 315 T980 320 T1230 300" stroke-width="24"/><path d="M80 365 Q260 334 440 365 T800 355 T1190 350" stroke-width="18"/></g>
-<g fill="none" stroke="#f5f1e6" stroke-width="2.5" opacity=".28"><path d="M115 325 L155 300 190 318 M350 205 L390 248 430 278 M585 92 L620 157 660 224 M795 190 L835 238 875 270 M1035 280 L1070 309 1100 328"/></g>
-<rect width="1200" height="440" filter="url(#paperTexture)" opacity=".48"/>
-</svg>`;;
-          slide.appendChild(landscape);
           const meta = document.createElement("div"); meta.className = "episode-meta"; meta.textContent = "PED-TALK · CHRISTMAS SPECIAL"; slide.appendChild(meta);
           const title = document.createElement("h3"); title.textContent = "The gift of hope."; slide.appendChild(title);
           const verse = document.createElement("p"); verse.textContent = '“For God so loved the world, that he gave his only born Son, that whoever believes in him should not perish, but have eternal life.”'; slide.appendChild(verse);
@@ -561,13 +446,14 @@
     }
     function updateCarousel() { carouselTrack.style.transform = `translateX(-${carouselIndex * 100}%)`; [...carouselDots.children].forEach((dot, index) => { dot.classList.toggle("active", index === carouselIndex); dot.setAttribute("aria-current", index === carouselIndex ? "true" : "false"); }); }
     function goToSlide(index) { if (!carouselEpisodes.length) return; carouselIndex = (index + carouselEpisodes.length) % carouselEpisodes.length; updateCarousel(); startCarousel(); }
-    function startCarousel() { clearTimeout(carouselTimer); if (carouselEpisodes.length > 1) { const delay = carouselEpisodes[carouselIndex]?.christmas ? 15000 : 5000; carouselTimer = setTimeout(() => goToSlide(carouselIndex + 1), delay); } }
+    function startCarousel() { clearInterval(carouselTimer); if (carouselEpisodes.length > 1 && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) carouselTimer = setInterval(() => goToSlide(carouselIndex + 1), 5500); }
     document.getElementById("carouselPrev").addEventListener("click", () => goToSlide(carouselIndex - 1));
     document.getElementById("carouselNext").addEventListener("click", () => goToSlide(carouselIndex + 1));
-    document.addEventListener("visibilitychange", () => { if (!document.hidden) startCarousel(); });
-    carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearTimeout(carouselTimer); }, { passive: true });
+    carousel.addEventListener("mouseenter", () => clearInterval(carouselTimer)); carousel.addEventListener("mouseleave", startCarousel); carousel.addEventListener("focusin", () => clearInterval(carouselTimer)); carousel.addEventListener("focusout", startCarousel);
+    carousel.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].screenX; clearInterval(carouselTimer); }, { passive: true });
     carousel.addEventListener("touchend", event => { const distance = event.changedTouches[0].screenX - touchStartX; if (Math.abs(distance) > 45) goToSlide(carouselIndex + (distance < 0 ? 1 : -1)); else startCarousel(); }, { passive: true });
     carousel.addEventListener("keydown", event => { if (event.key === "ArrowLeft") goToSlide(carouselIndex - 1); if (event.key === "ArrowRight") goToSlide(carouselIndex + 1); });
+    carousel.addEventListener("click", event => { const slide = event.target.closest(".carousel-slide"); if (!slide) return; event.preventDefault(); openDwoop(slide); });
 
     function updateCountdown() {
       const now = new Date();
@@ -587,81 +473,16 @@
       const categories = [...new Set(episodes.flatMap(e => e.categories || []))].sort(); const filters = document.getElementById("categoryFilters"); filters.innerHTML = ['All', ...categories].map(category => `<button class="category-filter${category === "All" ? " active" : ""}" type="button" data-category="${category === "All" ? "all" : category}">${category}</button>`).join(""); filters.querySelectorAll("button").forEach(button => button.addEventListener("click", () => { activeCategory = button.dataset.category; filters.querySelectorAll("button").forEach(item => item.classList.toggle("active", item === button)); applyEpisodeFilters(); })); seasonFilter.addEventListener("change", applyEpisodeFilters);
     }
     function applyEpisodeFilters() { const season = document.getElementById("seasonFilter").value; const filtered = allEpisodes.filter(episode => (season === "all" || (episode.season || "Season 1") === season) && (activeCategory === "all" || (episode.categories || []).includes(activeCategory))); displayEpisodes(filtered); }
-    function renderHeroUpcoming(upcoming) {
-      const output = document.getElementById("heroUpcomingImage");
-      if (!output) return;
-      const template = new Image();
-      template.onload = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = 1024;
-        canvas.height = 1024;
-        const ctx = canvas.getContext("2d");
-        ctx.drawImage(template, 0, 0, 1024, 1024);
-        const rows = (upcoming || []).slice(0, 5);
-        const rowY = [379, 466, 553, 640, 727];
-        const roundedRect = (x, y, w, h, r) => {
-          ctx.beginPath();
-          ctx.moveTo(x + r, y);
-          ctx.lineTo(x + w - r, y);
-          ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-          ctx.lineTo(x + w, y + h - r);
-          ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-          ctx.lineTo(x + r, y + h);
-          ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-          ctx.lineTo(x, y + r);
-          ctx.quadraticCurveTo(x, y, x + r, y);
-          ctx.closePath();
-        };
-        rows.forEach((episode, index) => {
-          const y = rowY[index];
-          const number = Number(episode.number);
-          const title = String(episode.title || "UPCOMING EPISODE").toUpperCase();
-          // Keep the original row footprint, but inset the visible tile to create a clearer gap.
-          roundedRect(240, y, 544, 73, 37);
-          ctx.fillStyle = "#17120f";
-          ctx.fill();
-          const tileY = y + 4;
-          const tileHeight = 65;
-          roundedRect(240, tileY, 544, tileHeight, 33);
-          ctx.fillStyle = "#211a15";
-          ctx.fill();
-          ctx.lineWidth = 2;
-          ctx.strokeStyle = "#e9dfce";
-          ctx.stroke();
-          ctx.save();
-          roundedRect(240, tileY, 143, tileHeight, 32);
-          ctx.clip();
-          ctx.fillStyle = "#b8e64f";
-          ctx.fillRect(240, tileY, 143, tileHeight);
-          ctx.restore();
-          ctx.fillStyle = "#10130c";
-          ctx.font = "900 27px Arial, sans-serif";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "middle";
-          ctx.fillText("EP " + String(number).padStart(2, "0"), 311, tileY + tileHeight / 2);
-          ctx.fillStyle = "#fff1dc";
-          ctx.textAlign = "left";
-          let fontSize = 25;
-          ctx.font = "900 " + fontSize + "px Arial, sans-serif";
-          while (ctx.measureText(title).width > 335 && fontSize > 15) {
-            fontSize -= 1;
-            ctx.font = "900 " + fontSize + "px Arial, sans-serif";
-          }
-          ctx.fillText(title, 414, tileY + tileHeight / 2);
-        });
-        output.src = canvas.toDataURL("image/jpeg", 0.94);
-        output.alt = "PED-Talk upcoming episodes: " + rows.map(e => "Episode " + e.number + ", " + e.title).join("; ");
-      };
-      template.onerror = () => { output.alt = "PED-Talk upcoming episodes artwork"; };
-      template.src = "./assets/up-next-template.jpg";
-    }
+    function renderHeroUpcoming(episodes) { const list = document.getElementById("heroUpcomingList"); if (!list || !episodes.length) return; list.replaceChildren(); episodes.slice(0, 3).forEach((episode, index) => { const item = document.createElement("div"); item.className = "hero-upcoming-item"; const number = document.createElement("strong"); number.textContent = episode.title?.match(/S\d+E\d+/i)?.[0] || `NEXT ${index + 1}`; const title = document.createElement("span"); title.textContent = episode.title || "PED-Talk conversation"; item.append(number, title); list.appendChild(item); }); }
     function displayEpisodes(episodes) {
       container.replaceChildren(); if (!episodes.length) { container.innerHTML = '<p class="status">No episodes match this season and category yet.</p>'; return; }
       episodes.forEach((episode, index) => { const card = document.createElement("article"); card.className = "episode"; if (episode.image) card.appendChild(makeArtwork(episode)); const label = document.createElement("div"); label.className = "episode-meta"; label.textContent = `PED-TALK · ${episode.season || "Season 1"} · ${episodeNumber(episode, index, episodes.length)}`; card.appendChild(label); const title = document.createElement("h3"); title.textContent = episode.title || "PED-Talk Episode"; card.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(episode.description).slice(0, 220); card.appendChild(description); if (episode.categories?.length) { const tags = document.createElement("div"); tags.className = "episode-tags"; episode.categories.forEach(category => { const tag = document.createElement("span"); tag.className = "episode-tag"; tag.textContent = category; tags.appendChild(tag); }); card.appendChild(tags); } if (episode.audio) card.appendChild(makePlayer(episode)); if (episode.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = `episode.html?episode=${episode.catalogIndex ?? index}`; link.textContent = "Read episode page →"; card.appendChild(link); } container.appendChild(card); });
       const first = allEpisodes[0]; featured.replaceChildren(); const artwork = document.createElement("div"); artwork.className = "feature-art"; const artworkLabel = document.createElement("div"); artworkLabel.className = "feature-art-label"; artworkLabel.innerHTML = `<span>Latest release</span><span>${episodeNumber(first, 0, allEpisodes.length)}</span>`; artwork.appendChild(artworkLabel); if (first.image) artwork.appendChild(makeArtwork(first)); featured.appendChild(artwork);
       const details = document.createElement("div"); details.className = "feature-info"; const tag = document.createElement("div"); tag.className = "eyebrow"; tag.textContent = `${first.season || "Season 1"} · ${first.categories?.join(" · ") || "PED-Talk"}`; details.appendChild(tag); const title = document.createElement("h3"); title.textContent = first.title || "Latest PED-Talk Episode"; details.appendChild(title); const description = document.createElement("p"); description.textContent = cleanDescription(first.description); details.appendChild(description); if (first.audio) details.appendChild(makePlayer(first)); if (first.link) { const link = document.createElement("a"); link.className = "text-link"; link.href = first.link; link.target = "_blank"; link.rel = "noopener"; link.textContent = "Open episode on Spotify ↗"; details.appendChild(link); } featured.appendChild(details);
     }
-    async function loadEpisodes() { try { const response = await fetch(FEED_URL + '?v=' + Date.now()); if (!response.ok) throw new Error('Catalogue unavailable'); const data = await response.json(); allEpisodes = (data.episodes || []).map((episode, index) => ({ ...episode, catalogIndex: index })); let upcoming = { episodes: [] }; try { const nextResponse = await fetch('./upcoming.json?v=' + Date.now()); if (nextResponse.ok) upcoming = await nextResponse.json(); } catch (upcomingError) { console.warn('Upcoming schedule unavailable', upcomingError); } renderHeroUpcoming(upcoming.episodes || []); renderLibraryFilters(allEpisodes); displayEpisodes(allEpisodes); renderCarousel(allEpisodes); renderInstalledApp(allEpisodes); document.getElementById('updateStatus').textContent = 'Episode catalogue connected · Updated ' + new Date(data.updated).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' }); } catch (error) { container.textContent = 'We could not load episodes right now. Please try again later.'; featured.textContent = 'Featured episode unavailable.'; console.error(error); } }
+    async function loadEpisodes() { try { const response = await fetch(`${FEED_URL}?v=${Date.now()}`); if (!response.ok) throw new Error("Catalogue unavailable"); const data = await response.json(); allEpisodes = (data.episodes || []).map((episode, index) => ({ ...episode, catalogIndex: index })); renderHeroUpcoming(allEpisodes); renderLibraryFilters(allEpisodes); displayEpisodes(allEpisodes); renderCarousel(allEpisodes); document.getElementById("updateStatus").textContent = `Episode catalogue connected · Updated ${new Date(data.updated).toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" })}`; } catch (error) { container.textContent = "We couldn't load episodes right now. Please try again later."; featured.textContent = "Featured episode unavailable."; console.error(error); } }
+    window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); deferredInstallPrompt = event; document.getElementById("installPrompt").classList.add("visible"); });
+    document.getElementById("installButton").addEventListener("click", async () => { if (!deferredInstallPrompt) return; deferredInstallPrompt.prompt(); await deferredInstallPrompt.userChoice; deferredInstallPrompt = null; document.getElementById("installPrompt").classList.remove("visible"); });
     const menuBtn = document.getElementById("menuBtn"); const navLinks = document.getElementById("navLinks"); menuBtn.addEventListener("click", () => { const isOpen = navLinks.classList.toggle("open"); menuBtn.textContent = isOpen ? "✕" : "☰"; menuBtn.setAttribute("aria-expanded", String(isOpen)); menuBtn.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu"); }); navLinks.querySelectorAll("a").forEach(link => link.addEventListener("click", () => { navLinks.classList.remove("open"); menuBtn.textContent = "☰"; menuBtn.setAttribute("aria-expanded", "false"); menuBtn.setAttribute("aria-label", "Open menu"); }));
     document.getElementById("year").textContent = new Date().getFullYear(); updateCountdown(); setInterval(updateCountdown, 1000); loadEpisodes();
   </script>
