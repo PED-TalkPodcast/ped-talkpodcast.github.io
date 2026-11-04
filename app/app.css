@@ -737,3 +737,27 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 .reading-drill-back{justify-self:start;margin:0 0 6px;padding:10px 15px;border:1px solid #e0e9e0;border-radius:999px;background:#f4f8f4;color:#286344;font:700 11px 'DM Sans',sans-serif;cursor:pointer}
 .reading-breakdown-button:disabled{opacity:.55;cursor:default}
 @media(prefers-reduced-motion:reduce){.welcome.hope-card::before,.hope-modal::before,.hope-modal-panel{animation:none!important;transform:none!important}}
+
+
+/* v83 — hard-stop the drifting Gift of Hope layers; render the artwork as a static background. */
+.welcome.hope-card{background-image:linear-gradient(180deg,rgba(4,13,27,.24),rgba(5,19,37,.78)),url('../assets/gift-of-hope-sky.svg')!important;background-position:center,center 48%!important;background-size:cover,cover!important;background-repeat:no-repeat,no-repeat!important}
+.welcome.hope-card::before,.hope-modal::before{content:none!important;display:none!important;animation:none!important;transform:none!important;will-change:auto!important}
+.hope-modal{background-image:linear-gradient(180deg,rgba(3,12,25,.22),rgba(3,12,25,.84)),url('../assets/gift-of-hope-sky.svg')!important;background-position:center,center 48%!important;background-size:cover,cover!important;background-repeat:no-repeat,no-repeat!important}
+/* A visibly translucent, reflective glass bubble play control. */
+.episode-open-card .episode-open-mark{isolation:isolate;position:relative;display:grid;place-items:center;width:48px;height:48px;flex:0 0 48px;border:1px solid rgba(255,255,255,.88)!important;border-radius:50%;background:radial-gradient(circle at 30% 20%,rgba(255,255,255,.82),rgba(221,245,229,.34) 38%,rgba(125,184,145,.20) 72%,rgba(255,255,255,.42))!important;color:#17452d;box-shadow:inset 0 2px 4px rgba(255,255,255,.95),inset 0 -5px 9px rgba(25,77,47,.15),0 8px 22px rgba(2,14,7,.28),0 0 0 3px rgba(255,255,255,.09)!important;backdrop-filter:blur(18px) saturate(1.8)!important;-webkit-backdrop-filter:blur(18px) saturate(1.8)!important;transition:transform .22s ease,box-shadow .22s ease}
+.episode-open-card .episode-open-mark::after{content:'';position:absolute;z-index:-1;inset:4px 7px auto;height:42%;border-radius:50%;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,0));filter:blur(1px)}
+.episode-open-card .episode-open-mark::before{position:relative;z-index:1;margin-left:4px;border-top:8px solid transparent!important;border-bottom:8px solid transparent!important;border-left:11px solid #17452d!important;filter:drop-shadow(0 1px 1px rgba(255,255,255,.8))}
+.episode-open-card:active .episode-open-mark{transform:scale(.92);box-shadow:inset 0 2px 4px rgba(255,255,255,.9),0 3px 10px rgba(2,14,7,.2)!important}
+.episode-play-button{isolation:isolate;position:relative;overflow:hidden;border:1px solid rgba(255,255,255,.92)!important;background:linear-gradient(145deg,rgba(255,255,255,.88),rgba(226,246,231,.58) 42%,rgba(113,169,130,.32))!important;color:#17452d!important;box-shadow:inset 0 2px 4px rgba(255,255,255,.98),inset 0 -4px 9px rgba(25,77,47,.14),0 10px 26px rgba(23,61,43,.18)!important;backdrop-filter:blur(18px) saturate(1.8)!important;-webkit-backdrop-filter:blur(18px) saturate(1.8)!important}
+.episode-play-button::before{content:'';position:absolute;z-index:-1;top:3px;left:10px;right:10px;height:45%;border-radius:999px;background:linear-gradient(180deg,rgba(255,255,255,.92),rgba(255,255,255,0))}
+.episode-play-symbol{border:1px solid rgba(255,255,255,.9)!important;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(168,211,180,.55))!important;color:#17452d!important;box-shadow:inset 0 1px 3px #fff,0 3px 9px rgba(23,61,43,.16)!important}
+.episode-play-label{color:#17452d!important}
+/* Episode page: natural vertical scrolling, horizontal swipe changes episode with a short slide. */
+.dwoop-episode-mode .dwoop-card-expanded{touch-action:pan-y!important;overscroll-behavior-x:contain}
+.dwoop-episode-mode .episode-more-tile{transition:transform .2s ease,background .2s ease,box-shadow .2s ease}
+.dwoop-episode-mode .episode-more-tile:active{transform:translateX(3px);background:#f1f7f1}
+@keyframes episodeSlideNext{from{opacity:.45;transform:translateX(34px)}to{opacity:1;transform:translateX(0)}}
+@keyframes episodeSlidePrev{from{opacity:.45;transform:translateX(-34px)}to{opacity:1;transform:translateX(0)}}
+.dwoop-card-expanded.episode-swipe-next{animation:episodeSlideNext .24s cubic-bezier(.2,.75,.25,1)}
+.dwoop-card-expanded.episode-swipe-prev{animation:episodeSlidePrev .24s cubic-bezier(.2,.75,.25,1)}
+@media(prefers-reduced-motion:reduce){.dwoop-card-expanded.episode-swipe-next,.dwoop-card-expanded.episode-swipe-prev{animation:none!important}}
