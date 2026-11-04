@@ -281,6 +281,7 @@ function showView(view,reference=null,preserveBible=false){
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
  [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
  hopeModal.hidden=target!=='hope';
+ document.body.classList.toggle('hope-open',target==='hope');
  document.body.classList.remove('modal-open');
  if(target!=='bible')document.body.classList.remove('scripture-reading');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
@@ -754,7 +755,7 @@ syncHopeLike();
 const commentsKey='pedtalk-gift-hope-comments';
 function getHopeComments(){try{const parsed=JSON.parse(safeStorageGet(commentsKey,'[]'));return Array.isArray(parsed)?parsed:[];}catch(error){return[];}}
 function renderHopeComments(){const list=document.getElementById('hopeCommentList');const comments=getHopeComments();list.innerHTML=comments.length?comments.map(item=>'<article class="hope-comment"><p>'+String(item.text||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))+'</p><small>'+new Date(item.date).toLocaleString()+'</small></article>').join(''):'<p class="empty">Be the first to share a thought.</p>';}
-document.getElementById('hopeCommentToggle').addEventListener('click',()=>{const panel=document.getElementById('hopeComments');panel.hidden=!panel.hidden;if(!panel.hidden)renderHopeComments();});
+document.getElementById('hopeCommentToggle').addEventListener('click',()=>{const panel=document.getElementById('hopeComments'),button=document.getElementById('hopeCommentToggle');panel.hidden=!panel.hidden;button.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){renderHopeComments();panel.scrollIntoView({block:'nearest',behavior:'smooth'});}});
 document.getElementById('hopeCommentForm').addEventListener('submit',event=>{event.preventDefault();const input=document.getElementById('hopeCommentInput');const value=input.value.trim();if(!value)return;const comments=getHopeComments();comments.unshift({text:value,date:new Date().toISOString()});if(!safeStorageSet(commentsKey,JSON.stringify(comments.slice(0,100)))){alert('Comments cannot be saved on this device right now.');return;}input.value='';renderHopeComments();});
 document.getElementById('hopeShare').addEventListener('click',async()=>{const shareData={title:'PED-Talk · Gift of Hope',text:giftVerse.textContent+' — '+giftReference.textContent,url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareData.text+' '+shareData.url);alert('Gift of Hope copied to clipboard.');}else alert(shareData.text+' '+shareData.url);}catch(error){if(error.name!=='AbortError')console.warn('Share was not completed',error);}});
 
