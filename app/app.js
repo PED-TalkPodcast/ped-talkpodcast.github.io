@@ -115,15 +115,18 @@ const bibleChapterSelect=document.getElementById('bibleChapter');
 const booksView=document.getElementById('booksView');
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false){
- const target=['home','episodes','bible','bible-library','books','hope'].includes(view)?view:'home';
- const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
- [homeView,episodesView,bibleView,bibleLibraryView,booksView,hopeModal].forEach(el=>{el.hidden=el!==next;el.classList.remove('view-enter');});
+ const target=['home','episodes','bible','bible-library','reading-stats','books','hope'].includes(view)?view:'home';
+ const readingStatsView=document.getElementById('readingStatsView');
+ const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='hope'?hopeModal:homeView;
+ if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
+ [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView,hopeModal].forEach(el=>{if(el){el.hidden=el!==next;el.classList.remove('view-enter');}});
  document.body.classList.remove('modal-open');
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
  const token=++viewTransitionToken;
  requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
  window.scrollTo({top:0,behavior:'smooth'});
  if(target==='bible'){if(reference)openBibleReference(reference);else if(!preserveBible)resetBibleFlow();}
+ if(target==='reading-stats')renderReadingDashboard();
 }
 
 function fillBibleBooks(){
@@ -222,6 +225,7 @@ async function loadBibleBook(code,chapter=1,verseToFocus=null,openReader=false){
    const reader=document.getElementById('bibleReader');
     requestAnimationFrame(()=>requestAnimationFrame(()=>{const target=document.getElementById('bible-verse-'+Number(verseToFocus));if(!target||!reader)return;const targetRect=target.getBoundingClientRect(),readerRect=reader.getBoundingClientRect();reader.scrollTo({top:reader.scrollTop+targetRect.top-readerRect.top-(reader.clientHeight*0.34),behavior:'smooth'});target.classList.add('verse-focus-arrival');window.setTimeout(()=>target.classList.remove('verse-focus-arrival'),1800);}));
   }
+  if(openReader||verseToFocus)startBibleReadingSession(meta[0],meta[1],activeBibleChapter,chapterData.verses.length,verseToFocus);
  }catch(error){
   if(token!==bibleLoadToken)return;
   title.textContent=meta[1]+' unavailable';verses.innerHTML='<p class="loading">This book could not load. Please check your connection and try again.</p>';console.error(error);
@@ -422,6 +426,7 @@ let savedBibleMode='light';try{savedBibleMode=localStorage.getItem('ped-talk-bib
 setBibleMode(savedBibleMode==='dark'?'dark':'light');
 bibleModeButton?.addEventListener('click',()=>setBibleMode(document.body.classList.contains('bible-dark')?'light':'dark'));
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
+document.querySelectorAll('.reading-stats-open,[data-reading-home]').forEach(button=>button.addEventListener('click',()=>showView(button.hasAttribute('data-reading-home')?'home':'reading-stats')));
 
 // Gift of Hope expanded reading tile and community actions.
 const hopeModal=document.getElementById('hopeModal');
@@ -454,3 +459,102 @@ document.getElementById('hopeCommentForm').addEventListener('submit',event=>{eve
 document.getElementById('hopeShare').addEventListener('click',async()=>{const shareData={title:'PED-Talk · Gift of Hope',text:giftVerse.textContent+' — '+giftReference.textContent,url:location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(shareData.text+' '+shareData.url);alert('Gift of Hope copied to clipboard.');}else alert(shareData.text+' '+shareData.url);}catch(error){if(error.name!=='AbortError')console.warn('Share was not completed',error);}});
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
+
+
+/* Universal Library Progress & Reading Stats */
+const UNIVERSAL_PROGRESS_KEY='pedtalk-universal-book-progress-v1';
+const UNIVERSAL_SESSIONS_KEY='pedtalk-universal-reading-sessions-v1';
+const UNIVERSAL_SNIPPETS_KEY='pedtalk-universal-reading-snippets-v1';
+let activeUniversalSession=null;
+let universalLastTick=0;
+let universalLastActivity=Date.now();
+const UNIVERSAL_IDLE_LIMIT=120000;
+function readUniversalArray(key){try{const value=JSON.parse(safeStorageGet(key,'[]'));return Array.isArray(value)?value:[];}catch(error){return[];}}
+function writeUniversalArray(key,value){return safeStorageSet(key,JSON.stringify(value));}
+function universalProgressItems(){return readUniversalArray(UNIVERSAL_PROGRESS_KEY);}
+function universalSessions(){return readUniversalArray(UNIVERSAL_SESSIONS_KEY);}
+function universalEscape(value=''){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
+function universalSaveProgress(item){
+ const items=universalProgressItems(),index=items.findIndex(entry=>entry.bookId===item.bookId);
+ if(index>=0)items[index]={...items[index],...item};else items.unshift(item);
+ writeUniversalArray(UNIVERSAL_PROGRESS_KEY,items.slice(0,100));
+}
+function universalTouch(){universalLastActivity=Date.now();}
+function universalFlushTick(){
+ if(!activeUniversalSession)return;
+ const now=Date.now(),visible=!document.hidden&&document.getElementById('bibleReader')?.hidden===false;
+ if(visible&&now-universalLastActivity<=UNIVERSAL_IDLE_LIMIT){
+  const elapsed=Math.max(0,Math.min(30,Math.round((now-universalLastTick)/1000)));
+  if(elapsed){
+   activeUniversalSession.durationSeconds+=elapsed;
+   activeUniversalSession.endTime=now;
+   const sessions=universalSessions(),index=sessions.findIndex(item=>item.sessionId===activeUniversalSession.sessionId);
+   if(index>=0)sessions[index]=activeUniversalSession;else sessions.push(activeUniversalSession);
+   writeUniversalArray(UNIVERSAL_SESSIONS_KEY,sessions.slice(-1000));
+   const progress=universalProgressItems().find(item=>item.bookId===activeUniversalSession.bookId);
+   if(progress){progress.totalTimeSpentSeconds=(progress.totalTimeSpentSeconds||0)+elapsed;progress.lastAccessedTimestamp=now;universalSaveProgress(progress);}
+  }
+ }
+ universalLastTick=now;
+}
+function finishReadingSession(){
+ if(!activeUniversalSession)return;
+ universalFlushTick();
+ activeUniversalSession=null;
+ universalLastTick=Date.now();
+}
+function startUniversalReading(config){
+ finishReadingSession();
+ const now=Date.now();
+ const bookId=String(config.bookId||'').trim();
+ if(!bookId)return;
+ activeUniversalSession={sessionId:'rs-'+now+'-'+Math.random().toString(36).slice(2,8),bookId,userId:'local-device',sourceType:config.sourceType||'book',startTime:now,endTime:now,durationSeconds:0,startLocation:config.location||{},endLocation:config.location||{},wordsRead:config.wordsRead??null,pagesRead:config.pagesRead??null};
+ universalLastTick=now;universalLastActivity=now;
+ const previous=universalProgressItems().find(item=>item.bookId===bookId);
+ universalSaveProgress({bookId,userId:'local-device',title:config.title||previous?.title||'Untitled book',subtitle:config.subtitle||'',sourceType:config.sourceType||'book',completionPercentage:Math.max(0,Math.min(1,Number(config.progress)||0)),progressDisplayText:config.displayText||'',lastKnownLocation:config.location||{},isCompleted:Boolean(config.isCompleted),totalTimeSpentSeconds:previous?.totalTimeSpentSeconds||0,lastAccessedTimestamp:now});
+}
+function startBibleReadingSession(code,title,chapter,verseCount,focusVerse){
+ const chapterProgress=Math.max(0,Math.min(1,(Number(chapter)-1+(focusVerse?Math.max(0,Number(focusVerse)-1)/Math.max(1,verseCount):0))/Math.max(1,({GEN:50,EXO:40,LEV:27,NUM:36,DEU:34,JOS:24,JDG:21,RUT:4,'1SA':31,'2SA':24,'1KI':22,'2KI':25,'1CH':29,'2CH':36,EZR:10,NEH:13,EST:10,JOB:42,PSA:150,PRO:31,ECC:12,SNG:8,ISA:66,JER:52,LAM:5,EZK:48,DAN:12,HOS:14,JOL:3,AMO:9,OBA:1,JON:4,MIC:7,NAM:3,HAB:3,ZEP:3,HAG:2,ZEC:14,MAL:4,MAT:28,MRK:16,LUK:24,JHN:21,ACT:28,ROM:16,'1CO':16,'2CO':13,GAL:6,EPH:6,PHP:4,COL:4,'1TH':5,'2TH':3,'1TI':6,'2TI':4,TIT:3,PHM:1,HEB:13,JAS:5,'1PE':5,'2PE':3,'1JN':5,'2JN':1,'3JN':1,JUD:1,REV:22}[code]||chapter)));
+ const bookName=title||code;
+ startUniversalReading({bookId:'bible-web-'+code,title:bookName,subtitle:bookName+' · Chapter '+chapter,sourceType:'bible',location:{bookCode:code,bookName,chapter,verse:focusVerse||1},progress:chapterProgress,displayText:'Chapter '+chapter,wordsRead:null});
+}
+function formatUniversalTime(seconds){
+ const mins=Math.floor(Math.max(0,seconds)/60),hours=Math.floor(mins/60),remaining=mins%60;
+ return hours?hours+'h '+remaining+'m':mins+'m';
+}
+function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate()).getTime();}
+function startOfLocalWeek(date){const day=(date.getDay()+6)%7;return startOfLocalDay(new Date(date.getFullYear(),date.getMonth(),date.getDate()-day));}
+function renderReadingDashboard(){
+ const sessions=universalSessions(),now=new Date(),todayStart=startOfLocalDay(now),weekStart=startOfLocalWeek(now),monthStart=new Date(now.getFullYear(),now.getMonth(),1).getTime();
+ const totalSince=start=>sessions.reduce((sum,item)=>sum+(Number(item.durationSeconds)||0)*(Number(item.endTime)>=start?1:0),0);
+ const today=totalSince(todayStart),week=totalSince(weekStart),month=totalSince(monthStart);
+ const progress=universalProgressItems().sort((a,b)=>(b.lastAccessedTimestamp||0)-(a.lastAccessedTimestamp||0));
+ const activeBooks=new Set(sessions.filter(item=>Number(item.durationSeconds)>0&&Number(item.startTime)>=monthStart).map(item=>item.bookId));
+ document.getElementById('readingToday').textContent=formatUniversalTime(today);
+ document.getElementById('readingWeek').textContent=formatUniversalTime(week);
+ document.getElementById('readingMonth').textContent=formatUniversalTime(month);
+ document.getElementById('readingSummaryTitle').textContent=progress.length?'You are building a reading rhythm.':'Your reading journey starts here.';
+ document.getElementById('readingSummaryDetail').textContent=month?formatUniversalTime(month)+' spent reading this month · '+activeBooks.size+' '+(activeBooks.size===1?'book or Bible book':'books and Bible books')+' opened':'Your reading time will appear here as you read scripture or books.';
+ const continueList=document.getElementById('readingContinueList');
+ const continueItems=progress.filter(item=>!item.isCompleted).slice(0,2);
+ document.getElementById('readingProgressCount').textContent=progress.length+' '+(progress.length===1?'item':'items');
+ continueList.innerHTML=continueItems.length?continueItems.map(item=>{
+  const percent=Math.round(Math.max(0,Math.min(1,Number(item.completionPercentage)||0))*100);
+  const location=item.lastKnownLocation||{};
+  const resume=item.sourceType==='bible'?'bible:'+encodeURIComponent((location.bookName||item.title)+':'+(location.chapter||1)+':'+(location.verse||1)):'';
+  return '<article class="reading-progress-card"><div class="reading-card-type">'+(item.sourceType==='bible'?'BIBLE':'BOOK')+'</div><h4>'+universalEscape(item.title)+'</h4><p>'+universalEscape(item.subtitle||'Continue where you left off')+'</p><div class="reading-progress-track"><span style="width:'+percent+'%"></span></div><div class="reading-progress-meta"><span>'+universalEscape(item.progressDisplayText||'In progress')+'</span><strong>'+percent+'%</strong></div><button type="button" class="reading-continue-button" '+(resume?'data-reading-resume="'+universalEscape(resume)+'"':'disabled')+'>Continue reading</button></article>';
+ }).join(''):'<p class="reading-empty">Your recently read books and Bible passages will appear here. Start reading to build your list.</p>';
+ const snippets=readUniversalArray(UNIVERSAL_SNIPPETS_KEY),snippetList=document.getElementById('readingSnippetsList');
+ snippetList.innerHTML=snippets.length?snippets.slice(0,8).map(item=>'<article class="reading-snippet"><span>▤</span><div><strong>'+universalEscape(item.title||'Saved snippet')+'</strong><p>'+universalEscape(item.text||'')+'</p></div></article>').join(''):'<p class="reading-empty">Saved articles and reading snippets will appear here when you add them.</p>';
+ continueList.querySelectorAll('[data-reading-resume]').forEach(button=>button.addEventListener('click',()=>{const value=decodeURIComponent(button.dataset.readingResume).slice(5);showView('bible',value,true);}));
+}
+window.PEDReadingProgress={
+ start:config=>startUniversalReading(config||{}),
+ update:config=>{if(!activeUniversalSession)return;const current=activeUniversalSession;current.endLocation=config?.location||current.endLocation;universalSaveProgress({bookId:current.bookId,...config,lastKnownLocation:current.endLocation,lastAccessedTimestamp:Date.now()});},
+ finish:finishReadingSession,
+ saveSnippet:(snippet)=>{const items=readUniversalArray(UNIVERSAL_SNIPPETS_KEY);items.unshift({...snippet,savedAt:Date.now()});writeUniversalArray(UNIVERSAL_SNIPPETS_KEY,items.slice(0,100));}
+};
+['pointerdown','touchstart','keydown','scroll'].forEach(type=>document.addEventListener(type,universalTouch,{passive:true}));
+window.addEventListener('pagehide',finishReadingSession);
+document.addEventListener('visibilitychange',()=>{if(document.hidden)finishReadingSession();});
+window.setInterval(universalFlushTick,15000);
