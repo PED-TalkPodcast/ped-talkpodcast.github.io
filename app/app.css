@@ -1782,43 +1782,26 @@ body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-v
 .hope-modal-panel{overflow-anchor:none!important;scroll-behavior:auto!important}
 
 
-/* v102 — clear blue daytime sky for Gift of Hope, with a readable frosted devotional surface. */
+/* Gift of Hope Light Mode: the Home tile keeps its pre-change styling.
+   The bright daytime sky and frosted glass are applied only to the expanded card. */
 body.app-light .welcome.hope-card{
- background-color:#78bce9!important;
- background-image:linear-gradient(180deg,rgba(255,255,255,.015),rgba(255,255,255,.07)),var(--gift-of-hope-image)!important;
- background-position:center 48%!important;background-size:cover!important;
+ background-color:#e9efe2!important;
+ background-image:linear-gradient(180deg,rgba(255,250,239,.08),rgba(245,248,238,.18)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important;
+ background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important;
 }
 body.app-light .hope-modal{
  background-color:#78bce9!important;
- background-image:linear-gradient(180deg,rgba(18,77,125,.015),rgba(18,77,125,.13)),var(--gift-of-hope-image)!important;
+ background-image:linear-gradient(180deg,rgba(18,77,125,.015),rgba(18,77,125,.13)),var(--gift-of-hope-image,url('../assets/gift-of-hope-day.svg'))!important;
  background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important;
 }
 body.app-light .hope-modal-panel{
- background:rgba(255,255,255,.78)!important;background-image:none!important;
- border:1px solid rgba(255,255,255,.78)!important;border-radius:28px!important;
- color:#263c30!important;
- box-shadow:0 18px 52px rgba(37,83,119,.18),inset 0 1px 0 rgba(255,255,255,.92)!important;
- backdrop-filter:blur(24px) saturate(1.35)!important;-webkit-backdrop-filter:blur(24px) saturate(1.35)!important;
-}
-body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#203a2b!important;text-shadow:none!important}
-body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#315f78!important}
-body.app-light .hope-modal-panel>p:not(.eyebrow){color:#526a62!important}
-
-/* v103 — bright blue daytime sky for Gift of Hope in Light Mode. */
-body.app-light .welcome.hope-card{background-color:#78bce9!important;background-image:linear-gradient(180deg,rgba(255,255,255,.015),rgba(255,255,255,.07)),var(--gift-of-hope-image)!important;background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important}
-body.app-light .hope-modal{background-color:#78bce9!important;background-image:linear-gradient(180deg,rgba(18,77,125,.015),rgba(18,77,125,.13)),var(--gift-of-hope-image)!important;background-position:center 48%!important;background-size:cover!important;background-repeat:no-repeat!important}
-body.app-light .hope-modal-panel{background:rgba(255,255,255,.78)!important;background-image:none!important;border:1px solid rgba(255,255,255,.78)!important;border-radius:28px!important;color:#263c30!important;box-shadow:0 18px 52px rgba(37,83,119,.18),inset 0 1px 0 rgba(255,255,255,.92)!important;backdrop-filter:blur(24px) saturate(1.35)!important;-webkit-backdrop-filter:blur(24px) saturate(1.35)!important}
-body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#203a2b!important;text-shadow:none!important}
-body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#315f78!important}
-body.app-light .hope-modal-panel>p:not(.eyebrow){color:#526a62!important}
-
-
-/* Light Mode Gift of Hope — the expanded devotional is the frosted-glass surface.
-   Keep the compact Home tile's original appearance unchanged. */
-body.app-light .hope-modal-panel{
- background:rgba(239,248,255,.66)!important;
- border:1px solid rgba(255,255,255,.84)!important;
+ background:rgba(239,248,255,.66)!important;background-image:none!important;
+ border:1px solid rgba(255,255,255,.84)!important;border-radius:28px!important;
+ color:#203a2b!important;
  box-shadow:0 22px 58px rgba(29,83,122,.20),inset 0 1px 0 rgba(255,255,255,.94)!important;
  backdrop-filter:blur(28px) saturate(1.5)!important;-webkit-backdrop-filter:blur(28px) saturate(1.5)!important;
 }
+body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#173f2d!important;text-shadow:none!important}
+body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#315f78!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#526a62!important}
 body.app-light .hope-modal-panel .hope-modal-devotional blockquote{color:#173f2d!important}
