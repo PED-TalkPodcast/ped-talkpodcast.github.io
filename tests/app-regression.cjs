@@ -55,6 +55,8 @@ const server = http.createServer((req,res)=>{
     await bodyHas('app-light');
     await page.emulateMedia({colorScheme:'dark'});
     await bodyHas('app-dark');
+    const nightAsset=await page.evaluate(()=>getComputedStyle(document.documentElement).getPropertyValue('--gift-of-hope-image'));
+    assert.match(nightAsset,/gift-of-hope-sky\.svg/);
     await page.locator('[data-app-theme="light"]').click();
     await bodyHas('app-light');
     await page.reload({waitUntil:'domcontentloaded'});
@@ -82,7 +84,7 @@ const server = http.createServer((req,res)=>{
     if(phase==='A PROMISE OF VICTORY')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
     phase=await page.locator('#giftVerseLabel').textContent();
     if(phase!=='AMAZING GRACE')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
-    assert.match(await page.locator('#giftVerse').textContent(),/Grace meets us/);
+    assert.match(await page.locator('#giftVerse').textContent(),/Amazing grace! how sweet the sound/);
     await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
     assert.match(await page.locator('#giftVerse').textContent(),/He who overcomes/);
     assert.match(await page.locator('#giftReference').textContent(),/Revelation 3:21.*World English Bible/);
@@ -91,6 +93,10 @@ const server = http.createServer((req,res)=>{
     // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
+    await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
+    assert.match(await page.locator('#modalGiftVerse').textContent(),/Amazing grace! how sweet the sound/);
+    await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
+    assert.match(await page.locator('#modalGiftVerse').textContent(),/He who overcomes/);
     await page.locator('#hopeCommentToggle').click();
     await page.locator('#hopeCommentInput').fill('Regression test comment');
     await page.locator('#hopeCommentForm button[type="submit"]').click();
@@ -121,12 +127,12 @@ const server = http.createServer((req,res)=>{
     await page.locator('[data-showcase-slide="1"]').click();
     assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
     await page.locator('#appSettingsButton').click();
-    await page.locator('[data-app-theme="dark"]').click();
+    await page.locator('[data-app-theme="light"]').click();
     await page.locator('#settingsClose').click();
     assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
     await page.locator('[data-showcase-slide="2"]').click();
     const voiceFilter=await page.locator('.app-showcase-voice>img').evaluate(el=>getComputedStyle(el).filter);
-    assert.match(voiceFilter,/brightness\(1\.2/);
+    assert.match(voiceFilter,/brightness\(1\.06/);
     await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
     await visible('#dwoopOverlay');
     assert.equal(await page.evaluate(()=>history.state?.view),'home','opening a feature must not navigate to Episodes');
