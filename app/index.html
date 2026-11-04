@@ -7,11 +7,11 @@
 <meta name="description" content="PED-Talk — hope, scripture and conversations that help us grow.">
 <link rel="manifest" href="./manifest.json">
 <link rel="icon" href="../icons/ped-talk-icon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./app.css?v=84">
+<link rel="stylesheet" href="./app.css?v=87">
 <title>PED-Talk App</title>
 </head>
 <body>
-<header class="topbar"><a class="brand" href="./"><img src="../icons/ped-talk-icon.svg" alt=""> <span>PED-TALK<small>ANAGKAZO MEDIA</small></span></a><span class="live-dot">A brighter day</span></header>
+<header class="topbar"><a class="brand" href="./"><img src="../icons/ped-talk-icon.svg" alt=""> <span>PED-TALK<small>ANAGKAZO MEDIA</small></span></a><div class="topbar-actions"><span class="live-dot">A brighter day</span><button class="app-install-button" id="appInstallButton" type="button">Install</button></div></header><aside class="install-guide" id="installGuide" hidden><div><strong>Take PED-Talk with you.</strong><p id="installStatus" role="status" aria-live="polite">Tap Install to add the PED-Talk app to your phone.</p></div></aside>
 <main id="homeView">
 <section class="welcome hope-card" aria-label="Gift of Hope and today's scripture"><div class="hope-heading"><p class="eyebrow">A MOMENT OF HOPE</p><h1>Gift of<br><em>Hope.</em></h1></div><div class="hope-scripture"><span class="verse-label">TODAY\'S SCRIPTURE</span><blockquote id="giftVerse">“For God so loved the world, that he gave his one and only Son…”</blockquote><p id="giftReference">John 3:16 · World English Bible</p><button class="text-link scripture-open" type="button" data-open-bible="John:3:16">Read in the Bible <span>→</span></button></div></section>
 <section class="upcoming-section" aria-label="PED-Talk featured slides">
@@ -68,5 +68,5 @@
 <button data-view="reading-stats" aria-label="Reading Stats"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h17M8 16v-4M13 16V7M18 16v-7"/></svg><span>Stats</span></button>
 <button data-view="books" aria-label="Books"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v18H6.5A2.5 2.5 0 0 0 4 22z"/><path d="M4 4.5v15A2.5 2.5 0 0 1 6.5 17H20M8 6h8"/></svg><span>Books</span></button>
 </nav><section id="hopeModal" class="hope-modal" hidden role="dialog" aria-modal="true" aria-labelledby="hopeModalTitle"><div class="hope-modal-panel"><button class="hope-close" type="button" id="closeHope" aria-label="Close">×</button><p class="eyebrow">A MOMENT OF HOPE</p><h2 id="hopeModalTitle">Gift of Hope.</h2><span class="verse-label">TODAY\'S SCRIPTURE</span><blockquote id="modalGiftVerse">“For God so loved the world, that he gave his one and only Son…”</blockquote><p id="modalGiftReference">John 3:16 · World English Bible</p><div class="hope-actions"><button type="button" id="hopeLike" aria-pressed="false">♡ <span>Like</span></button><button type="button" id="hopeCommentToggle">☷ <span>Comment</span></button><button type="button" id="hopeShare">↗ <span>Share</span></button></div><div id="hopeComments" class="hope-comments" hidden><h3>Join the conversation</h3><div id="hopeCommentList"></div><form id="hopeCommentForm"><textarea id="hopeCommentInput" rows="3" maxlength="500" placeholder="Write a thoughtful comment…"></textarea><button type="submit">Post comment</button></form></div><button class="button-link" type="button" data-open-bible="John:3:16">Read this passage in the Bible →</button></div></section>
-<script src="./app.js?v=86" defer></script>
+<script>if("serviceWorker" in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("../service-worker.js",{scope:"../"}).catch(error=>console.warn("PED-Talk offline support could not start",error)));</script><script src="./app.js?v=87" defer></script>
 </body></html>
