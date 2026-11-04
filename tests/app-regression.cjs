@@ -29,7 +29,7 @@ const server = http.createServer((req,res)=>{
     const page=await context.newPage();
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
-    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,{timeout:15000});
+    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     const hidden=async selector=>assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('[data-app-theme="'+theme+'"]').click();};
@@ -53,16 +53,14 @@ const server = http.createServer((req,res)=>{
     await bodyHas('app-light');
     await page.emulateMedia({colorScheme:'dark'});
     await bodyHas('app-dark');
-    await page.locator('#appSettingsButton').click();
     await page.locator('[data-app-theme="light"]').click();
     await bodyHas('app-light');
     await page.reload({waitUntil:'domcontentloaded'});
-    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional);
+    await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     await bodyHas('app-light');
     await page.locator('#appSettingsButton').click();
     await page.locator('[data-app-theme="dark"]').click();
     await bodyHas('app-dark');
-    await page.locator('#appSettingsButton').click();
     await page.locator('[data-app-theme="system"]').click();
     await page.emulateMedia({colorScheme:'light'});
     await bodyHas('app-light');
@@ -74,12 +72,15 @@ const server = http.createServer((req,res)=>{
     await hidden('#appSettingsModal');
 
     // Devotional cycle: John 3:16 → Amazing Grace → Revelation 3:21 WEB → repeat.
-    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',{timeout:11000});
+    let phase=await page.locator('#giftVerseLabel').textContent();
+    if(phase==='A PROMISE OF VICTORY')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
+    phase=await page.locator('#giftVerseLabel').textContent();
+    if(phase!=='AMAZING GRACE')await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='AMAZING GRACE',null,{timeout:10000});
     assert.match(await page.locator('#giftVerse').textContent(),/Grace meets us/);
-    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='A PROMISE OF VICTORY',{timeout:11000});
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
     assert.match(await page.locator('#giftVerse').textContent(),/He who overcomes/);
     assert.match(await page.locator('#giftReference').textContent(),/Revelation 3:21.*World English Bible/);
-    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",{timeout:11000});
+    await page.waitForFunction(()=>document.querySelector('#giftVerseLabel')?.textContent==="TODAY'S SCRIPTURE",null,{timeout:10000});
 
     // Gift of Hope comments, theme contrast, outside dismissal and Android Back.
     await page.locator('.hope-card').click({position:{x:28,y:30}});
