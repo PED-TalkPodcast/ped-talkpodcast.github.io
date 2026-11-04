@@ -127,6 +127,24 @@ const server = http.createServer((req,res)=>{
     });
     await page.waitForFunction(()=>document.querySelector('#hopeModal')?.hidden===true,null,{timeout:2000});
 
+    // Gift of Hope must reopen in Dark Mode with its night artwork and no runtime error.
+    await page.locator('#appSettingsButton').click();
+    await page.locator('button[data-app-theme="dark"]').click();
+    await page.locator('#settingsHome').click();
+    await hidden('#appSettingsModal');
+    const darkCardImage=await page.locator('.hope-card').evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(darkCardImage,/gift-of-hope-sky\.svg/,'home Gift of Hope card must use the night asset');
+    await page.locator('.hope-card').click({position:{x:28,y:30}});
+    await visible('#hopeModal');
+    const darkModalImage=await page.locator('#hopeModal').evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(darkModalImage,/gift-of-hope-sky\.svg/,'expanded Gift of Hope must use the night asset');
+    await page.evaluate(()=>history.back());
+    await hidden('#hopeModal');
+    await page.locator('#appSettingsButton').click();
+    await page.locator('button[data-app-theme="light"]').click();
+    await page.locator('#settingsHome').click();
+    await hidden('#appSettingsModal');
+
     // Automatic carousel without manual controls, retained index after theme changes, no unintended Episodes navigation.
     assert.equal(await page.locator('.showcase-controls,.showcase-arrow,.showcase-dots,[data-showcase-slide],[data-showcase-prev],[data-showcase-next]').count(),0,'manual carousel controls must not exist');
     assert.equal(await page.locator('.showcase-controls').count(),0,'no carousel control layout space');
