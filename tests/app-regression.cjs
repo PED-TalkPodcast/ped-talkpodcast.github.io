@@ -117,6 +117,7 @@ const server = http.createServer((req,res)=>{
     await visible('#hopeModal');
     await page.evaluate(()=>{
       const el=document.querySelector('.hope-modal-panel');
+      el.scrollTop=0;
       const a=new Touch({identifier:21,target:el,clientX:120,clientY:100});
       const b=new Touch({identifier:21,target:el,clientX:122,clientY:205});
       el.dispatchEvent(new TouchEvent('touchstart',{bubbles:true,touches:[a],changedTouches:[a]}));
