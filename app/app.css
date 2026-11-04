@@ -1386,6 +1386,8 @@ body.app-light .dwoop-card-expanded.dwoop-light .dwoop-artwork .upcoming-artwork
 
 
 /* v96 — Gift of Hope light-theme finish, expanded navigation and balanced feature cards. */
+.hope-modal-panel{justify-content:flex-start;padding-top:calc(42px + env(safe-area-inset-top));padding-bottom:calc(34px + env(safe-area-inset-bottom))}
+.hope-modal-panel h2{font-size:clamp(38px,8vw,58px);line-height:1.08;letter-spacing:-.045em;margin:2px 0 20px}
 body.hope-open .bottom-nav,
 body.dwoop-locked .bottom-nav{display:none!important}
 
@@ -1476,7 +1478,7 @@ body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important
 
 /* Upcoming card uses the full available width without pinching the poster or leaving a dead column. */
 .app-showcase-upcoming .upcoming-card{
- display:grid!important;grid-template-columns:minmax(104px, .34fr) minmax(0, .66fr)!important;
+ display:grid!important;grid-template-columns:minmax(112px, .38fr) minmax(0, .62fr)!important;
  grid-template-rows:auto 1fr!important;align-items:stretch!important;column-gap:16px!important;
  width:100%!important;max-width:none!important;
 }
@@ -1494,14 +1496,9 @@ body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important
 .app-showcase-upcoming .upcoming-row{min-width:0!important;display:grid!important;grid-template-columns:48px minmax(0,1fr) 14px!important;gap:8px!important}
 .app-showcase-upcoming .upcoming-row-copy{min-width:0!important}
 @media(max-width:520px){
- .app-showcase-upcoming .upcoming-card{grid-template-columns:minmax(76px, .30fr) minmax(0,.70fr)!important;column-gap:10px!important;padding:10px!important}
+ .app-showcase-upcoming .upcoming-card{grid-template-columns:minmax(84px, .36fr) minmax(0,.64fr)!important;column-gap:10px!important;padding:10px!important}
  .app-showcase-upcoming .upcoming-artwork,.app-showcase-upcoming .upcoming-artwork img{min-height:112px!important;max-height:150px!important}
  .app-showcase-upcoming .upcoming-row{grid-template-columns:39px minmax(0,1fr) 10px!important;gap:5px!important;padding:6px 0!important}
  .app-showcase-upcoming .upcoming-episode{font-size:7px!important}
  .app-showcase-upcoming .upcoming-title{font-size:10px!important}
-}
-@media(max-width:360px){
- .app-showcase-upcoming .upcoming-card{grid-template-columns:1fr!important}
- .app-showcase-upcoming .upcoming-artwork{display:none!important}
- .app-showcase-upcoming .upcoming-list{grid-column:1!important;grid-row:2!important}
 }
