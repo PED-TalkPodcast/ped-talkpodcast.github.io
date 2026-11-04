@@ -1863,3 +1863,73 @@ body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional b
 body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional .verse-label,body.app-dark .welcome.hope-card[data-presentation="compact"] .hope-devotional p{color:#c4d7e9!important}
 .hope-modal[data-presentation="expanded"] .hope-modal-panel{box-sizing:border-box!important}
 @media(min-width:650px){.welcome.hope-card[data-presentation="compact"]{height:252px!important;min-height:252px!important;max-height:252px!important;grid-template-columns:.85fr 1.15fr!important;grid-template-rows:minmax(0,1fr)!important;align-items:center!important;gap:24px!important;padding:25px 28px!important}.welcome.hope-card[data-presentation="compact"] .hope-scripture{height:auto!important;min-height:150px!important}}
+
+
+/* v109 — unified Gift of Hope surface, reliable scripture fades, theme-aware Upcoming carousel. */
+/* The scripture is part of the Gift of Hope card itself, not a nested glass/template card. */
+.welcome.hope-card[data-presentation="compact"] .hope-scripture{
+ background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+ -webkit-backdrop-filter:none!important;backdrop-filter:none!important;padding:0!important;
+}
+.welcome.hope-card[data-presentation="compact"] .hope-devotional{
+ transition:opacity .68s ease,transform .68s cubic-bezier(.22,.7,.2,1)!important;
+ will-change:opacity,transform;
+}
+.welcome.hope-card[data-presentation="compact"] .hope-devotional.is-leaving{opacity:0!important;transform:translateY(-16px)!important}
+.welcome.hope-card[data-presentation="compact"] .hope-devotional.is-entering{animation:hopeScriptureEnter .68s cubic-bezier(.22,.7,.2,1) both!important}
+@media(prefers-reduced-motion:reduce){
+ .welcome.hope-card[data-presentation="compact"] .hope-devotional,
+ .welcome.hope-card[data-presentation="compact"] .hope-devotional.is-leaving,
+ .welcome.hope-card[data-presentation="compact"] .hope-devotional.is-entering{animation:none!important;transition:none!important;transform:none!important}
+}
+/* Keep every layer of the Upcoming slide on the active app theme. */
+.app-showcase-upcoming{
+ background:radial-gradient(ellipse at 50% 42%,var(--ped-surface-elevated,#173d60),var(--ped-background,#071b31) 78%)!important;
+ color:var(--ped-text-primary,#f4f7f4)!important;
+}
+.app-showcase-upcoming .upcoming-card{
+ background:linear-gradient(145deg,var(--ped-surface,#102c43),var(--ped-background,#071b31))!important;
+ border:1px solid var(--ped-border,rgba(226,239,245,.18))!important;
+ color:var(--ped-text-primary,#f4f7f4)!important;
+ box-shadow:0 12px 30px rgba(0,0,0,.12)!important;
+}
+.app-showcase-upcoming .upcoming-card-head h2,
+.app-showcase-upcoming .upcoming-title{color:var(--ped-text-primary,#f4f7f4)!important}
+.app-showcase-upcoming .upcoming-card-head .eyebrow,
+.app-showcase-upcoming .upcoming-count,
+.app-showcase-upcoming .upcoming-episode,
+.app-showcase-upcoming .upcoming-subtitle{color:var(--ped-text-secondary,#c2d0dc)!important}
+.app-showcase-upcoming .upcoming-row{border-top-color:var(--ped-border,rgba(226,239,245,.18))!important}
+.app-showcase-upcoming .upcoming-artwork{
+ background:var(--ped-surface-elevated,#173d60)!important;
+ border:1px solid var(--ped-border,rgba(226,239,245,.18))!important;
+}
+body.app-dark .app-showcase-upcoming .upcoming-card{
+ background:linear-gradient(145deg,#102c43,#071b31)!important;
+ border-color:rgba(226,239,245,.18)!important;
+}
+body.app-dark .app-showcase-upcoming .upcoming-card-head h2,
+body.app-dark .app-showcase-upcoming .upcoming-title{color:#f1f6fa!important}
+body.app-dark .app-showcase-upcoming .upcoming-card-head .eyebrow,
+body.app-dark .app-showcase-upcoming .upcoming-count,
+body.app-dark .app-showcase-upcoming .upcoming-episode,
+body.app-dark .app-showcase-upcoming .upcoming-subtitle{color:#b8cadd!important}
+body.app-dark .app-showcase-upcoming .upcoming-row{border-top-color:rgba(226,239,245,.14)!important}
+body.app-dark .app-showcase-upcoming .upcoming-artwork{background:#102c43!important;border-color:rgba(226,239,245,.18)!important}
+body.app-light .app-showcase-upcoming{
+ background:radial-gradient(ellipse at 50% 42%,#f7faf5,#e9efe7 82%)!important;
+ color:#263c30!important;
+}
+body.app-light .app-showcase-upcoming .upcoming-card{
+ background:linear-gradient(145deg,#fffdf8,#f2f6ef)!important;
+ border-color:#dce5d8!important;color:#263c30!important;
+ box-shadow:0 12px 28px rgba(45,72,48,.10)!important;
+}
+body.app-light .app-showcase-upcoming .upcoming-card-head h2,
+body.app-light .app-showcase-upcoming .upcoming-title{color:#263c30!important}
+body.app-light .app-showcase-upcoming .upcoming-card-head .eyebrow,
+body.app-light .app-showcase-upcoming .upcoming-count,
+body.app-light .app-showcase-upcoming .upcoming-episode,
+body.app-light .app-showcase-upcoming .upcoming-subtitle{color:#627665!important}
+body.app-light .app-showcase-upcoming .upcoming-row{border-top-color:#dce5d8!important}
+body.app-light .app-showcase-upcoming .upcoming-artwork{background:#eaf1e7!important;border-color:#dce5d8!important}
