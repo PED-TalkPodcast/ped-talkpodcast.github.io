@@ -30,7 +30,7 @@ const server = http.createServer((req,res)=>{
     page.on('pageerror',error=>errors.push(error.message));
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
-    const hidden=async selector=>assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');
+    const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('[data-app-theme="'+theme+'"]').click();};
     const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
