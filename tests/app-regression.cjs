@@ -28,6 +28,7 @@ const server = http.createServer((req,res)=>{
     const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
     const page=await context.newPage();
     page.on('pageerror',error=>errors.push(error.message));
+    page.on('console',message=>{if(message.type()==='error')errors.push('console: '+message.text());});
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
@@ -76,7 +77,8 @@ const server = http.createServer((req,res)=>{
     assert.match(dayCardImage,/gift-of-hope-day\.svg/,'home Gift of Hope card must use the daytime asset');
     const dayModalImage=await page.locator('#hopeModal').evaluate(el=>getComputedStyle(el).backgroundImage);
     assert.match(dayModalImage,/gift-of-hope-day\.svg/,'expanded Gift of Hope must use the daytime asset');
-    await page.locator('#settingsClose').click();
+    assert.equal(await page.locator('#settingsClose').count(),0,'Settings must not render a Close control');
+    await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
 
     // Devotional cycle: John 3:16 → Amazing Grace → Revelation 3:21 WEB → repeat.
@@ -126,20 +128,22 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('#hopeModal')?.hidden===true,null,{timeout:2000});
 
     // Carousel controls, retained index after theme changes, no unintended Episodes navigation.
-    await page.locator('[data-showcase-slide="1"]').click();
-    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
+    assert.equal(await page.locator('.showcase-controls,.showcase-arrow,.showcase-dots,[data-showcase-slide],[data-showcase-prev],[data-showcase-next]').count(),0,'manual carousel controls must not exist');
+    assert.equal(await page.locator('.showcase-controls').count(),0,'no carousel control layout space');
+    await page.evaluate(()=>window.PEDShowcase.goTo(1));
+    assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1);
     await page.evaluate(()=>{
       const el=document.getElementById('appShowcase');
       el.dispatchEvent(new PointerEvent('pointerdown',{bubbles:true,pointerId:77,pointerType:'touch',clientX:300,clientY:120}));
       el.dispatchEvent(new PointerEvent('pointerup',{bubbles:true,pointerId:77,pointerType:'touch',clientX:180,clientY:122}));
     });
-    await page.waitForFunction(()=>document.querySelector('[data-showcase-slide="2"]')?.getAttribute('aria-pressed')==='true',null,{timeout:2000});
-    await page.locator('[data-showcase-slide="1"]').click();
+    await page.waitForFunction(()=>window.PEDShowcase?.activeIndex===2,null,{timeout:2000});
+    await page.evaluate(()=>window.PEDShowcase.goTo(1));
     await page.locator('#appSettingsButton').click();
     await page.locator('button[data-app-theme="light"]').click();
     await page.locator('#settingsClose').click();
-    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true');
-    await page.locator('[data-showcase-slide="2"]').click();
+    assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1);
+    await page.evaluate(()=>window.PEDShowcase.goTo(2));
     const voiceFilter=await page.locator('.app-showcase-voice>img').evaluate(el=>getComputedStyle(el).filter);
     assert.match(voiceFilter,/brightness\(1\.2/);
     await page.locator('.app-showcase-slide[aria-hidden="false"]').click();
@@ -177,9 +181,9 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
 
     // One autoplay timeout advances exactly one slide.
-    await page.locator('[data-showcase-slide="0"]').click();
+    await page.evaluate(()=>window.PEDShowcase.goTo(0));
     await page.waitForTimeout(8300);
-    assert.equal(await page.locator('[data-showcase-slide="1"]').getAttribute('aria-pressed'),'true','autoplay should advance one slide');
+    assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1,'autoplay should advance one slide');
 
     assert.deepEqual(errors,[],'browser JavaScript errors');
     process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay.\n');
