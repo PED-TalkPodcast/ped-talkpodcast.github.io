@@ -38,6 +38,8 @@ const server = http.createServer((req,res)=>{
     // Settings Home and Android Back.
     await page.locator('#appSettingsButton').click();
     await visible('#appSettingsModal');
+    assert.equal(await page.locator('.bottom-nav').evaluate(el=>getComputedStyle(el).display),'none','bottom navigation must not sit above Settings');
+    assert.ok(await page.locator('#appSettingsModal').evaluate(el=>Number(getComputedStyle(el).zIndex)>Number(getComputedStyle(document.querySelector('.bottom-nav')).zIndex)),'Settings must stack above app navigation');
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
     await visible('#homeView');
@@ -68,6 +70,10 @@ const server = http.createServer((req,res)=>{
     assert.match(dayAsset,/gift-of-hope-day\.svg/);
     const assetResponse=await page.request.get('http://127.0.0.1:4173/assets/gift-of-hope-day.svg');
     assert.equal(assetResponse.status(),200,'daytime Gift of Hope asset should load');
+    const dayCardImage=await page.locator('.hope-card').evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(dayCardImage,/gift-of-hope-day\.svg/,'home Gift of Hope card must use the daytime asset');
+    const dayModalImage=await page.locator('#hopeModal').evaluate(el=>getComputedStyle(el).backgroundImage);
+    assert.match(dayModalImage,/gift-of-hope-day\.svg/,'expanded Gift of Hope must use the daytime asset');
     await page.locator('#settingsClose').click();
     await hidden('#appSettingsModal');
 
@@ -91,6 +97,9 @@ const server = http.createServer((req,res)=>{
     assert.match(await page.locator('#hopeCommentList').textContent(),/Regression test comment/);
     const commentColor=await page.locator('#hopeComments textarea').evaluate(el=>getComputedStyle(el).color);
     assert.notEqual(commentColor,'rgba(0, 0, 0, 0)','comment input text must be visible');
+    assert.equal(commentColor,'rgb(36, 56, 43)','light-theme comment input must use readable dark text');
+    const commentSurface=await page.locator('#hopeComments').evaluate(el=>getComputedStyle(el).backgroundColor);
+    assert.notEqual(commentSurface,'rgba(0, 0, 0, 0)','comment panel must have a defined light surface');
     await page.evaluate(()=>history.back());
     await hidden('#hopeModal');
     await page.locator('.hope-card').click({position:{x:28,y:30}});

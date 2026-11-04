@@ -794,12 +794,12 @@ function systemPrefersDark(){return !!(window.matchMedia&&window.matchMedia('(pr
 function applyAppTheme(choice){
  const theme=['system','light','dark'].includes(choice)?choice:'system';
  const effective=theme==='system'?(systemPrefersDark()?'dark':'light'):theme;
- document.body.dataset.appTheme=effective;document.documentElement.dataset.appTheme=effective;
+ document.body.dataset.appTheme=effective;document.documentElement.dataset.appTheme=effective;document.documentElement.style.colorScheme=effective;
  document.body.classList.toggle('app-light',effective==='light');document.body.classList.toggle('app-dark',effective==='dark');
  const assets=APP_THEME_ASSETS[effective];
  document.documentElement.style.setProperty('--gift-of-hope-image','url("'+assets.giftOfHope+'")');
  document.documentElement.style.setProperty('--voice-of-healing-image','url("'+assets.voiceOfHealing+'")');
- document.documentElement.style.setProperty('--voice-of-healing-filter',effective==='light'?'brightness(1.02) saturate(1.04) contrast(1.02)':'brightness(.96) saturate(.98) contrast(1.05)');
+ document.documentElement.style.setProperty('--voice-of-healing-filter',effective==='light'?'brightness(1.2) saturate(1.08) contrast(1.02)':'brightness(.96) saturate(.98) contrast(1.05)');
  const voiceImage=document.querySelector('.app-showcase-voice>img');
  if(voiceImage&&voiceImage.getAttribute('src')!==assets.voiceOfHealing){
   voiceImage.setAttribute('src',assets.voiceOfHealing);

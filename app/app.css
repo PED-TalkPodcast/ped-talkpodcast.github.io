@@ -1728,3 +1728,53 @@ body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-v
 .app-showcase-upcoming .upcoming-title,.app-showcase-upcoming .upcoming-subtitle{overflow-wrap:anywhere!important}
 body.app-light .app-showcase-upcoming .upcoming-artwork{background:#eee5d4!important;border-color:#e2d8c5!important}
 @media(max-width:390px){.app-showcase-upcoming .upcoming-card{grid-template-columns:minmax(94px,.72fr) minmax(0,1.28fr)!important;gap:8px 10px!important;padding:11px!important}.app-showcase-upcoming .upcoming-artwork img{min-height:106px!important}.app-showcase-upcoming .upcoming-row{padding:5px 0!important}}
+
+
+/* v100 — finish Settings layering and give Gift of Hope a true daylight composition. */
+body.settings-open .bottom-nav{display:none!important;pointer-events:none!important}
+.app-settings-overlay{z-index:600!important}
+body.settings-open{overflow:hidden!important;overscroll-behavior:none}
+.app-settings-overlay[hidden]{display:none!important}
+
+/* Do not flatten the daytime sky or place a milky veil over the devotional. */
+.hope-modal::before,.hope-modal::after{display:none!important;content:none!important}
+.hope-modal{
+ background-color:var(--ped-background)!important;
+ background-image:linear-gradient(180deg,rgba(3,12,25,.08),rgba(3,12,25,.44)),var(--gift-of-hope-image)!important;
+ background-repeat:no-repeat!important;background-position:center!important;background-size:cover!important;
+}
+body.app-light .hope-modal{
+ background-color:#e9efe2!important;
+ background-image:linear-gradient(180deg,rgba(255,253,246,.02),rgba(244,248,238,.18)),var(--gift-of-hope-image)!important;
+}
+body.app-dark .hope-modal{
+ background-color:#071b31!important;
+ background-image:linear-gradient(180deg,rgba(3,12,25,.16),rgba(3,12,25,.66)),var(--gift-of-hope-image)!important;
+}
+.hope-modal-panel{background:rgba(7,24,38,.86)!important;background-image:none!important;color:#f4f7f4!important}
+body.app-light .hope-modal-panel{
+ background:rgba(255,253,247,.92)!important;background-image:none!important;
+ border:1px solid rgba(92,126,86,.28)!important;border-radius:28px!important;
+ color:#263c30!important;box-shadow:0 18px 52px rgba(54,75,55,.16),inset 0 1px 0 rgba(255,255,255,.9)!important;
+ backdrop-filter:blur(22px) saturate(1.2)!important;-webkit-backdrop-filter:blur(22px) saturate(1.2)!important;
+}
+body.app-light .hope-modal-panel h2,body.app-light .hope-modal-panel blockquote{color:#263c30!important;text-shadow:none!important}
+body.app-light .hope-modal-panel .eyebrow,body.app-light .hope-modal-panel .verse-label{color:#557451!important}
+body.app-light .hope-modal-panel>p:not(.eyebrow){color:#647568!important}
+
+/* Keep comments legible against the now clearer devotional surface. */
+body.app-light .hope-comments{background:rgba(255,255,255,.97)!important;border-color:#d6e2d2!important;color:#263c30!important;box-shadow:0 8px 24px rgba(45,72,48,.06)!important}
+body.app-light .hope-comments h3{color:#284b34!important}
+body.app-light .hope-comments textarea{background:#fff!important;color:#24382b!important;border:1px solid #cbd9c8!important;caret-color:#24583a!important}
+body.app-light .hope-comments textarea::placeholder{color:#819084!important;opacity:1}
+body.app-light .hope-comments form button{background:#24583a!important;color:#fff!important}
+body.app-light .hope-comment{background:#f7faf5!important;border:1px solid #e0e9dc!important;border-radius:12px!important;padding:12px!important;margin-top:8px!important}
+body.app-light .hope-comment p{color:#304638!important}
+body.app-light .hope-comment small,body.app-light .hope-local-note{color:#718176!important}
+
+/* Lift the separate Light Mode Voice of Healing image into natural midtones. */
+body.app-light .app-showcase-voice>img{filter:brightness(1.2) saturate(1.08) contrast(1.02)!important}
+body.app-light .app-showcase-voice .voice-shade{background:linear-gradient(0deg,rgba(8,24,23,.52),rgba(8,24,23,.08) 54%,transparent 100%)!important}
+body.app-light .app-showcase-voice .voice-copy .eyebrow{color:#e5efd9!important}
+body.app-light .app-showcase-voice .voice-copy h2,body.app-light .app-showcase-voice .voice-copy p:last-child{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,.38)!important}
+@media(prefers-reduced-motion:reduce){.hope-devotional,.hope-devotional.is-leaving,.hope-devotional.is-entering,.hope-modal-devotional,.hope-modal-devotional.is-leaving,.hope-modal-devotional.is-entering{transition:none!important;animation:none!important;transform:none!important}}
