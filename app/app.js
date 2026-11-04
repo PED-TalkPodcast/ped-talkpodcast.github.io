@@ -845,7 +845,8 @@ const devotionalStages=[
 let devotionalIndex=0,devotionalTimer=null,hopeCardVisible=true;
 function renderDevotionalStage(index){
  const stage=devotionalStages[index];
- // Both presentation variants share the devotional stage but retain independent layouts.\n // Compact Home geometry is CSS-constrained so long reflections cannot reflow the hero.
+ // Both presentation variants share the devotional stage but retain independent layouts.
+ // Compact Home geometry is CSS-constrained so long reflections cannot reflow the hero.
  if(giftVerseLabel)giftVerseLabel.textContent=stage.label;
  if(giftVerse)giftVerse.textContent=stage.text;
  if(giftReference)giftReference.textContent=stage.reference;
