@@ -855,18 +855,20 @@ function renderDevotionalStage(index){
  if(modalLink){modalLink.hidden=!stage.bible;if(stage.bible)modalLink.dataset.openBible=stage.bible;else modalLink.removeAttribute('data-open-bible');}
 }
 function devotionalCanRun(){return !document.hidden&&((!homeView.hidden&&hopeCardVisible)||!hopeModal.hidden)&&appSettingsModal.hidden&&document.getElementById('dwoopOverlay')?.hidden!==false;}
-function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional.classList.remove('is-leaving','is-entering');modalDevotional?.classList.remove('is-leaving','is-entering');}
+function pauseDevotional(){if(devotionalTimer){window.clearTimeout(devotionalTimer);devotionalTimer=null;}giftDevotional?.classList.remove('is-leaving','is-entering');modalDevotional?.classList.remove('is-leaving','is-entering');}
 function scheduleDevotional(){if(!devotionalTimer&&devotionalCanRun())devotionalTimer=window.setTimeout(advanceDevotional,7200);}
 function advanceDevotional(){
  devotionalTimer=null;if(!devotionalCanRun())return;
- modalDevotional?.classList.remove('is-entering');modalDevotional?.classList.add('is-leaving');
+ // Fade the Home scripture and expanded scripture together; neither surface is left behind.
+ [giftDevotional,modalDevotional].forEach(el=>{if(el){el.classList.remove('is-entering');el.classList.add('is-leaving');}});
  devotionalTimer=window.setTimeout(()=>{
-  devotionalTimer=null;if(!devotionalCanRun())return;
+  devotionalTimer=null;if(!devotionalCanRun()){pauseDevotional();return;}
   devotionalIndex=(devotionalIndex+1)%devotionalStages.length;renderDevotionalStage(devotionalIndex);
-  modalDevotional?.classList.remove('is-leaving');modalDevotional?.classList.add('is-entering');scheduleDevotional();
+  [giftDevotional,modalDevotional].forEach(el=>{if(el){el.classList.remove('is-leaving');el.classList.add('is-entering');}});
+  scheduleDevotional();
  },680);
 }
-modalDevotional?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')modalDevotional.classList.remove('is-entering');});
+[giftDevotional,modalDevotional].forEach(el=>el?.addEventListener('animationend',event=>{if(event.animationName==='hopeScriptureEnter')el.classList.remove('is-entering');}));
 if('IntersectionObserver' in window){const hopeObserver=new IntersectionObserver(entries=>{hopeCardVisible=!!entries[0]?.isIntersecting;if(hopeCardVisible)scheduleDevotional();else pauseDevotional();},{threshold:.12});hopeObserver.observe(hopeCard);}
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseDevotional();else scheduleDevotional();});
 renderDevotionalStage(devotionalIndex);scheduleDevotional();
