@@ -650,3 +650,6 @@ body.dwoop-locked{position:fixed;top:var(--dwoop-scroll-top,0);left:0;right:0;wi
 .episode-more-tile b{font-size:22px;color:#78917d}
 .dwoop-card-expanded.dwoop-light .coming-soon-indicator{display:none}
 @media(max-width:420px){.episode-open-card{grid-template-columns:68px minmax(0,1fr) 25px;gap:10px;padding:9px}.episode-open-card .episode-art{width:68px;height:68px}.episode-card-title{font-size:12px}}
+
+.reading-stats-head .reader-kicker{color:#64806d!important}
+.reading-stats-view .reading-local-note{color:#7d897f!important}
