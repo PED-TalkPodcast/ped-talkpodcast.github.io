@@ -881,3 +881,109 @@ body.app-dark .reading-summary-card,body.app-dark .reading-time-card,body.app-da
 body.app-dark .reading-summary-card strong,body.app-dark .reading-time-card strong,body.app-dark .reading-detail-books h3,body.app-dark .reading-detail-sessions h3,body.app-dark .reading-detail-book span,body.app-dark .reading-session-row strong,body.app-dark .reading-breakdown-button strong{color:#edf4fa!important}
 body.app-dark .reading-summary-card span,body.app-dark .reading-time-card span,body.app-dark .reading-detail-book strong,body.app-dark .reading-session-row>b,body.app-dark .reading-breakdown-button>b{color:#b7d58a!important}
 body.app-dark .bible-view,body.app-dark .bible-library-view,body.app-dark .books-view,body.app-dark .episodes-view{color:#edf4fa}
+
+
+/* v89 — mobile-safe six-item navigation and complete appearance-aware reading stats. */
+.bottom-nav{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  align-items:center!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  width:100%!important;
+  padding:8px 7px max(10px,env(safe-area-inset-bottom))!important;
+}
+.bottom-nav button{
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  min-height:52px!important;
+  padding:4px 1px!important;
+  gap:4px!important;
+  flex:initial!important;
+  overflow:visible!important;
+}
+.bottom-nav button svg{width:21px!important;height:21px!important;flex:0 0 21px}
+.bottom-nav button span{font-size:8px!important;white-space:nowrap!important;letter-spacing:0!important}
+.bottom-nav button[aria-label="Home"]{grid-column:1}
+.bottom-nav button#appSettingsButton{grid-column:6}
+@media(max-width:360px){
+  .bottom-nav{padding-left:4px!important;padding-right:4px!important}
+  .bottom-nav button{padding-left:0!important;padding-right:0!important}
+  .bottom-nav button svg{width:19px!important;height:19px!important;flex-basis:19px}
+  .bottom-nav button span{font-size:7px!important}
+}
+
+/* Reading Stats keeps its established bright layout in Light mode. */
+body.app-light .reading-stats-view{
+  background:#fff!important;color:#203128!important;
+}
+body.app-light .reading-stats-head h2,
+body.app-light .reading-section-head h3,
+body.app-light .reading-summary-top h3,
+body.app-light .reading-progress-card h4,
+body.app-light .reading-snippet strong,
+body.app-light .reading-detail-books h3,
+body.app-light .reading-detail-sessions h3,
+body.app-light .reading-detail-book span,
+body.app-light .reading-session-row strong{color:#203128!important}
+body.app-light .reading-stats-head p:not(.reader-kicker),
+body.app-light .reading-section-head>span,
+body.app-light .reading-summary-top p:not(.eyebrow),
+body.app-light .reading-time-card span,
+body.app-light .reading-time-card small,
+body.app-light .reading-progress-card>p,
+body.app-light .reading-progress-meta,
+body.app-light .reading-snippet p,
+body.app-light .reading-local-note{color:#718176!important}
+body.app-light .reading-stats-view .eyebrow,
+body.app-light .reading-stats-view .reading-card-type,
+body.app-light .reading-stats-view .reading-section-head .eyebrow{color:#28734b!important}
+body.app-light .reading-summary-card{background:#f3f7f2!important;border-color:#e4ebe3!important;color:#26382d!important}
+body.app-light .reading-time-card{background:#fff!important;border-color:#e2eae1!important;color:#203128!important}
+body.app-light .reading-time-card strong{color:#173d2b!important}
+body.app-light .reading-progress-card,
+body.app-light .reading-snippet{background:#f8faf8!important;border-color:#e4ebe3!important;color:#26382d!important}
+body.app-light .reading-progress-meta strong{color:#28734b!important}
+body.app-light .reading-empty{background:#fff!important;color:#718176!important;border-color:#dce7dc!important}
+body.app-light .reading-breakdown-button,
+body.app-light .reading-detail-total,
+body.app-light .reading-detail-empty{background:#f8faf8!important;border-color:#e2eae1!important;color:#26382d!important}
+body.app-light .reading-breakdown-button strong,
+body.app-light .reading-detail-books h3,
+body.app-light .reading-detail-sessions h3,
+body.app-light .reading-detail-book strong,
+body.app-light .reading-session-row strong{color:#26382d!important}
+
+/* Dark mode applies to every Stats surface, not only the page background. */
+body.app-dark .reading-stats-view{background:#071b31!important;color:#edf4fa!important}
+body.app-dark .reading-stats-head h2,
+body.app-dark .reading-section-head h3,
+body.app-dark .reading-summary-top h3,
+body.app-dark .reading-progress-card h4,
+body.app-dark .reading-snippet strong,
+body.app-dark .reading-detail-books h3,
+body.app-dark .reading-detail-sessions h3,
+body.app-dark .reading-detail-book span,
+body.app-dark .reading-session-row strong{color:#edf4fa!important}
+body.app-dark .reading-stats-head p:not(.reader-kicker),
+body.app-dark .reading-section-head>span,
+body.app-dark .reading-summary-top p:not(.eyebrow),
+body.app-dark .reading-time-card span,
+body.app-dark .reading-time-card small,
+body.app-dark .reading-progress-card>p,
+body.app-dark .reading-progress-meta,
+body.app-dark .reading-snippet p,
+body.app-dark .reading-local-note{color:#aebfd0!important}
+body.app-dark .reading-summary-card,
+body.app-dark .reading-time-card,
+body.app-dark .reading-progress-card,
+body.app-dark .reading-snippet,
+body.app-dark .reading-breakdown-button,
+body.app-dark .reading-detail-total,
+body.app-dark .reading-detail-empty{background:#102b43!important;border-color:rgba(214,231,220,.14)!important;color:#edf4fa!important}
+body.app-dark .reading-time-card strong,
+body.app-dark .reading-progress-meta strong,
+body.app-dark .reading-breakdown-button strong,
+body.app-dark .reading-detail-book strong{color:#b7d58a!important}
+body.app-dark .reading-empty{background:#102b43!important;color:#aebfd0!important;border-color:rgba(214,231,220,.2)!important}
