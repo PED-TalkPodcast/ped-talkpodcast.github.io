@@ -53,6 +53,8 @@ const showcase=document.getElementById('appShowcase');
 function openDwoopModal(kind='upcoming'){
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
+ overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light');
+ const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
  if(kind==='upcoming'){
   eyebrow.textContent='PED-TALK · COMING UP NEXT';title.textContent='Upcoming episodes';intro.textContent='A look at the conversations being prepared for you.';
@@ -68,6 +70,8 @@ function openDwoopModal(kind='upcoming'){
 }
 function closeDwoopModal(){
  const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
+ overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light');
+ const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  overlay.classList.remove('active');document.body.classList.remove('dwoop-locked');document.body.style.removeProperty('--dwoop-scroll-top');
  const y=Number(document.body.dataset.dwoopScrollY)||0;delete document.body.dataset.dwoopScrollY;
  window.setTimeout(()=>{overlay.hidden=true;window.scrollTo(0,y);},320);
@@ -89,6 +93,10 @@ if(showcase){
 }
 const groupRoot=document.getElementById('episodeGroups');
 const archiveRoot=document.getElementById('archiveEpisodeGroups');
+[groupRoot,archiveRoot].forEach(root=>root?.addEventListener('click',event=>{
+ const card=event.target.closest('[data-episode-index]');if(!card)return;
+ const ep=allEpisodes[Number(card.dataset.episodeIndex)];if(ep)openEpisodeModal(ep,allEpisodes.filter(item=>episodeSeason(item)===episodeSeason(ep)));
+}));
 let allEpisodes=[];let activeCategory='All';let archiveCategory='All';
 function plainText(html=''){const node=document.createElement('div');node.innerHTML=html;return(node.textContent||'').replace(/\s+/g,' ').trim()}
 function categoryFor(ep){const text=(ep.title+' '+plainText(ep.description)).toLowerCase();if(/relationship|marriage|dating|couple|family|partner/.test(text))return'Relationships';if(/friend|friendship|companionship|together/.test(text))return'Friendship';if(/love|loving|beloved|compassion/.test(text))return'Love';return'Leadership'}
@@ -104,12 +112,37 @@ function renderEpisodeGroups(root,list,emptyMessage){
  root.innerHTML=[...groups.entries()].sort((a,b)=>b[0]-a[0]).map(([season,eps])=>{
   const seasonLabel='SEASON '+String(season).padStart(2,'0');
   return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
-   const number=episodeNumber(ep),desc=plainText(ep.description),title=displayEpisodeTitle(ep);
+   const index=allEpisodes.indexOf(ep),number=episodeNumber(ep),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
-   return '<article class="episode"><div class="episode-art"><img loading="lazy" src="'+(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></div><div class="episode-info"><p class="tag">'+meta+'</p><h3>'+title+'</h3><p class="desc">'+desc+'</p>'+(ep.audio?'<audio controls preload="none" src="'+ep.audio+'"></audio>':'')+(ep.link?'<a class="episode-more" href="'+ep.link+'" target="_blank" rel="noopener">Episode details ↗</a>':'')+'</div></article>'
+   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(ep.image||'../icons/ped-talk-icon.svg')+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span><span class="episode-open-mark" aria-hidden="true">▶</span></button>'
   }).join('')+'</div></section>'
  }).join('');
 }
+function openEpisodeModal(ep,seasonEpisodes){
+ const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
+ if(!overlay||!card||!ep)return;
+ const title=displayEpisodeTitle(ep),number=episodeNumber(ep),image=ep.image||'../icons/ped-talk-icon.svg';
+ const audio=typeof ep.audio==='string'&&/^https:\/\//i.test(ep.audio)?ep.audio:'';
+ const link=typeof ep.link==='string'&&/^https:\/\//i.test(ep.link)?ep.link:'';
+ document.getElementById('dwoopEyebrow').textContent='PED-TALK · SEASON '+episodeSeason(ep);
+ document.getElementById('dwoopTitle').textContent=title;
+ document.getElementById('dwoopIntro').textContent=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep);
+ const artwork=document.getElementById('dwoopArtwork');
+ if(artwork)artwork.innerHTML='<img class="episode-feature-art" src="'+escapeBibleHTML(image)+'" alt="'+escapeBibleHTML(title)+' artwork">';
+ const description=plainText(ep.description);
+ const others=sortedEpisodes(seasonEpisodes||[]).filter(item=>item!==ep);
+ const content=document.getElementById('dwoopContent');
+ content.innerHTML='<div class="episode-feature-panel">'+(description?'<p class="episode-feature-description">'+escapeBibleHTML(description)+'</p>':'<p class="episode-feature-description">A PED-Talk conversation. Press play when you are ready to listen.</p>')+(audio?'<audio class="episode-feature-player" controls preload="none" playsinline src="'+escapeBibleHTML(audio)+'">Your browser does not support audio playback.</audio>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>')+(link?'<a class="episode-detail-link" href="'+escapeBibleHTML(link)+'" target="_blank" rel="noopener">More episode details ↗</a>':'')+'</div>'+(others.length?'<div class="episode-more-heading"><span>CONTINUE EXPLORING</span><strong>More from Season '+episodeSeason(ep)+'</strong></div><div class="episode-more-tiles">'+others.map(item=>'<button type="button" class="episode-more-tile" data-episode-index="'+allEpisodes.indexOf(item)+'"><img src="'+escapeBibleHTML(item.image||'../icons/ped-talk-icon.svg')+'" alt=""><span><small>EPISODE '+String(episodeNumber(item)||'—').padStart(2,'0')+'</small><strong>'+escapeBibleHTML(displayEpisodeTitle(item))+'</strong></span><b aria-hidden="true">›</b></button>').join('')+'</div>':'');
+ const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=true;
+ card.classList.add('dwoop-light');
+ const y=window.scrollY||window.pageYOffset||0;
+ document.body.style.setProperty('--dwoop-scroll-top',(-y)+'px');document.body.dataset.dwoopScrollY=String(y);document.body.classList.add('dwoop-locked');
+ overlay.hidden=false;requestAnimationFrame(()=>overlay.classList.add('active'));document.getElementById('dwoopClose')?.focus({preventScroll:true});
+}
+document.getElementById('dwoopContent')?.addEventListener('click',event=>{
+ const tile=event.target.closest('[data-episode-index]');if(!tile)return;
+ const ep=allEpisodes[Number(tile.dataset.episodeIndex)];if(ep)openEpisodeModal(ep,allEpisodes.filter(item=>episodeSeason(item)===episodeSeason(ep)));
+});
 function renderHomeSeason(){
  const currentSeason=allEpisodes.reduce((max,ep)=>Math.max(max,episodeSeason(ep)),1);
  const current=allEpisodes.filter(ep=>episodeSeason(ep)===currentSeason&& (activeCategory==='All'||categoryFor(ep)===activeCategory));
@@ -574,15 +607,17 @@ function formatUniversalTime(seconds){
 function startOfLocalDay(date){return new Date(date.getFullYear(),date.getMonth(),date.getDate()).getTime();}
 function startOfLocalWeek(date){const day=(date.getDay()+6)%7;return startOfLocalDay(new Date(date.getFullYear(),date.getMonth(),date.getDate()-day));}
 document.querySelectorAll('[data-reading-period]').forEach(button=>button.addEventListener('click',()=>{
- const period=button.dataset.readingPeriod;
- const now=new Date(),start=period==='today'?startOfLocalDay(now):period==='week'?startOfLocalWeek(now):new Date(now.getFullYear(),now.getMonth(),1).getTime();
- const sessions=universalSessions().filter(item=>Number(item.endTime)>=start);
+ const period=button.dataset.readingPeriod,now=new Date();
+ const start=period==='today'?startOfLocalDay(now):period==='week'?startOfLocalWeek(now):new Date(now.getFullYear(),now.getMonth(),1).getTime();
+ const end=now.getTime(),sessions=universalSessions().filter(item=>Number(item.endTime)>=start&&Number(item.startTime)<=end);
  const seconds=sessions.reduce((sum,item)=>sum+(Number(item.durationSeconds)||0),0);
  const names=[...new Set(sessions.map(item=>item.bookTitle||item.title||item.bookId).filter(Boolean))];
- const overlay=document.getElementById('dwoopOverlay'),artwork=document.getElementById('dwoopArtwork');
+ const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded'),artwork=document.getElementById('dwoopArtwork');
+ if(!overlay||!card)return;
+ card.classList.add('dwoop-light');
  document.getElementById('dwoopEyebrow').textContent='YOUR READING JOURNEY';
  document.getElementById('dwoopTitle').textContent=period==='today'?'Today':period==='week'?'This week':'This month';
- document.getElementById('dwoopIntro').textContent='Your reading time and activity for this period.';
+ document.getElementById('dwoopIntro').textContent='A clear view of your reading activity for this period.';
  artwork?.replaceChildren();
  const content=document.getElementById('dwoopContent');
  content.innerHTML='<div class="reading-period-total"><span>Total reading time</span><strong>'+escapeBibleHTML(formatUniversalTime(seconds))+'</strong></div><p class="reading-period-label">'+(names.length?escapeBibleHTML(names.join(' · ')):'No reading sessions recorded in this period yet.')+'</p>';
