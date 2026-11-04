@@ -277,7 +277,7 @@ document.getElementById('dwoopContent')?.addEventListener('click',event=>{
  card.addEventListener('pointerdown',event=>{if(event.pointerType==='mouse'&&event.button!==0)return;startX=event.clientX;startY=event.clientY;startTarget=event.target;startScrollTop=card.scrollTop;},{passive:true});
  card.addEventListener('pointerup',event=>{
   if(!startTarget)return;const dx=event.clientX-startX,dy=event.clientY-startY,target=startTarget;startTarget=null;
-  if(target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe]'))return;
+  if(target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe],[data-episode-swipe-area],[data-episode-swipe-area]'))return;
   if(dy>88&&dy>Math.abs(dx)*1.25&&startScrollTop<=2){closeDwoopModal();return;}
   if(!overlay.classList.contains('dwoop-episode-mode')||Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;
   const nextIndex=activeEpisodeIndex+(dx<0?1:-1);if(nextIndex<0||nextIndex>=activeEpisodeSequence.length)return;
