@@ -2938,7 +2938,7 @@ body.app-dark .welcome,body:not(.app-light) .welcome,body.app-dark .library,body
 body.app-dark .episode-open-card,body:not(.app-light) .episode-open-card,body.app-dark .show-resource,body:not(.app-light) .show-resource,body.app-dark .reading-summary-card,body:not(.app-light) .reading-summary-card{background:#121212!important;border:1px solid var(--studio-line)!important;box-shadow:none!important}
 body.app-dark .episode-open-card:hover,body:not(.app-light) .episode-open-card:hover,body.app-dark .show-resource:hover,body:not(.app-light) .show-resource:hover{background:#1B1B1B!important}
 body.app-dark .eyebrow,body:not(.app-light) .eyebrow{color:#A7A7A7!important;letter-spacing:.13em}
-body.app-dark .section-head,body:not(.app-light) .section-head,body.app-dark .the-show-resource-grid,body:not(.app-light) .the-show-resource-grid{max-width:1120px;margin-left:auto;margin-right:auto}
+body.app-dark .section-head,body:not(.app-light) .section-head,body.app-dark .the-show-resources,body:not(.app-light) .the-show-resources{max-width:1120px;margin-left:auto;margin-right:auto}
 .show-resource{display:flex;align-items:center;justify-content:space-between;gap:18px;text-align:left;min-width:0}
 .show-resource>span:first-child{min-width:0;flex:1}
 .show-resource-icon,.home-hint-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border:1px solid var(--app-border);border-radius:14px;background:rgba(255,255,255,.035);color:#DCE8D8}
@@ -2952,12 +2952,12 @@ body:not(.app-light) .episode-grid,body.app-dark .episode-grid{gap:14px}
 body:not(.app-light) .episode-open-card,body.app-dark .episode-open-card{align-items:center;min-width:0}
 body:not(.app-light) .episode-open-card .episode-copy,body.app-dark .episode-open-card .episode-copy{min-width:0}
 body:not(.app-light) .episode-open-card h3,body.app-dark .episode-open-card h3{overflow-wrap:anywhere}
-body:not(.app-light) .the-show-resource-grid,body.app-dark .the-show-resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+body:not(.app-light) .the-show-resources,body.app-dark .the-show-resources{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{--episode-rgb:28,48,39;background:linear-gradient(180deg,var(--episode-color-soft,rgba(28,48,39,.34)) 0%,rgba(10,10,10,.96) 38%,#0A0A0A 76%)!important;transition:background 650ms ease,color 300ms ease}
 .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,var(--episode-color-soft,rgba(28,48,39,.3)),transparent 62%);opacity:.9;transition:background 650ms ease}
 .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>*{position:relative;z-index:1}
 .dwoop-overlay.dwoop-episode-mode .episode-feature-art{box-shadow:0 24px 65px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.09)}
 .dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play{background:var(--episode-color,#D8E8D1)!important;color:#0A0A0A!important;box-shadow:0 10px 34px var(--episode-color-soft,rgba(28,48,39,.34))!important}
 .dwoop-overlay.dwoop-episode-mode .episode-player-window,.dwoop-overlay.dwoop-episode-mode .episode-more-tile{background:rgba(18,18,18,.78)!important;border-color:rgba(255,255,255,.1)!important;backdrop-filter:blur(18px)}
-@media(max-width:680px){body:not(.app-light) main,body.app-dark main,body:not(.app-light) #episodesView,body.app-dark #episodesView,body:not(.app-light) #savedView,body.app-dark #savedView,body:not(.app-light) #theShowView,body.app-dark #theShowView{width:calc(100% - 32px)}body:not(.app-light) .the-show-resource-grid,body.app-dark .the-show-resource-grid{grid-template-columns:1fr}.show-resource{padding:16px!important}.show-resource-icon{width:38px;height:38px;flex-basis:38px}}
+@media(max-width:680px){body:not(.app-light) main,body.app-dark main,body:not(.app-light) #episodesView,body.app-dark #episodesView,body:not(.app-light) #savedView,body.app-dark #savedView,body:not(.app-light) #theShowView,body.app-dark #theShowView{width:calc(100% - 32px)}body:not(.app-light) .the-show-resources,body.app-dark .the-show-resources{grid-template-columns:1fr}.show-resource{padding:16px!important}.show-resource-icon{width:38px;height:38px;flex-basis:38px}}
 @media(prefers-reduced-motion:reduce){.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded,.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded::before{transition:none!important}}
