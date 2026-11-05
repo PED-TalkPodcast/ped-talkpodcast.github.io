@@ -3457,3 +3457,123 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
   background:transparent!important;
   box-shadow:none!important;
 }
+
+
+/* v129 — Anagkazo interface refinement: calmer hierarchy, clearer actions, and confident green accents. */
+:root{
+ --ped-accent:#a9cf7c;
+ --ped-accent-strong:#8fbd5d;
+ --ped-accent-soft:rgba(169,207,124,.13);
+ --ped-glass:rgba(10,25,42,.78);
+}
+.topbar{
+ position:sticky;top:0;z-index:35;
+ min-height:68px;
+ background:rgba(7,20,35,.88);
+ border-bottom-color:rgba(169,207,124,.16);
+ backdrop-filter:blur(18px) saturate(1.2);
+ -webkit-backdrop-filter:blur(18px) saturate(1.2);
+}
+.brand{gap:11px;letter-spacing:.14em}
+.brand img{width:36px;height:36px;object-fit:contain}
+.brand small{color:#a9cf7c;letter-spacing:.19em}
+.live-dot{color:#d0dec4;font-weight:600}
+.live-dot:before{background:var(--ped-accent);box-shadow:0 0 0 4px rgba(169,207,124,.11),0 0 14px rgba(169,207,124,.42)}
+.app-install-button{
+ border:1px solid rgba(169,207,124,.48)!important;
+ border-radius:999px!important;
+ background:linear-gradient(135deg,#b7d98e,#8fbd5d)!important;
+ color:#12220d!important;
+ font-weight:800!important;
+ min-height:38px;
+ padding:0 17px!important;
+ box-shadow:0 5px 18px rgba(143,189,93,.17);
+}
+.app-settings-header-button{
+ border:1px solid rgba(255,255,255,.13)!important;
+ border-radius:50%!important;
+ background:rgba(255,255,255,.055)!important;
+ transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.welcome.hope-card{
+ border:1px solid rgba(210,229,192,.2);
+ box-shadow:0 22px 56px rgba(0,0,0,.2),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.hope-heading .eyebrow,.hope-scripture .verse-label{color:#d4e7bd}
+.hope-scripture{border-color:rgba(220,237,255,.25)}
+.hope-scripture .scripture-open{
+ min-height:38px;padding:0 13px;border:1px solid rgba(205,229,178,.35);
+ border-radius:999px;background:rgba(169,207,124,.12);
+ color:#e4f0d8;transition:background .2s ease,border-color .2s ease;
+}
+.section-head{margin-bottom:17px}
+.section-head .eyebrow{color:var(--ped-accent);margin-bottom:7px}
+.section-head h2,.bible-promo h2{letter-spacing:-.045em}
+.upcoming-card{
+ border:1px solid rgba(169,207,124,.16)!important;
+ border-radius:23px!important;
+ background:linear-gradient(145deg,rgba(22,43,62,.94),rgba(8,22,37,.98))!important;
+ box-shadow:0 18px 42px rgba(0,0,0,.16);
+}
+.upcoming-card-head{padding:17px 17px 13px}
+.upcoming-card-head .eyebrow{color:var(--ped-accent)}
+.upcoming-count{
+ border:1px solid rgba(169,207,124,.22);
+ border-radius:999px;padding:6px 10px;
+ background:rgba(169,207,124,.09);color:#d9e9c7;
+}
+#appShowcase #appUpcomingGraphic{
+ border-radius:17px!important;
+}
+.upcoming-row{
+ border-bottom-color:rgba(255,255,255,.075)!important;
+ transition:background .18s ease;
+}
+.upcoming-row:last-child{border-bottom:0!important}
+.upcoming-episode{color:var(--ped-accent)!important}
+.current-season-section{padding-top:8px}
+.current-season-section .episode-grid{column-gap:18px;row-gap:24px}
+.episode-open-card .episode-art img,.episode .episode-art img{
+ border-radius:15px!important;
+ box-shadow:0 10px 24px rgba(0,0,0,.18);
+}
+.episode-open-card h3,.episode h3{font-size:13px;line-height:1.38;letter-spacing:-.015em}
+.episode-open-card .tag,.episode .tag{color:var(--ped-accent)!important}
+.bible-promo,.reading-stats-promo{
+ border:1px solid rgba(169,207,124,.17)!important;
+ box-shadow:0 16px 36px rgba(0,0,0,.13);
+}
+.bible-promo .eyebrow,.reading-stats-promo .eyebrow{color:var(--ped-accent)!important}
+.home-tile-hint{color:#d2e4bd!important}
+.bottom-nav{
+ border-top-color:rgba(169,207,124,.17)!important;
+ background:rgba(5,16,28,.94)!important;
+ box-shadow:0 -10px 30px rgba(0,0,0,.12);
+}
+.bottom-nav button.selected{
+ color:#c5e49e!important;
+}
+.bottom-nav button.selected span{
+ color:var(--ped-accent)!important;
+}
+button:focus-visible,a:focus-visible,[role="button"]:focus-visible{
+ outline:2px solid var(--ped-accent)!important;
+ outline-offset:3px;
+}
+@media(hover:hover){
+ .app-install-button:hover{filter:brightness(1.04);transform:translateY(-1px)}
+ .app-settings-header-button:hover{background:rgba(169,207,124,.12)!important;border-color:rgba(169,207,124,.35)!important}
+ .hope-scripture .scripture-open:hover{background:rgba(169,207,124,.2);border-color:rgba(205,229,178,.6)}
+ .upcoming-row:hover{background:rgba(169,207,124,.055)}
+}
+@media(max-width:520px){
+ .topbar{padding-left:15px;padding-right:15px}
+ .brand img{width:33px;height:33px}
+ .live-dot{font-size:10px}
+ .app-install-button{min-height:36px;padding:0 13px!important}
+ .welcome.hope-card{box-shadow:0 15px 38px rgba(0,0,0,.2)}
+ .current-season-section .episode-grid{column-gap:12px;row-gap:20px}
+}
+@media(prefers-reduced-motion:reduce){
+ .app-install-button,.app-settings-header-button,.hope-scripture .scripture-open,.upcoming-row{transition:none!important}
+}
