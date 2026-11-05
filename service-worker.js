@@ -1,16 +1,9 @@
-const CACHE_NAME = "ped-talk-v132";
+const CACHE_NAME = "ped-talk-v12";
 const BASE = new URL("./", self.registration.scope).pathname;
 
 const FILES_TO_CACHE = [
   BASE,
   `${BASE}index.html`,
-  `${BASE}app/`,
-  `${BASE}app/index.html`,
-  `${BASE}app/manifest.json`,
-  `${BASE}app/app.css?v=121`,
-  `${BASE}app/app.js?v=117`,
-  `${BASE}app.css?v=84`,
-  `${BASE}app.js?v=86`,
   `${BASE}episode.html`,
   `${BASE}bible.html`,
   `${BASE}scripture.html`,
@@ -18,8 +11,6 @@ const FILES_TO_CACHE = [
   `${BASE}manifest.json`,
   `${BASE}assets/ped-talk-healing-story.jpg`,
   `${BASE}assets/voice-of-healing.jpg`,
-  `${BASE}assets/gift-of-hope-day.svg`,
-  `${BASE}assets/gift-of-hope-sky.svg`,
   `${BASE}assets/across-every-room-blue.jpg`,
   `${BASE}assets/up-next-template.jpg`,
   `${BASE}data/web-bible.json`
