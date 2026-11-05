@@ -13,10 +13,6 @@
 <body>
 <header class="topbar"><a class="brand" href="./"><img src="../icons/ped-talk-icon.svg" alt=""> <span>PED-TALK<small>ANAGKAZO MEDIA</small></span></a><div class="topbar-actions"><span class="live-dot">A brighter day</span><button class="app-install-button" id="appInstallButton" type="button">Install</button><button id="appSettingsButton" class="app-settings-header-button" type="button" aria-label="App settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/><path d="m19.4 13.5 1.1.9-1.5 2.6-1.4-.5a7.8 7.8 0 0 1-1.6.9l-.2 1.5h-3l-.3-1.5a7.8 7.8 0 0 1-1.6-.9l-1.4.5L8 14.4l1.5-2.6 1.4.5a7.8 7.8 0 0 1 1.6-.9l.3-1.5h3l.2 1.5a7.8 7.8 0 0 1 1.6.9l1.4-.5 1.5 2.6-1.1.9a7.4 7.4 0 0 1 0 1.8Z"/></svg></button></div></header><aside class="install-guide" id="installGuide" hidden><div><strong>Take PED-Talk with you.</strong><p id="installStatus" role="status" aria-live="polite">Tap Install to add the PED-Talk app to your phone.</p></div></aside>
 <main id="homeView">
-<section class="latest-episode-hero" id="latestEpisodeHero" aria-label="Latest PED-Talk episode" hidden>
- <div class="latest-episode-art" id="latestEpisodeArt"></div><div class="latest-episode-shade"></div>
- <div class="latest-episode-copy"><p class="eyebrow">PED-TALK PODCAST</p><p class="latest-episode-label" id="latestEpisodeLabel">LATEST EPISODE</p><h2 id="latestEpisodeTitle">Latest conversation</h2><p class="latest-episode-meta" id="latestEpisodeMeta"></p><button class="latest-episode-listen" id="latestEpisodeListen" type="button">Listen now <span aria-hidden="true">→</span></button></div>
-</section>
 <section class="welcome hope-card" data-presentation="compact" aria-label="Gift of Hope and today's scripture"><div class="hope-heading"><p class="eyebrow">A MOMENT OF HOPE</p><h1>Gift of<br><em>Hope.</em></h1></div><div class="hope-scripture"><div id="giftDevotional" class="hope-devotional" aria-live="polite" aria-atomic="true"><span class="verse-label" id="giftVerseLabel">TODAY'S SCRIPTURE</span><blockquote id="giftVerse">“For God so loved the world, that he gave his one and only Son…”</blockquote><p id="giftReference">John 3:16 · World English Bible</p></div><button class="text-link scripture-open" type="button" data-open-bible="John:3:16">Read in the Bible <span>→</span></button></div></div></section>
 <section class="upcoming-section" aria-label="PED-Talk featured slides">
  <div class="app-showcase" id="appShowcase">
@@ -73,12 +69,27 @@
  <div id="savedEpisodeGroups"><p class="loading">Your saved episodes will appear here.</p></div>
 </section>
 <section id="theShowView" class="the-show-view" hidden>
- <header class="the-show-heading"><p class="eyebrow">PED-TALK PODCAST · ANAGKAZO MEDIA</p><h2>Real conversations.<br><em>Brighter days.</em></h2><p>Personal Education Daily — conversations, stories and resources that help us grow in faith, relationships and everyday life.</p></header>
- <section class="the-show-resources" aria-label="More PED-Talk resources">
-  <button type="button" class="show-resource" data-show-view="bible"><span><small>01 · THE WORD</small><strong>Read the Bible</strong><em>Explore Scripture and continue your reading.</em></span><b aria-hidden="true">↗</b></button>
-  <button type="button" class="show-resource" data-show-view="reading-stats"><span><small>02 · YOUR JOURNEY</small><strong>Reading stats</strong><em>Review your reading time and progress.</em></span><b aria-hidden="true">↗</b></button>
+ <header class="the-show-heading">
+  <p class="eyebrow">PED-TALK PODCAST · ANAGKAZO MEDIA</p>
+  <h2>Real conversations.<br><em>Brighter days.</em></h2>
+  <p>Personal Education Daily — conversations, stories and resources that help people grow in faith, relationships and everyday life. A voice for healing, learning and a brighter day.</p>
+  <p class="the-show-descriptor">CHRISTIAN <span>·</span> BROADCASTING <span>·</span> MEDIA</p>
+ </header>
+ <section class="the-show-statistics" aria-label="PED-Talk podcast statistics">
+  <article><strong id="showMessageCount">—</strong><span>Published messages</span></article>
+  <article><strong id="showWeeklyRhythm">—</strong><span>Publishing rhythm</span></article>
+  <article><strong id="showStartYear">—</strong><span>Since</span></article>
+ </section>
+ <section class="the-show-resources" aria-label="Explore PED-Talk">
+  <button type="button" class="show-resource" data-show-view="reading-stats"><span><small>01 · YOUR JOURNEY</small><strong>Your reading journey</strong><em>Review your reading time and progress.</em></span><b aria-hidden="true">↗</b></button>
+  <button type="button" class="show-resource" data-show-view="bible"><span><small>02 · DISCOVER THE WORD</small><strong>Read the Bible</strong><em>Explore Scripture, passages and saved highlights.</em></span><b aria-hidden="true">↗</b></button>
   <button type="button" class="show-resource" data-show-view="books"><span><small>03 · ANAGKAZO LIBRARY</small><strong>Explore books</strong><em>Discover the growing reading library.</em></span><b aria-hidden="true">↗</b></button>
-  <button type="button" class="show-resource" data-show-view="explore-bible"><span><small>04 · DISCOVER</small><strong>Explore Bible stories</strong><em>Meet the people and moments behind Scripture.</em></span><b aria-hidden="true">↗</b></button>
+  <button type="button" class="show-resource" data-show-view="explore-bible"><span><small>04 · SCRIPTURE STORIES</small><strong>Discover the Word</strong><em>Meet the people and moments behind Scripture.</em></span><b aria-hidden="true">↗</b></button>
+ </section>
+ <section class="the-show-story" aria-label="Anagkazo Media story">
+  <p class="eyebrow">THE HOUSE BEHIND THE VOICE</p><h3>ANAGKAZO<span>.</span></h3>
+  <p>Christian broadcasting and media created to share stories, strengthen lives and help people see a brighter day.</p>
+  <div class="the-show-book-cue"><span aria-hidden="true">▤</span><div><strong>Listen. Read. Grow.</strong><small>Podcast conversations, Scripture and a growing reading library.</small></div></div>
  </section>
 </section>
 <section id="dwoopOverlay" class="dwoop-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="dwoopTitle">
