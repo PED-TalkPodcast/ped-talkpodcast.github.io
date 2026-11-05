@@ -27,6 +27,14 @@ const server = http.createServer((req,res)=>{
     browser=await chromium.launch({headless:true,args:['--no-sandbox']});
     const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
     const page=await context.newPage();
+    const cdp=await context.newCDPSession(page);
+    await cdp.send('Network.enable');
+    cdp.on('Network.requestWillBeSent',event=>{
+      if(event.request.url.endsWith('/app/undefined')){
+        const frames=event.initiator?.stack?.callFrames||[];
+        errors.push('UNDEFINED_RESOURCE_INITIATOR '+JSON.stringify({type:event.type,initiator:event.initiator?.type,frames:frames.map(frame=>({url:frame.url,lineNumber:frame.lineNumber,functionName:frame.functionName}))}));
+      }
+    });
     page.on('pageerror',error=>errors.push(error.message));
     page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
     page.on('console',message=>{if(message.type()==='error'&&!/Failed to load resource/.test(message.text()))errors.push('console: '+message.text());});
