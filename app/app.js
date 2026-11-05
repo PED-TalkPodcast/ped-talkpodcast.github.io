@@ -255,7 +255,7 @@ function applyEpisodeArtworkTheme(imageUrl, token){
  };
  card.dataset.paletteToken=token;apply([fallback.r,fallback.g,fallback.b]);
  if(!imageUrl)return;
- const image=new Image();image.crossOrigin='anonymous';image.decoding='async';
+ const image=new Image();image.decoding='async';
  image.onload=()=>{
   try{
    const canvas=document.createElement('canvas'),size=36;canvas.width=size;canvas.height=size;
