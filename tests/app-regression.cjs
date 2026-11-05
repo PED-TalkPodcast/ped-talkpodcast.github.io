@@ -274,7 +274,12 @@ const server = http.createServer((req,res)=>{
     await page.locator('.hope-card').click({position:{x:28,y:30}});
     await visible('#hopeModal');
     const lightGlassSurface=await page.locator('.hope-modal-panel').evaluate(el=>getComputedStyle(el).backgroundColor);
-    assert.equal(lightGlassSurface,'rgba(239, 248, 255, 0.66)','Light Mode expanded card must remain translucent sky glass, not an opaque slab');
+    assert.equal(lightGlassSurface,'rgba(0, 0, 0, 0)','Gift of Hope must be a transparent full-screen scripture surface, not a floating card');
+    assert.equal(await page.locator('#hopeModalBibleLink').count(),0,'Gift of Hope must not show a Read the Bible link');
+    const hopeViewport=await page.locator('.hope-modal-panel').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,viewportWidth:innerWidth,viewportHeight:innerHeight,border:getComputedStyle(el).borderTopWidth,radius:getComputedStyle(el).borderTopLeftRadius}));
+    assert.ok(hopeViewport.width>=hopeViewport.viewportWidth-1&&hopeViewport.height>=hopeViewport.viewportHeight-1,'Gift of Hope must fill the screen like a scripture wallpaper');
+    assert.equal(hopeViewport.border,'0px','Gift of Hope must not have a card border');
+    assert.equal(hopeViewport.radius,'0px','Gift of Hope must not have rounded card corners');
     assert.equal(await page.locator('#modalGiftVerseLabel').textContent(),'AMAZING GRACE','expanded card opens at the current devotional stage');
     assert.match(await page.locator('#modalGiftVerse').textContent(),/Amazing grace! how sweet the sound/);
     await page.waitForFunction(()=>document.querySelector('#modalGiftVerseLabel')?.textContent==='A PROMISE OF VICTORY',null,{timeout:10000});
@@ -403,6 +408,7 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('#latestEpisodeHero').count(),0,'Gift of Hope must remain the first Home feature; no latest-episode hero may displace it');
     assert.ok(await page.locator('#homeView > .hope-card').count()===1,'Gift of Hope must lead the Home page');
     assert.equal(await page.locator('.episode-open-card .episode-open-mark').count(),0,'small episode rows must use the row tap target, not a nested play button');
+    assert.equal(await page.locator('.episode-open-card .episode-row-chevron').count(),0,'episode rows must not show dated right-pointing arrows');
     assert.equal(await page.locator('.episode-card-prompt').count(),0,'episode rows must not contain descriptive prompt copy');
     await page.locator('.episode-open-card').first().click();
     await visible('#dwoopOverlay');
@@ -434,6 +440,8 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('[data-episode-share]').count(),1,'expanded player must include share');
     assert.equal(await page.locator('#miniPlayer').evaluate(el=>!el.hidden),true,'persistent mini-player must appear when an episode is selected');
     assert.equal(await page.locator('[data-episode-swipe-area]').count(),1,'episode audio surface must support swipe navigation');
+    assert.equal(await page.locator('.episode-live-waveform i').count(),36,'expanded player must include the animated audio waveform');
+    assert.equal(await page.locator('#dwoopClose').textContent(),'×','expanded player must use a clear close control rather than a down chevron');
     const playerLayout=await page.evaluate(()=>{
       const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
       const windowEl=document.querySelector('.episode-player-window'),times=document.querySelector('.episode-player-times'),current=document.querySelector('[data-player-current]'),duration=document.querySelector('[data-player-duration]'),hint=document.querySelector('.episode-player-hint');
