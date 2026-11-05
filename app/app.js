@@ -1,4 +1,4 @@
-/* v88 — unified app appearance, devotional flow and resilient navigation. */
+/* v89 — unified app appearance, devotional flow, Explore daily visual system. */
 let deferredAppInstallPrompt = null;
 const appInstallButton = document.getElementById('appInstallButton');
 const installGuide = document.getElementById('installGuide');
@@ -563,6 +563,99 @@ const exploreBibleCollections={
   ]
  }
 };
+
+const EXPLORE_MANIFEST_URL='./explore-assets.json';
+const EXPLORE_CACHE_KEY='pedtalk-explore-daily-v1';
+function exploreLocalDate(timeZone='Africa/Accra'){
+ const parts=new Intl.DateTimeFormat('en-CA',{timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());
+ const part=type=>parts.find(entry=>entry.type===type)?.value||'';
+ return part('year')+'-'+part('month')+'-'+part('day');
+}
+function exploreEasterDate(year){
+ const a=year%19,b=Math.floor(year/100),c=year%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),month=Math.floor((h+l-7*m+114)/31),day=((h+l-7*m+114)%31)+1;
+ return new Date(Date.UTC(year,month-1,day)).toISOString().slice(0,10);
+}
+function exploreCalendarOverride(date,manifest){
+ const year=Number(date.slice(0,4)),easter=exploreEasterDate(year);
+ const goodFriday=new Date(Date.parse(easter+'T00:00:00Z')-2*86400000).toISOString().slice(0,10);
+ const easterAssets=manifest.themes.filter(theme=>theme.id.startsWith('NT-CROSS-'));
+ const crownAssets=manifest.themes.filter(theme=>theme.id.startsWith('CAL-CHRISTMAS-'));
+ const nativityAssets=manifest.themes.filter(theme=>theme.id.startsWith('CAL-NATIVITY-'));
+ if(date===easter)return easterAssets[0]||null;
+ if(date===goodFriday)return crownAssets[0]||null;
+ if(date===year+'-12-25')return nativityAssets[0]||null;
+ if(date===year+'-12-24')return nativityAssets[2]||nativityAssets[0]||null;
+ return null;
+}
+function selectExploreDailyTheme(date,manifest){
+ const override=exploreCalendarOverride(date,manifest);
+ if(override)return {...override,calendar_override:true};
+ const day=Math.floor(Date.parse(date+'T00:00:00Z')/86400000);
+ const testament=day%2===0?'OT':'NT';
+ const themes=manifest.themes.filter(theme=>theme.testament===testament&&theme.category!=='special_calendar');
+ const selected=themes[((day%themes.length)+themes.length)%themes.length];
+ return {...selected,calendar_override:false};
+}
+function validExploreAssetUrl(value){
+ if(typeof value!=='string')return null;
+ const candidate=value.trim();
+ if(!candidate||/^(?:undefined|null|false)$/i.test(candidate))return null;
+ try{
+  const url=new URL(candidate,window.location.href);
+  if(!['http:','https:'].includes(url.protocol))return null;
+  if(/(?:^|\/)(?:undefined|null)(?:$|[?#])/i.test(url.pathname))return null;
+  return url.href;
+ }catch{return null;}
+}
+function applyExploreDailyVisual(theme,date,opacity=0.68){
+ const panel=document.getElementById('exploreDailyVisual');if(!panel||!theme)return;
+ document.getElementById('exploreDailyEyebrow').textContent=theme.calendar_override?'SACRED DAY · SPECIAL REFLECTION':'TODAY’S BIBLE MOMENT';
+ document.getElementById('exploreDailyTestament').textContent=theme.testament==='OT'?'OLD TESTAMENT':theme.testament==='NT'?'NEW TESTAMENT':'SCRIPTURE REFLECTION';
+ document.getElementById('exploreDailyTitle').textContent=theme.name||'A moment in Scripture';
+ document.getElementById('exploreDailyReference').textContent=theme.scripture_reference||'Explore the Bible';
+ document.getElementById('exploreDailyDate').textContent=new Intl.DateTimeFormat('en',{dateStyle:'long',timeZone:'Africa/Accra'}).format(new Date(date+'T12:00:00Z'));
+ const numericOpacity=Number(opacity);panel.style.setProperty('--explore-overlay-opacity',String(Number.isFinite(numericOpacity)?Math.max(0,Math.min(1,numericOpacity)):0.68));
+ panel.dataset.testament=theme.testament||'NT';
+ panel.dataset.themeId=theme.id||'';
+ panel.dataset.imageState='fallback';
+ const url=validExploreAssetUrl(theme.asset_url||theme.asset?.url);
+ if(!url)return;
+ const image=new Image();
+ image.onload=()=>{panel.style.setProperty('--explore-daily-image','url("'+url.replace(/["\\]/g,'')+'")');panel.dataset.imageState='loaded';};
+ image.onerror=()=>{panel.style.removeProperty('--explore-daily-image');panel.dataset.imageState='fallback';};
+ image.src=url;
+}
+async function loadExploreDailyVisual(){
+ const panel=document.getElementById('exploreDailyVisual');if(!panel)return null;
+ try{
+  const response=await fetch(EXPLORE_MANIFEST_URL,{cache:'no-cache'});
+  if(!response.ok)throw new Error('Explore theme manifest unavailable');
+  const manifest=await response.json();
+  if(!Array.isArray(manifest.themes)||!manifest.themes.length)throw new Error('Explore theme manifest is empty');
+  window.__PEDExploreManifest=manifest;
+  const date=exploreLocalDate(manifest.timezone||'Africa/Accra');
+  let payload=null;
+  const endpoint=window.PED_EXPLORE_TODAY_ENDPOINT;
+  if(typeof endpoint==='string'&&endpoint.trim()){
+   try{
+    const apiResponse=await fetch(endpoint,{headers:{Accept:'application/json'},cache:'no-cache'});
+    if(apiResponse.ok){const candidate=await apiResponse.json();if(candidate?.date===date&&candidate?.theme&&candidate?.asset&&candidate?.ui)payload=candidate;}
+   }catch(error){console.warn('Explore daily API unavailable; using local rotation.',error);}
+  }
+  const theme=payload?{...payload.theme,id:payload.theme.id||payload.theme.name,testament:payload.testament,asset_url:payload.asset.url,calendar_override:!!payload.rotation?.calendar_override}:selectExploreDailyTheme(date,manifest);
+  applyExploreDailyVisual(theme,date,payload?.ui?.overlay_gradient_opacity??0.68);
+  try{localStorage.setItem(EXPLORE_CACHE_KEY,JSON.stringify({date,theme,opacity:payload?.ui?.overlay_gradient_opacity??0.68}));}catch{}
+  return {date,theme,source:payload?'api':'local',imageState:panel.dataset.imageState};
+ }catch(error){
+  let cached=null;try{cached=JSON.parse(localStorage.getItem(EXPLORE_CACHE_KEY)||'null');}catch{}
+  if(cached?.theme&&cached?.date){applyExploreDailyVisual(cached.theme,cached.date,cached.opacity);panel.dataset.cacheState='stale-fallback';return {date:cached.date,theme:cached.theme,source:'cache',imageState:panel.dataset.imageState};}
+  console.warn('Explore daily visual could not load; keeping the accessible fallback.',error);
+  panel.dataset.imageState='fallback';
+  return null;
+ }
+}
+window.PEDExploreBible={loadToday:loadExploreDailyVisual,selectTheme:selectExploreDailyTheme,easterDate:exploreEasterDate};
+
 function renderExploreBible(category='stories'){
  const data=exploreBibleCollections[category]||exploreBibleCollections.stories;
  document.querySelectorAll('[data-explore-category]').forEach(button=>{const active=button.dataset.exploreCategory===category;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active));});
@@ -1271,3 +1364,5 @@ const initialRouteView=new URLSearchParams(window.location.search).get('view');
 if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible'].includes(initialRouteView)){
  showView(initialRouteView,null,false,{history:'replace'});
 }
+
+document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});

@@ -3398,3 +3398,39 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
  #appShowcaseTrack{transition:none!important}
  .dwoop-overlay.dwoop-episode-mode,.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{transition:none!important;animation:none!important}
 }
+
+
+
+/* Narrow-screen containment: keep the Explore hero inside the visible phone canvas. */
+@media(max-width:600px){
+ #exploreBibleView{width:100%;max-width:100%;min-width:0;overflow-x:clip;box-sizing:border-box;}
+ #exploreDailyVisual{width:100%;max-width:calc(100vw - 32px);min-width:0;flex:0 1 auto;margin-inline:auto;box-sizing:border-box;}
+}
+/* Explore the Bible — daily Scripture visual system. */
+.explore-daily-visual{
+ position:relative;isolation:isolate;overflow:hidden;min-height:clamp(280px,66vw,430px);
+ display:flex;align-items:flex-end;margin:0 0 28px;padding:clamp(22px,5vw,34px);
+ border:1px solid rgba(190,207,226,.14);border-radius:24px;box-sizing:border-box;
+ color:#fff;background-color:#0a1421;
+ background-image:var(--explore-daily-image,radial-gradient(ellipse at 78% 20%,rgba(125,157,191,.25),transparent 34%),linear-gradient(145deg,#263d55 0%,#13283d 48%,#070d16 100%));
+ background-size:cover;background-position:center 38%;
+ box-shadow:0 18px 48px rgba(0,0,0,.22);
+}
+.explore-daily-visual:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgba(3,8,15,.18) 0%,rgba(3,8,15,.2) 36%,rgba(3,8,15,var(--explore-overlay-opacity,.68)) 100%);}
+.explore-daily-overlay{position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(90deg,rgba(4,10,18,.2),transparent 78%);}
+.explore-daily-copy{position:relative;z-index:1;max-width:560px;padding-top:34px;text-shadow:0 2px 14px rgba(0,0,0,.38);}
+.explore-daily-copy .eyebrow{color:#d5e2f1;letter-spacing:.16em;font-size:9px;font-weight:800;}
+.explore-daily-testament{display:inline-flex;margin:0 0 10px;padding:6px 9px;border:1px solid rgba(226,237,248,.3);border-radius:30px;background:rgba(4,12,22,.35);color:#e1eaf4;font-size:8px;font-weight:800;letter-spacing:.13em;}
+.explore-daily-copy h3{max-width:500px;margin:0 0 8px;color:#fff;font-size:clamp(26px,6vw,42px);line-height:1.04;letter-spacing:-.045em;text-wrap:balance;}
+.explore-daily-copy>p{margin:0;color:#f1f4f8;font-size:13px;font-weight:600;}
+.explore-daily-date{display:block;margin-top:12px;color:#d0d9e5;font-size:10px;}
+.explore-daily-credit{position:absolute;top:18px;right:18px;color:rgba(235,242,249,.62);font-size:8px;font-weight:800;letter-spacing:.16em;}
+.explore-daily-visual[data-image-state="fallback"] .explore-daily-credit{color:rgba(235,242,249,.48);}
+@media(max-width:520px){
+ .explore-bible-view{padding-left:14px;padding-right:14px;}
+ .explore-daily-visual{min-height:310px;border-radius:20px;margin-bottom:24px;padding:22px;}
+ .explore-daily-copy{padding-top:28px;}
+ .explore-daily-copy h3{font-size:clamp(27px,8vw,36px);}
+ .explore-daily-credit{top:15px;right:15px;font-size:7px;}
+}
+@media(prefers-reduced-motion:reduce){.explore-daily-visual{scroll-behavior:auto;transition:none!important;animation:none!important;}}

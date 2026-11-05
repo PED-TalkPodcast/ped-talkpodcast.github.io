@@ -26,16 +26,141 @@ const server = http.createServer((req,res)=>{
     await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));
     browser=await chromium.launch({headless:true,args:['--no-sandbox']});
     const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
+    // Install before navigation so every page (including route and wide-viewport pages)
+    // records the code path that assigns an invalid image URL.
+    await context.addInitScript(()=>{
+      const report=(kind,value,stack)=>{
+        const raw=String(value??'');
+        if(!/(?:^|\/)undefined(?:$|[?#])|^undefined$/i.test(raw))return;
+        const detail={kind,value:raw,stack:stack||new Error('invalid image source').stack,url:location.href,time:performance.now()};
+        (window.__invalidImageTrace||(window.__invalidImageTrace=[])).push(detail);
+        console.error('INVALID_IMAGE_TRACE '+JSON.stringify(detail));
+      };
+      const srcDescriptor=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
+      if(srcDescriptor?.set&&srcDescriptor?.get){
+        Object.defineProperty(HTMLImageElement.prototype,'src',{configurable:srcDescriptor.configurable,enumerable:srcDescriptor.enumerable,get:srcDescriptor.get,set(value){report('img.src',value,new Error('img.src assignment').stack);return srcDescriptor.set.call(this,value);}});
+      }
+      const setAttribute=Element.prototype.setAttribute;
+      Element.prototype.setAttribute=function(name,value){
+        if(this instanceof HTMLImageElement&&String(name).toLowerCase()==='src')report('setAttribute(src)',value,new Error('setAttribute(src)').stack);
+        return setAttribute.call(this,name,value);
+      };
+      const innerHTML=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+      if(innerHTML?.set&&innerHTML?.get){
+        Object.defineProperty(Element.prototype,'innerHTML',{configurable:innerHTML.configurable,enumerable:innerHTML.enumerable,get:innerHTML.get,set(value){
+          const html=String(value??'');
+          if(/<img\b[^>]*\bsrc\s*=\s*["'][^"']*undefined/i.test(html))report('innerHTML',html.match(/<img\b[^>]*>/i)?.[0]||html,new Error('innerHTML assignment').stack);
+          return innerHTML.set.call(this,value);
+        }});
+      }
+      const inspectMarkup=(kind,markup,stack)=>{
+        const html=String(markup??'');
+        const match=html.match(/<img\\b[^>]*\\bsrc\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))[^>]*>/i);
+        const candidate=match&&(match[1]??match[2]??match[3]);
+        if(candidate!==undefined)report(kind,candidate,stack||new Error(kind).stack);
+      };
+      const adjacentHTML=Element.prototype.insertAdjacentHTML;
+      Element.prototype.insertAdjacentHTML=function(position,text){
+        inspectMarkup('insertAdjacentHTML',text,new Error('insertAdjacentHTML').stack);
+        return adjacentHTML.call(this,position,text);
+      };
+      const outerHTML=Object.getOwnPropertyDescriptor(Element.prototype,'outerHTML');
+      if(outerHTML?.set&&outerHTML?.get){
+        Object.defineProperty(Element.prototype,'outerHTML',{configurable:outerHTML.configurable,enumerable:outerHTML.enumerable,get:outerHTML.get,set(value){
+          inspectMarkup('outerHTML',value,new Error('outerHTML assignment').stack);
+          return outerHTML.set.call(this,value);
+        }});
+      }
+      for(const method of ['write','writeln']){
+        const original=document[method].bind(document);
+        document[method]=(...parts)=>{
+          inspectMarkup('document.'+method,parts.join(''),new Error('document.'+method).stack);
+          return original(...parts);
+        };
+      }
+      const observer=new MutationObserver(records=>{
+        for(const record of records){
+          if(record.type==='attributes'&&record.target instanceof HTMLImageElement)report('mutated img src',record.target.getAttribute('src'),new Error('image src mutation').stack);
+          for(const node of record.addedNodes||[]){
+            if(node instanceof HTMLImageElement)report('inserted img',node.getAttribute('src'),new Error('image insertion').stack);
+            if(node.querySelectorAll)for(const img of node.querySelectorAll('img'))report('inserted descendant img',img.getAttribute('src'),new Error('image insertion').stack);
+            if(node instanceof HTMLStyleElement)inspectMarkup('style element',node.textContent,new Error('style insertion').stack);
+          }
+        }
+      });
+      const start=()=>observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src']});
+      if(document.documentElement)start();else document.addEventListener('DOMContentLoaded',start,{once:true});
+    });
+    context.on('page',diagnosticPage=>{
+      diagnosticPage.on('console',message=>{if(message.type()==='error'&&message.text().startsWith('INVALID_IMAGE_TRACE '))errors.push(message.text());});
+      diagnosticPage.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
+      diagnosticPage.on('pageerror',error=>errors.push(error.message));
+      diagnosticPage.on('request',async request=>{
+        if(request.url().endsWith('/app/undefined')){
+          let snapshot={url:request.url(),pageUrl:diagnosticPage.url(),images:[],elements:[]};
+          try{snapshot=await diagnosticPage.evaluate(url=>{
+            const describe=el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',outerHTML:el.outerHTML.slice(0,700),src:el.getAttribute('src'),currentSrc:el.currentSrc||'',style:el.getAttribute('style')});
+            return{url,pageUrl:location.href,trace:window.__invalidImageTrace||[],images:[...document.images].map(describe),elements:[...document.querySelectorAll('[src],[style],link[rel*=preload]')].filter(el=>/undefined|null/.test((el.getAttribute('src')||'')+' '+(el.getAttribute('style')||''))).map(describe),bodyExcerpt:document.body?.innerHTML.match(/.{0,180}undefined.{0,180}/is)?.[0]||''};
+          },request.url());}catch(error){snapshot.captureError=error.message;}
+          errors.push('UNDEFINED_IMAGE_DOM_AT_REQUEST '+JSON.stringify(snapshot));
+        }
+      });
+      diagnosticPage.context().newCDPSession(diagnosticPage).then(async session=>{
+        await session.send('Network.enable');
+        session.on('Network.requestWillBeSent',event=>{
+          if(event.request.url.endsWith('/app/undefined')){
+            const frames=event.initiator?.stack?.callFrames||[];
+            errors.push('UNDEFINED_RESOURCE_INITIATOR '+JSON.stringify({pageUrl:diagnosticPage.url(),type:event.type,initiator:event.initiator?.type,frames:frames.map(frame=>({url:frame.url,lineNumber:frame.lineNumber,functionName:frame.functionName}))}));
+          }
+        });
+      }).catch(error=>errors.push('CDP_DIAGNOSTIC_SETUP '+error.message));
+    });
     const page=await context.newPage();
     page.on('pageerror',error=>errors.push(error.message));
-    page.on('console',message=>{if(message.type()==='error')errors.push('console: '+message.text());});
+    page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
+    page.on('console',message=>{if(message.type()==='error'&&!/Failed to load resource/.test(message.text()))errors.push('console: '+message.text());});
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
+    await page.waitForFunction(()=>!!window.PEDExploreBible,null,{timeout:5000});
+    await page.waitForFunction(()=>document.querySelector('#exploreDailyVisual')?.dataset.themeId||document.querySelector('#exploreDailyVisual')?.dataset.imageState==='fallback',null,{timeout:5000});
+    const exploreVisual=await page.evaluate(()=>({state:document.querySelector('#exploreDailyVisual')?.dataset.imageState,title:document.querySelector('#exploreDailyTitle')?.textContent,reference:document.querySelector('#exploreDailyReference')?.textContent,theme:document.querySelector('#exploreDailyVisual')?.dataset.themeId,opacity:getComputedStyle(document.querySelector('#exploreDailyVisual')).getPropertyValue('--explore-overlay-opacity'),width:document.querySelector('#exploreDailyVisual')?.getBoundingClientRect().width}));
+    assert.ok(exploreVisual.title&&exploreVisual.reference,'Explore daily visual must expose theme title and Scripture reference');
+    assert.ok(Number(exploreVisual.opacity)>=0&&Number(exploreVisual.opacity)<=1,'Explore overlay opacity must remain within 0–1');
+    assert.equal(await page.evaluate(()=>window.__invalidImageTrace?.length||0),0,'missing Explore artwork URLs must not be assigned to image elements');
+    const exploreCalendar=await page.evaluate(()=>{
+      const manifest=window.__PEDExploreManifest;
+      return {
+        easter:window.PEDExploreBible.easterDate(2026),
+        easterTheme:window.PEDExploreBible.selectTheme('2026-04-05',manifest).id,
+        goodFridayTheme:window.PEDExploreBible.selectTheme('2026-04-03',manifest).id,
+        christmasTheme:window.PEDExploreBible.selectTheme('2026-12-25',manifest).id,
+        nativityEveTheme:window.PEDExploreBible.selectTheme('2026-12-24',manifest).id
+      };
+    });
+    assert.equal(exploreCalendar.easter,'2026-04-05','Easter override calculation must use the Gregorian computus');
+    assert.match(exploreCalendar.easterTheme,/^NT-CROSS-/,'Easter Sunday must select an empty-cross theme');
+    assert.match(exploreCalendar.goodFridayTheme,/^CAL-CHRISTMAS-/,'Good Friday must select the crown-of-thorns override');
+    assert.match(exploreCalendar.christmasTheme,/^CAL-NATIVITY-/,'Christmas Day must select a Nativity theme');
+    assert.match(exploreCalendar.nativityEveTheme,/^CAL-NATIVITY-/,'Christmas Eve must select a Nativity theme');
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const visibleOnWide=async(widePage,selector)=>assert.equal(await widePage.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible at 430px');
     const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('button[data-app-theme="'+theme+'"]').click();};
     const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
+
+    await page.locator('.bottom-nav [data-view="the-show"]').click();
+    await visible('#theShowView');
+    await page.locator('#theShowView [data-show-view="explore-bible"]').click();
+    await visible('#exploreBibleView');
+    const exploreVisualWidth=await page.locator('#exploreDailyVisual').evaluate(el=>el.getBoundingClientRect().width);
+    assert.ok(exploreVisualWidth>0&&exploreVisualWidth<=390,'Explore daily visual must fit a narrow mobile viewport when displayed');
+    await page.waitForFunction(()=>!!document.querySelector('#exploreDailyTitle')?.textContent);
+    assert.ok(await page.locator('#exploreStoryGrid .explore-story-card').count()>0,'Explore story library must remain available below the daily visual');
+    await page.locator('.explore-story-card').first().click();
+    await visible('#exploreStoryDetail');
+    await page.locator('#exploreDetailBack').click();
+    await visible('#exploreStoryGrid');
+    await page.locator('.bottom-nav [data-view="home"]').click();
 
     // Settings Home and Android Back.
     await page.locator('#appSettingsButton').click();
@@ -353,6 +478,8 @@ const server = http.createServer((req,res)=>{
     await widePage.locator('#dwoopClose').click();
     await widePage.close();
 
+    const invalidImageState=await page.evaluate(()=>({images:[...document.images].map(img=>({id:img.id,src:img.getAttribute('src'),resolved:img.src})).filter(img=>/undefined|null/.test((img.src||'')+' '+img.resolved)),backgrounds:[...document.querySelectorAll('body *')].map(el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',background:getComputedStyle(el).backgroundImage})).filter(item=>/undefined|null/.test(item.background))}));
+    if(invalidImageState.images.length||invalidImageState.backgrounds.length)errors.push('INVALID_IMAGE_DOM '+JSON.stringify(invalidImageState));
     assert.deepEqual(errors,[],'browser JavaScript errors');
     process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, dedicated episode window, refined circular glass play control, seek bar and swipe navigation.\n');
     await context.close();
