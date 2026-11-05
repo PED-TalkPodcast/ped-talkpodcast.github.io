@@ -597,7 +597,15 @@ function selectExploreDailyTheme(date,manifest){
  return {...selected,calendar_override:false};
 }
 function validExploreAssetUrl(value){
- try{const url=new URL(value,window.location.href);return ['http:','https:'].includes(url.protocol)?url.href:null;}catch{return null;}
+ if(typeof value!=='string')return null;
+ const candidate=value.trim();
+ if(!candidate||/^(?:undefined|null|false)$/i.test(candidate))return null;
+ try{
+  const url=new URL(candidate,window.location.href);
+  if(!['http:','https:'].includes(url.protocol))return null;
+  if(/(?:^|\\/)(?:undefined|null)(?:$|[?#])/i.test(url.pathname))return null;
+  return url.href;
+ }catch{return null;}
 }
 function applyExploreDailyVisual(theme,date,opacity=0.68){
  const panel=document.getElementById('exploreDailyVisual');if(!panel||!theme)return;
