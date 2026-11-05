@@ -3114,3 +3114,177 @@ body.app-dark .app-showcase-upcoming .upcoming-title{color:#f5fff8!important}
 /* Preserve the established readable title tokens in both appearance modes. */
 body.app-dark .app-showcase-upcoming .upcoming-card-head h2{color:#f5fff8!important}
 body.app-light .app-showcase-upcoming .upcoming-card-head h2{color:#263c30!important}
+
+
+/* v91 — refined carousel artwork, calm hero motion, immersive Scripture reader and final four-tab alignment. */
+
+/* Upcoming carousel: preserve the supplied artwork ratio, frame it like a Spotify mix and keep the slide swipeable. */
+.app-showcase{overflow:hidden;border-radius:24px;background:#0A0A0A}
+.app-showcase-track{will-change:transform;transition:transform .68s cubic-bezier(.22,.72,.18,1)}
+.app-showcase-upcoming{
+ display:flex!important;align-items:center!important;justify-content:center!important;
+ padding:clamp(10px,2.8vw,18px)!important;
+ background:radial-gradient(ellipse at 50% 0%,rgba(30,136,229,.13),transparent 58%),linear-gradient(155deg,#141414 0%,#0A0A0A 76%)!important;
+}
+.app-showcase-upcoming .upcoming-card{
+ width:100%!important;max-width:560px!important;padding:clamp(10px,2.5vw,16px)!important;
+ border:0!important;border-radius:22px!important;
+ background:linear-gradient(155deg,#191919 0%,#111111 100%)!important;
+ box-shadow:0 18px 48px rgba(0,0,0,.24)!important;
+}
+.app-showcase-upcoming .upcoming-card-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 2px 12px!important}
+.app-showcase-upcoming .upcoming-card-head .eyebrow{color:#70B7FF!important;letter-spacing:.14em}
+.app-showcase-upcoming .upcoming-card-head h2{margin:3px 0 0!important;color:#F5F7FA!important;font-size:clamp(16px,3.8vw,21px)!important;letter-spacing:-.035em}
+.app-showcase-upcoming .upcoming-count{color:#A7A7A7!important;white-space:nowrap}
+.app-showcase-upcoming .upcoming-artwork{
+ display:block!important;visibility:visible!important;width:100%!important;min-height:150px;
+ margin:0!important;padding:0!important;overflow:hidden!important;
+ border-radius:17px!important;background:#181818!important;
+}
+.app-showcase-upcoming .upcoming-artwork img,
+.app-showcase-upcoming .upcoming-artwork .upcoming-photo{
+ display:block!important;visibility:visible!important;width:100%!important;height:auto!important;
+ min-height:150px;max-height:clamp(210px,58vw,370px)!important;
+ margin:0!important;border:0!important;border-radius:17px!important;
+ object-fit:contain!important;object-position:center!important;background:#181818!important;
+ opacity:1!important;transition:opacity .28s ease,filter .28s ease!important;
+}
+.app-showcase-upcoming .upcoming-artwork img.is-unavailable{
+ min-height:170px;object-fit:contain!important;opacity:.45!important;
+}
+.app-showcase-anagkazo,.app-showcase-voice{border-radius:22px}
+.app-showcase-dots button.active{background:#1E88E5!important}
+@media(max-width:420px){
+ .app-showcase{border-radius:20px}
+ .app-showcase-upcoming{padding:7px!important}
+ .app-showcase-upcoming .upcoming-card{padding:9px!important;border-radius:17px!important}
+ .app-showcase-upcoming .upcoming-artwork,.app-showcase-upcoming .upcoming-artwork img{border-radius:13px!important}
+}
+
+/* Gift of Hope hero: one restrained blue-black gradient, no stark white wash or competing colour layers. */
+.welcome.hope-card{
+ position:relative;isolation:isolate;overflow:hidden;
+ background:
+  radial-gradient(ellipse at 82% 10%,rgba(30,136,229,.22),transparent 48%),
+  radial-gradient(ellipse at 8% 100%,rgba(0,102,255,.12),transparent 52%),
+  linear-gradient(145deg,#17202B 0%,#101820 48%,#090D13 100%)!important;
+ border:1px solid rgba(112,183,255,.14)!important;
+ box-shadow:0 20px 48px rgba(0,0,0,.24)!important;
+}
+.welcome.hope-card::before,.welcome.hope-card::after{content:none!important;display:none!important}
+.welcome.hope-card .hope-heading,.welcome.hope-card .hope-scripture{position:relative;z-index:1}
+.welcome.hope-card .hope-heading{animation:anagkazoHeroRise .82s cubic-bezier(.2,.72,.2,1) both}
+.welcome.hope-card .hope-devotional{animation:anagkazoHeroRise .96s .1s cubic-bezier(.2,.72,.2,1) both}
+.welcome.hope-card .hope-scripture{border-color:rgba(255,255,255,.12)!important}
+.welcome.hope-card .hope-scripture blockquote{color:#F3F6FA!important}
+.welcome.hope-card .hope-scripture p{color:#AEBBC9!important}
+.welcome.hope-card .hope-heading h1,.welcome.hope-card .hope-heading h1 em{color:#F5F7FA!important}
+.welcome.hope-card .hope-heading h1 em{color:#70B7FF!important}
+body.app-light .welcome.hope-card{
+ background:radial-gradient(ellipse at 85% 0%,rgba(30,136,229,.10),transparent 48%),linear-gradient(145deg,#F1F5F9,#E5EBF2)!important;
+ border-color:rgba(30,80,130,.12)!important;
+}
+body.app-light .welcome.hope-card .hope-heading h1{color:#172638!important}
+body.app-light .welcome.hope-card .hope-heading h1 em{color:#0066CC!important}
+body.app-light .welcome.hope-card .hope-scripture blockquote{color:#243448!important}
+body.app-light .welcome.hope-card .hope-scripture p{color:#5B6A7B!important}
+@keyframes anagkazoHeroRise{
+ from{opacity:0;transform:translate3d(0,16px,0)}
+ to{opacity:1;transform:translate3d(0,0,0)}
+}
+
+/* Scripture reader: comfortable reading measure, clear verse hierarchy and persistent chapter controls. */
+#bibleReader:not([hidden]){
+ width:100%!important;max-width:none!important;box-sizing:border-box!important;
+ padding:calc(22px + env(safe-area-inset-top)) max(22px,calc((100vw - 760px)/2)) calc(26px + env(safe-area-inset-bottom))!important;
+ background:#101010!important;color:#F2F4F7!important;
+}
+#bibleReader .bible-reader-top{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:16px!important;padding:calc(12px + env(safe-area-inset-top)) 0 18px!important;
+ background:#101010!important;border-bottom:1px solid rgba(255,255,255,.09)!important;
+}
+#bibleReader .reader-kicker{color:#8C9AAA!important;font-size:10px!important;letter-spacing:.14em!important}
+#bibleReader .bible-reader-top h3{color:#F5F7FA!important;font:600 clamp(27px,5vw,36px)/1.15 Georgia,'Times New Roman',serif!important;letter-spacing:-.04em!important}
+#bibleReader .bible-reader-actions{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important}
+#bibleReader #bibleSelectedVerse{color:#9AA7B5!important;font-size:12px!important}
+#bibleReader .bible-verses{width:100%;max-width:690px;margin:0 auto;padding:14px 0 28px!important}
+#bibleReader .bible-verse{
+ display:grid!important;grid-template-columns:28px minmax(0,1fr)!important;align-items:start!important;
+ gap:13px!important;padding:13px 10px!important;margin:0 0 3px!important;
+ border:0!important;border-radius:10px!important;background:transparent!important;
+ color:#E8EDF3!important;line-height:1.85!important;
+}
+#bibleReader .bible-verse .verse-number{
+ display:block!important;padding-top:5px!important;color:#70B7FF!important;
+ font:700 11px/1.3 'DM Sans',sans-serif!important;font-variant-numeric:tabular-nums!important;
+}
+#bibleReader .bible-verse .verse-text{
+ display:block!important;color:#E8EDF3!important;
+ font:400 clamp(17px,2.3vw,19px)/1.9 Georgia,'Times New Roman',serif!important;
+ letter-spacing:.002em!important;
+}
+#bibleReader .bible-verse.verse-selected{background:rgba(30,136,229,.14)!important;box-shadow:inset 3px 0 #1E88E5!important}
+#bibleReader .bible-verse:focus-visible{outline:2px solid rgba(30,136,229,.65)!important;outline-offset:2px!important}
+#bibleReader .bible-pager{
+ position:sticky!important;bottom:calc(-26px - env(safe-area-inset-bottom))!important;
+ z-index:5!important;display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+ align-items:center!important;gap:12px!important;padding:14px 0 calc(12px + env(safe-area-inset-bottom))!important;
+ background:linear-gradient(180deg,rgba(16,16,16,.88),#101010 24%)!important;
+ border-top:1px solid rgba(255,255,255,.10)!important;
+}
+#bibleReader .bible-pager button{min-height:42px!important;padding:10px 15px!important;border:1px solid rgba(30,136,229,.28)!important;border-radius:24px!important;background:#171F29!important;color:#DDEBFA!important;font-size:11px!important}
+#bibleReader .bible-pager button:last-child{justify-self:end}
+#bibleReader .bible-pager button:first-child{justify-self:start}
+#bibleReader #biblePosition{color:#AAB5C1!important;text-align:center!important;font-size:11px!important;font-variant-numeric:tabular-nums!important;white-space:nowrap!important}
+body.app-light #bibleReader:not([hidden]){
+ background:#FAFBFC!important;color:#202A35!important;
+}
+body.app-light #bibleReader .bible-reader-top{background:#FAFBFC!important;border-color:#E5E9EE!important}
+body.app-light #bibleReader .bible-reader-top h3{color:#202A35!important}
+body.app-light #bibleReader .reader-kicker{color:#738091!important}
+body.app-light #bibleReader .bible-verse{color:#263443!important}
+body.app-light #bibleReader .bible-verse .verse-number{color:#0066CC!important}
+body.app-light #bibleReader .bible-verse .verse-text{color:#263443!important}
+body.app-light #bibleReader .bible-verse.verse-selected{background:rgba(0,102,255,.08)!important}
+body.app-light #bibleReader .bible-pager{background:linear-gradient(180deg,rgba(250,251,252,.88),#FAFBFC 24%)!important;border-color:#E5E9EE!important}
+body.app-light #bibleReader .bible-pager button{background:#EDF3FA!important;color:#1D3D60!important;border-color:rgba(0,102,255,.22)!important}
+body.app-light #bibleReader #biblePosition,body.app-light #bibleReader #bibleSelectedVerse{color:#687789!important}
+
+/* Replace green-tinted accents in scripture, stats and reading progress with the Anagkazo blue family. */
+.reader-kicker,.bible-reader-top .reader-kicker,.bible-stage-heading p,
+.bible-book-tile small,.bible-verse .verse-number,.reading-card-type,
+.reading-stats-head .reader-kicker,.reading-section-head .eyebrow,
+.reading-summary-top .eyebrow,.reading-period-total strong,
+.reading-detail-book strong,.reading-session-row>b,.reading-breakdown-row>b{
+ color:#70B7FF!important;
+}
+.reading-progress-track span,.reading-progress-card .reading-progress-track span{
+ background:linear-gradient(90deg,#0066FF,#1E88E5)!important;
+}
+body.app-light .reader-kicker,body.app-light .bible-stage-heading p,
+body.app-light .bible-book-tile small,body.app-light .reading-card-type,
+body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-top .eyebrow{
+ color:#176CCB!important;
+}
+.bible-library-view .saved-highlight-ref{color:#1E88E5!important}
+.bible-library-view .bible-saved-highlight-open:focus-visible{outline-color:#1E88E5!important}
+
+/* Four real destinations: do not let legacy six-column rules reserve phantom slots. */
+.bottom-nav,.bottom-nav.nav-bar-aligned{
+ position:fixed!important;left:0!important;right:0!important;bottom:0!important;
+ width:100%!important;max-width:none!important;margin-left:auto!important;margin-right:auto!important;
+ box-sizing:border-box!important;display:flex!important;flex-flow:row nowrap!important;
+ justify-content:space-around!important;align-items:center!important;gap:0!important;
+ padding:8px 8px max(10px,env(safe-area-inset-bottom))!important;
+}
+.bottom-nav button{
+ display:flex!important;flex:0 1 25%!important;width:25%!important;max-width:25%!important;min-width:0!important;
+ margin:0!important;align-items:center!important;justify-content:center!important;flex-direction:column!important;
+ grid-column:auto!important;overflow:visible!important;
+}
+.bottom-nav button span{white-space:nowrap!important;text-align:center!important}
+@media(prefers-reduced-motion:reduce){
+ .welcome.hope-card .hope-heading,.welcome.hope-card .hope-devotional{animation:none!important}
+ .app-showcase-track{transition:none!important}
+}
