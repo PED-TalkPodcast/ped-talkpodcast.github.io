@@ -3701,3 +3701,49 @@ body.app-light .current-season-section .episode-open-card .episode-art{
   background:transparent!important;
   box-shadow:none!important;
 }
+
+/* v131 — full-screen Gift of Hope, quiet episode rails, and a modern listening surface. */
+.episode-row-chevron,.upcoming-row-arrow,.episode-more-tile>b{display:none!important}
+.episode-grid,.current-season-section .episode-grid,.episode-open-card{scrollbar-width:none!important;-ms-overflow-style:none!important}
+.episode-grid::-webkit-scrollbar,.current-season-section .episode-grid::-webkit-scrollbar,.episode-open-card::-webkit-scrollbar{display:none!important;width:0!important;height:0!important}
+.hope-modal{padding:0!important;align-items:stretch!important;justify-content:stretch!important;overflow:hidden!important;background-position:center!important;background-size:cover!important}
+.hope-modal-panel{position:relative!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:flex-start!important;width:100%!important;height:100%!important;max-height:none!important;min-height:100dvh!important;margin:0!important;padding:clamp(28px,7vw,64px) clamp(22px,7vw,72px) calc(34px + env(safe-area-inset-bottom))!important;overflow-y:auto!important;border:0!important;border-radius:0!important;background:transparent!important;background-image:none!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.hope-modal-panel>.eyebrow,.hope-modal-panel>h2{display:none!important}
+.hope-modal-panel .hope-modal-devotional{width:100%!important;max-width:780px!important;margin:0 auto!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.hope-modal-panel .hope-modal-devotional .verse-label{display:none!important}
+.hope-modal-panel .hope-modal-devotional blockquote{max-width:760px!important;margin:0 0 15px!important;color:#fff!important;font:500 clamp(28px,6vw,52px)/1.22 'Playfair Display',Georgia,serif!important;letter-spacing:-.025em!important;text-shadow:0 3px 24px rgba(0,0,0,.42)!important}
+.hope-modal-panel .hope-modal-devotional>p{margin:0!important;color:rgba(255,255,255,.84)!important;font:700 11px/1.5 'DM Sans',sans-serif!important;letter-spacing:.12em!important;text-transform:uppercase!important;text-shadow:0 2px 12px rgba(0,0,0,.4)!important}
+.hope-modal-panel .hope-actions{width:auto!important;max-width:none!important;margin:24px auto 0!important;align-self:center!important;display:flex!important;gap:10px!important}
+.hope-modal-panel .hope-actions button{min-width:88px!important;min-height:42px!important;border-radius:999px!important;border:1px solid rgba(255,255,255,.24)!important;background:rgba(8,20,30,.34)!important;color:#fff!important;backdrop-filter:blur(12px)!important}
+.hope-modal-panel .hope-comments{width:100%!important;max-width:780px!important;margin:16px auto 0!important}
+.hope-modal-panel .hope-comments h3,.hope-modal-panel .hope-comments p,.hope-modal-panel .hope-comments .hope-comment{color:#fff!important}
+@media(max-width:520px){.hope-modal-panel{padding:24px 22px calc(28px + env(safe-area-inset-bottom))!important}.hope-modal-panel .hope-modal-devotional blockquote{font-size:clamp(27px,8vw,38px)!important}.hope-modal-panel .hope-actions{width:100%!important;justify-content:center!important}.hope-modal-panel .hope-actions button{min-width:0!important;flex:1 1 0!important}}
+.dwoop-overlay.dwoop-episode-mode{background:#080b0e!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{background:linear-gradient(180deg,#151a1f 0%,#0b0e11 68%)!important;color:#f7f9fb!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .eyebrow,.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-intro{color:#a9b3bc!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded h2{color:#fff!important;font:700 clamp(25px,6vw,34px)/1.12 'DM Sans',sans-serif!important;letter-spacing:-.04em!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-close{width:42px!important;height:42px!important;border:1px solid rgba(255,255,255,.16)!important;border-radius:50%!important;background:rgba(255,255,255,.09)!important;color:#fff!important;font:300 30px/1 'DM Sans',sans-serif!important}
+.dwoop-overlay.dwoop-episode-mode .dwoop-artwork{display:flex!important;justify-content:center!important;align-items:center!important;margin:12px auto 22px!important;background:transparent!important}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-art{width:min(100%,440px)!important;height:auto!important;aspect-ratio:1/1!important;max-height:none!important;object-fit:cover!important;border-radius:8px!important;background:#171c22!important;box-shadow:0 18px 48px rgba(0,0,0,.34)!important}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-panel{gap:18px!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:16px!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-controls{display:grid!important;grid-template-columns:minmax(0,1fr) 58px!important;align-items:center!important;gap:16px!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-meta{grid-column:1!important;grid-row:1!important}
+.dwoop-overlay.dwoop-episode-mode .episode-play-button{grid-column:2!important;grid-row:1!important;width:58px!important;height:58px!important;min-width:58px!important;min-height:58px!important;border:0!important;border-radius:50%!important;background:#b7d98e!important;color:#10200b!important;box-shadow:none!important}
+.dwoop-overlay.dwoop-episode-mode .episode-play-button .episode-play-symbol{color:#10200b!important;font-size:20px!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-track{height:4px!important;background:rgba(255,255,255,.2)!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-track span{background:#b7d98e!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-times{color:#aeb8c1!important}
+.episode-live-waveform{display:flex!important;align-items:center!important;justify-content:center!important;gap:3px!important;width:100%!important;height:52px!important;overflow:hidden!important;padding:0 4px!important;opacity:.5!important}
+.episode-live-waveform i{display:block!important;flex:1 1 0!important;max-width:5px!important;min-width:2px!important;height:24%!important;border-radius:99px!important;background:linear-gradient(180deg,#c4e6a0,#7fae54)!important;transform:scaleY(.36);transform-origin:center!important;transition:transform .18s ease!important}
+.episode-live-waveform.is-playing{opacity:1!important}
+.episode-live-waveform.is-playing i{animation:pedTalkWave .72s ease-in-out infinite alternate!important;animation-delay:calc(var(--wave-index)*-23ms)!important}
+@keyframes pedTalkWave{0%{transform:scaleY(.18)}100%{transform:scaleY(calc(.38 + (var(--wave-index) % 7)*.1))}}
+.dwoop-overlay.dwoop-episode-mode .episode-transport-controls{display:flex!important;align-items:center!important;justify-content:center!important;gap:clamp(26px,8vw,52px)!important;margin:2px 0 0!important}
+.dwoop-overlay.dwoop-episode-mode .episode-transport-controls button{color:#e9eef2!important;background:transparent!important;border:0!important}
+.dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play{display:grid!important;place-items:center!important;width:72px!important;height:72px!important;border-radius:50%!important;background:#b7d98e!important;color:#10200b!important}
+.dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play .episode-play-symbol{color:#10200b!important;background:transparent!important;font-size:22px!important}
+.dwoop-overlay.dwoop-episode-mode .episode-secondary-controls{display:flex!important;justify-content:space-between!important;gap:12px!important;border-top:1px solid rgba(255,255,255,.1)!important;padding-top:14px!important}
+.dwoop-overlay.dwoop-episode-mode .episode-secondary-controls button{color:#b7d98e!important;background:transparent!important;border:0!important}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-description{color:#aeb8c1!important;font-size:12px!important;line-height:1.75!important}
+@media(prefers-reduced-motion:reduce){.episode-live-waveform.is-playing i{animation:none!important;transform:scaleY(.55)!important}}
