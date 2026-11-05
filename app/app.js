@@ -379,7 +379,7 @@ document.getElementById('dwoopContent')?.addEventListener('click',event=>{
  card.addEventListener('pointerup',event=>{
   if(!startTarget)return;const dx=event.clientX-startX,dy=event.clientY-startY,target=startTarget;startTarget=null;
   if(target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe],[data-episode-swipe-area],[data-episode-swipe-area]'))return;
-  if(dy>88&&dy>Math.abs(dx)*1.25&&startScrollTop<=2){return;}
+  if(dy>88&&dy>Math.abs(dx)*1.25&&startScrollTop<=2){closeDwoopModal();return;}
   if(!overlay.classList.contains('dwoop-episode-mode')||Math.abs(dx)<64||Math.abs(dx)<Math.abs(dy)*1.25)return;
   const nextIndex=activeEpisodeIndex+(dx<0?1:-1);if(nextIndex<0||nextIndex>=activeEpisodeSequence.length)return;
   openEpisodeModal(activeEpisodeSequence[nextIndex],activeEpisodeSequence,dx<0?1:-1);
@@ -387,7 +387,7 @@ document.getElementById('dwoopContent')?.addEventListener('click',event=>{
  card.addEventListener('pointercancel',()=>{startTarget=null;},{passive:true});
  let touchStart=null;
  card.addEventListener('touchstart',event=>{const t=event.changedTouches[0];if(!t)return;touchStart={x:t.clientX,y:t.clientY,scrollTop:card.scrollTop,target:event.target};},{passive:true});
- card.addEventListener('touchend',event=>{if(!touchStart)return;const t=event.changedTouches[0],start=touchStart;touchStart=null;if(!t||start.scrollTop>2||start.target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe]'))return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(dy>88&&dy>Math.abs(dx)*1.25)return;},{passive:true});
+ card.addEventListener('touchend',event=>{if(!touchStart)return;const t=event.changedTouches[0],start=touchStart;touchStart=null;if(!t||start.scrollTop>2||start.target.closest('button,a,audio,input,textarea,select,summary,[data-no-episode-swipe]'))return;const dx=t.clientX-start.x,dy=t.clientY-start.y;if(dy>88&&dy>Math.abs(dx)*1.25)closeDwoopModal();},{passive:true});
 })();
 function renderHomeSeason(){
  const currentSeason=allEpisodes.reduce((max,ep)=>Math.max(max,episodeSeason(ep)),1);
