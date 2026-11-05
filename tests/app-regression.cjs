@@ -31,7 +31,7 @@ const server = http.createServer((req,res)=>{
     await context.addInitScript(()=>{
       const report=(kind,value,stack)=>{
         const raw=String(value??'');
-        if(!/(?:^|\\/)undefined(?:$|[?#])|^undefined$/i.test(raw))return;
+        if(!/(?:^|\/)undefined(?:$|[?#])|^undefined$/i.test(raw))return;
         const detail={kind,value:raw,stack:stack||new Error('invalid image source').stack,url:location.href,time:performance.now()};
         (window.__invalidImageTrace||(window.__invalidImageTrace=[])).push(detail);
         console.error('INVALID_IMAGE_TRACE '+JSON.stringify(detail));
@@ -49,7 +49,7 @@ const server = http.createServer((req,res)=>{
       if(innerHTML?.set&&innerHTML?.get){
         Object.defineProperty(Element.prototype,'innerHTML',{configurable:innerHTML.configurable,enumerable:innerHTML.enumerable,get:innerHTML.get,set(value){
           const html=String(value??'');
-          if(/<img\\b[^>]*\\bsrc\\s*=\\s*["'][^"']*undefined/i.test(html))report('innerHTML',html.match(/<img\\b[^>]*>/i)?.[0]||html,new Error('innerHTML assignment').stack);
+          if(/<img\b[^>]*\bsrc\s*=\s*["'][^"']*undefined/i.test(html))report('innerHTML',html.match(/<img\b[^>]*>/i)?.[0]||html,new Error('innerHTML assignment').stack);
           return innerHTML.set.call(this,value);
         }});
       }
