@@ -3181,7 +3181,9 @@ body.app-light .app-showcase-upcoming .upcoming-card-head h2{color:#263c30!impor
 .welcome.hope-card .hope-heading h1,.welcome.hope-card .hope-heading h1 em{color:#F5F7FA!important}
 .welcome.hope-card .hope-heading h1 em{color:#70B7FF!important}
 body.app-light .welcome.hope-card{
- background:radial-gradient(ellipse at 85% 0%,rgba(30,136,229,.10),transparent 48%),linear-gradient(145deg,#F1F5F9,#E5EBF2)!important;
+ background-image:linear-gradient(145deg,rgba(241,245,249,.88),rgba(229,235,242,.78)),url('../assets/gift-of-hope-day.svg')!important;
+ background-position:center,center 48%!important;background-size:cover,cover!important;background-repeat:no-repeat,no-repeat!important;
+ background-color:#E5EBF2!important;
  border-color:rgba(30,80,130,.12)!important;
 }
 body.app-light .welcome.hope-card .hope-heading h1{color:#172638!important}
