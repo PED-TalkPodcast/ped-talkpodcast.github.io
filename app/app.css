@@ -3361,9 +3361,14 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
 .dwoop-overlay.dwoop-episode-mode.active .dwoop-card-expanded{
  opacity:1!important;transform:none!important;animation:none!important;transition:none!important;
 }
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+ position:relative!important;
+ padding-top:calc(82px + env(safe-area-inset-top))!important;
+}
 .dwoop-overlay.dwoop-episode-mode .dwoop-close{
- position:sticky!important;top:calc(8px + env(safe-area-inset-top))!important;
- float:right!important;z-index:12!important;margin:0 -4px 0 12px!important;
+ position:absolute!important;top:calc(18px + env(safe-area-inset-top))!important;
+ right:max(18px,calc((100vw - 760px)/2))!important;
+ float:none!important;z-index:12!important;margin:0!important;
 }
 .dwoop-overlay.dwoop-episode-mode .dwoop-artwork{
  max-height:none!important;margin:14px 0 20px!important;background:#101010!important;

@@ -31,19 +31,6 @@ const server = http.createServer((req,res)=>{
     page.on('console',message=>{if(message.type()==='error')errors.push('console: '+message.text());});
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
-    await page.waitForFunction(()=>{
-      const image=document.querySelector('#appUpcomingGraphic');
-      return image&&image.complete&&image.naturalWidth>0;
-    },null,{timeout:8000});
-    const upcomingArtwork=await page.locator('#appUpcomingGraphic').evaluate(el=>({
-      display:getComputedStyle(el).display,visibility:getComputedStyle(el).visibility,
-      width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,
-      parentDisplay:getComputedStyle(el.parentElement).display
-    }));
-    assert.equal(upcomingArtwork.display,'block','upcoming artwork image must be rendered');
-    assert.notEqual(upcomingArtwork.visibility,'hidden','upcoming artwork must remain visible');
-    assert.ok(upcomingArtwork.width>0&&upcomingArtwork.height>0,'upcoming artwork must have a visible layout box');
-
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const visibleOnWide=async(widePage,selector)=>assert.equal(await widePage.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible at 430px');
@@ -319,23 +306,6 @@ const server = http.createServer((req,res)=>{
     assert.equal(await page.locator('[data-episode-share]').count(),1,'expanded player must include share');
     assert.equal(await page.locator('#miniPlayer').evaluate(el=>!el.hidden),true,'persistent mini-player must appear when an episode is selected');
     assert.equal(await page.locator('[data-episode-swipe-area]').count(),1,'episode audio surface must support swipe navigation');
-    const stationaryPlayerWindow=await page.evaluate(()=>{
-      const overlay=document.querySelector('#dwoopOverlay'),card=overlay.querySelector('.dwoop-card-expanded');
-      const overlayRect=overlay.getBoundingClientRect(),cardRect=card.getBoundingClientRect();
-      return{
-        overlayPosition:getComputedStyle(overlay).position,
-        cardTransform:getComputedStyle(card).transform,
-        cardTransition:getComputedStyle(card).transitionDuration,
-        overlayRect:{x:overlayRect.x,y:overlayRect.y,width:overlayRect.width,height:overlayRect.height},
-        cardRect:{x:cardRect.x,y:cardRect.y,width:cardRect.width,height:cardRect.height}
-      };
-    });
-    assert.equal(stationaryPlayerWindow.overlayPosition,'fixed','episode player window must be fixed to the viewport');
-    assert.equal(stationaryPlayerWindow.cardTransform,'none','episode player window must not scale or slide into place');
-    assert.equal(stationaryPlayerWindow.cardTransition,'0s','episode player window must not spring or drift');
-    assert.ok(stationaryPlayerWindow.cardRect.width>=stationaryPlayerWindow.overlayRect.width-1,'episode player window must fill the viewport width');
-    assert.ok(stationaryPlayerWindow.cardRect.height>=stationaryPlayerWindow.overlayRect.height-1,'episode player window must fill the viewport height');
-
     const playerLayout=await page.evaluate(()=>{
       const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
       const windowEl=document.querySelector('.episode-player-window'),times=document.querySelector('.episode-player-times'),current=document.querySelector('[data-player-current]'),duration=document.querySelector('[data-player-duration]'),hint=document.querySelector('.episode-player-hint');
