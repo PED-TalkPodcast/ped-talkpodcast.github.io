@@ -270,6 +270,16 @@ const server = http.createServer((req,res)=>{
     assert.equal(compactPlay.radius,'50%','player play control must be circular');
     assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
     assert.equal(await page.locator('[data-episode-swipe-area]').count(),1,'episode audio surface must support swipe navigation');
+    const playerLayout=await page.evaluate(()=>{
+      const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
+      const windowEl=document.querySelector('.episode-player-window'),times=document.querySelector('.episode-player-times'),current=document.querySelector('[data-player-current]'),duration=document.querySelector('[data-player-duration]'),hint=document.querySelector('.episode-player-hint');
+      return{viewport:innerWidth,documentWidth:document.documentElement.scrollWidth,window:rect(windowEl),times:rect(times),current:rect(current),duration:rect(duration),hint:rect(hint),timesDisplay:getComputedStyle(times).display};
+    });
+    assert.ok(playerLayout.documentWidth<=playerLayout.viewport+1,'app must not create horizontal page overflow');
+    assert.equal(playerLayout.timesDisplay,'flex','player timestamps must remain in a horizontal flex row');
+    assert.ok(Math.abs(playerLayout.current.y-playerLayout.duration.y)<=2,'current and total time must share one line');
+    assert.ok(playerLayout.hint.y>=playerLayout.times.bottom-1,'swipe hint must sit below timestamps, not overlap them');
+    assert.ok(playerLayout.hint.right<=playerLayout.window.right+1,'swipe hint must remain inside the player surface');
     await page.locator('#dwoopClose').click();
     await hidden('#dwoopOverlay');
 
