@@ -59,7 +59,7 @@ const server = http.createServer((req,res)=>{
 
     await page.locator('.bottom-nav [data-view="the-show"]').click();
     await visible('#theShowView');
-    await page.locator('#theShowView [data-show-view="explore"]').click();
+    await page.locator('#theShowView [data-show-view="explore-bible"]').click();
     await visible('#exploreBibleView');
     const exploreVisualWidth=await page.locator('#exploreDailyVisual').evaluate(el=>el.getBoundingClientRect().width);
     assert.ok(exploreVisualWidth>0&&exploreVisualWidth<=390,'Explore daily visual must fit a narrow mobile viewport when displayed');
