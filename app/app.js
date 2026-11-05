@@ -244,10 +244,22 @@ document.getElementById('miniPlayerOpen')?.addEventListener('click',()=>{const e
 function applyEpisodeArtworkTheme(imageUrl, token){
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
  if(!card)return;
- const fallback={r:28,g:48,b:39};
+ const fallback={r:18,g:35,b:56};
  const apply=(rgb)=>{
   if(!card.isConnected||card.dataset.paletteToken!==token)return;
-  const [r,g,b]=rgb.map(value=>Math.max(0,Math.min(255,Math.round(value))));
+  let [r,g,b]=rgb.map(value=>Math.max(0,Math.min(255,Math.round(value))));
+  // Keep the artwork's saturation and brightness, but move green hues into Anagkazo blue.
+  const max=Math.max(r,g,b),min=Math.min(r,g,b),delta=max-min;
+  let hue=0;if(delta){if(max===r)hue=60*(((g-b)/delta)%6);else if(max===g)hue=60*((b-r)/delta+2);else hue=60*((r-g)/delta+4);}if(hue<0)hue+=360;
+  if(hue>=78&&hue<=168&&delta>18){const light=(max+min)/510,sat=delta/(255-(Math.abs(2*light-1)*255)),c=(1-Math.abs(2*light-1))*sat,x=c*(1-Math.abs((214/60)%2-1)),m=light-c/2;let q=[0,0,0];if(214<60)q=[c,x,0];else if(214<120)q=[x,c,0];else if(214<180)q=[0,c,x];else if(214<240)q=[0,x,c];else if(214<300)q=[x,0,c];else q=[c,0,x];[r,g,b]=q.map(v=>Math.round((v+m)*255));}
+  const root=document.documentElement;
+  root.style.setProperty('--episode-rgb',r+','+g+','+b);
+  root.style.setProperty('--episode-color','rgb('+r+' '+g+' '+b+')');
+  root.style.setProperty('--episode-color-soft','rgba('+r+','+g+','+b+',.34)');
+  root.style.setProperty('--episode-color-deep','rgb('+Math.round(r*.24)+' '+Math.round(g*.24)+' '+Math.round(b*.24)+')');
+  root.style.setProperty('--episode-accent','rgb('+r+' '+g+' '+b+')');
+  root.style.setProperty('--episode-glow','rgba('+r+','+g+','+b+',.24)');
+  root.style.setProperty('--episode-surface','rgb('+Math.round(r*.10)+' '+Math.round(g*.10)+' '+Math.round(b*.10)+')');
   card.style.setProperty('--episode-rgb',r+','+g+','+b);
   card.style.setProperty('--episode-color','rgb('+r+' '+g+' '+b+')');
   card.style.setProperty('--episode-color-soft','rgba('+r+','+g+','+b+',.34)');
@@ -464,7 +476,7 @@ function showView(view,reference=null,preserveBible=false,options={}){
  document.body.classList.remove('modal-open');
  if(target!=='bible')document.body.classList.remove('scripture-reading');
  const navTarget=['bible','bible-library','reading-stats','books','explore-bible'].includes(target)?'the-show':target;
- document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===navTarget));
+ document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>{const active=button.dataset.view===navTarget;button.classList.toggle('selected',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});
  const token=++viewTransitionToken;
  if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
  window.scrollTo({top:0,behavior:'smooth'});
@@ -908,14 +920,14 @@ function applyAppTheme(choice){
  }
  if(typeof setBibleMode==='function')setBibleMode(effective);
  appThemeButtons.forEach(button=>{const active=button.dataset.appTheme===theme;button.classList.toggle('active',active);button.setAttribute('aria-pressed',String(active));});
- const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#020504':'#f5f8f5';
+ const meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=effective==='dark'?'#0A0A0A':'#f5f8f5';
  try{localStorage.setItem(APP_THEME_KEY,theme);}catch(error){}
  window.PEDDevotional?.sync();
 }
-let preferredAppTheme='system';try{preferredAppTheme=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}
+let preferredAppTheme='dark';try{preferredAppTheme=localStorage.getItem(APP_THEME_KEY)||'dark';}catch(error){}
 applyAppTheme(preferredAppTheme);
 const colorSchemeQuery=window.matchMedia?.('(prefers-color-scheme: dark)');
-const onSystemThemeChange=()=>{let choice='system';try{choice=localStorage.getItem(APP_THEME_KEY)||'system';}catch(error){}if(choice==='system')applyAppTheme('system');};
+const onSystemThemeChange=()=>{let choice='system';try{choice=localStorage.getItem(APP_THEME_KEY)||'dark';}catch(error){}if(choice==='system')applyAppTheme('system');};
 if(colorSchemeQuery?.addEventListener)colorSchemeQuery.addEventListener('change',onSystemThemeChange);else colorSchemeQuery?.addListener?.(onSystemThemeChange);
 function openAppSettings(){
  if(!appSettingsModal||!appSettingsModal.hidden)return;
