@@ -330,6 +330,7 @@ function episodeArtworkUrl(source){
 }
 function renderLatestEpisodeHero(){
  const hero=document.getElementById('latestEpisodeHero');if(!hero||!allEpisodes.length)return;
+ hero.hidden=false;
  const ep=sortedEpisodes(allEpisodes)[0],index=allEpisodes.indexOf(ep),title=displayEpisodeTitle(ep);
  const art=document.getElementById('latestEpisodeArt'),heading=document.getElementById('latestEpisodeTitle'),label=document.getElementById('latestEpisodeLabel'),meta=document.getElementById('latestEpisodeMeta'),button=document.getElementById('latestEpisodeListen');
  if(art)art.innerHTML='<img src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt="" fetchpriority="high">';
