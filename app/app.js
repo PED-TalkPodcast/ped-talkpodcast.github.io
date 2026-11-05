@@ -72,6 +72,20 @@ async function renderAppUpcoming(){
  }
 }
 renderAppUpcoming();
+// Keep the featured artwork visible even when image decoding is delayed or the asset cannot load.
+const upcomingGraphic=document.getElementById('appUpcomingGraphic');
+if(upcomingGraphic){
+ const markArtworkReady=()=>{upcomingGraphic.classList.add('is-loaded');upcomingGraphic.classList.remove('is-unavailable');};
+ const markArtworkUnavailable=()=>{upcomingGraphic.classList.remove('is-loaded');upcomingGraphic.classList.add('is-unavailable');upcomingGraphic.setAttribute('aria-label','Upcoming episode artwork is temporarily unavailable');};
+ upcomingGraphic.addEventListener('load',markArtworkReady,{once:true});
+ upcomingGraphic.addEventListener('error',markArtworkUnavailable,{once:true});
+ if(upcomingGraphic.complete){
+  if(upcomingGraphic.naturalWidth>0)markArtworkReady();
+  else markArtworkUnavailable();
+ }else if(typeof upcomingGraphic.decode==='function'){
+  upcomingGraphic.decode().then(markArtworkReady).catch(()=>{if(upcomingGraphic.complete&&upcomingGraphic.naturalWidth===0)markArtworkUnavailable();});
+ }
+}
 const showcase=document.getElementById('appShowcase');
 let dwoopTransitionToken=0;
 let lastDwoopTrigger=null;
