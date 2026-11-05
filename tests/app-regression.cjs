@@ -229,8 +229,11 @@ const server = http.createServer((req,res)=>{
     assert.equal(darkHopeScripture.background,'rgba(0, 0, 0, 0)','Gift of Hope scripture must not have a separate card background');
     assert.equal(darkHopeScripture.border,'0px','Gift of Hope scripture must not have a separate card border');
     assert.equal(darkHopeScripture.shadow,'none','Gift of Hope scripture must not have a separate card shadow');
-    const darkEpisodeSurface=await page.locator('.episode').first().evaluate(el=>getComputedStyle(el).backgroundImage);
-    assert.match(darkEpisodeSurface,/linear-gradient/,'episode tiles must use the layered dark card system');
+    const darkEpisodeSurface=await page.locator('.current-season-section .episode-open-card').first().evaluate(el=>({background:getComputedStyle(el).backgroundColor,image:getComputedStyle(el).backgroundImage,border:getComputedStyle(el).borderTopWidth,shadow:getComputedStyle(el).boxShadow}));
+    assert.equal(darkEpisodeSurface.background,'rgba(0, 0, 0, 0)','Home season episodes must sit directly on the black page, like the Archive');
+    assert.equal(darkEpisodeSurface.image,'none','Home season episodes must not render grey card gradients');
+    assert.equal(darkEpisodeSurface.border,'0px','Home season episodes must not have enclosing card borders');
+    assert.equal(darkEpisodeSurface.shadow,'none','Home season episodes must not have enclosing card shadows');
     await page.locator('button[data-app-theme="system"]').click();
     await page.emulateMedia({colorScheme:'light'});
     await page.waitForFunction(()=>document.body.classList.contains('app-light'),null,{timeout:2000});
