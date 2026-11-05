@@ -344,9 +344,10 @@ function renderArchive(){
 }
 function renderSavedEpisodes(){
  const root=document.getElementById('savedEpisodeGroups');if(!root)return;
+ root.onclick=event=>{if(event.target.closest('[data-saved-explore]'))showView('episodes');};
  let keys=[];try{keys=JSON.parse(localStorage.getItem('pedtalk-saved-episodes-v1')||'[]')}catch(error){}
  const saved=allEpisodes.filter(ep=>keys.includes(ep.title));
- if(!saved.length){root.innerHTML='<div class="saved-empty-state"><span class="saved-empty-mark" aria-hidden="true">♡</span><h3>Your listening library starts here.</h3><p>Save an episode from its player and it will be kept here for your next quiet moment.</p><button type="button" class="saved-empty-action" data-view="episodes">Explore episodes <span aria-hidden="true">→</span></button></div>';return;}
+ if(!saved.length){root.innerHTML='<div class="saved-empty-state"><span class="saved-empty-mark" aria-hidden="true">♡</span><h3>Your listening library starts here.</h3><p>Save an episode from its player and it will be kept here for your next quiet moment.</p><button type="button" class="saved-empty-action" data-saved-explore>Explore episodes <span aria-hidden="true">→</span></button></div>';return;}
  renderEpisodeGroups(root,saved,'');
 }
 function renderTheShowOverview(){
