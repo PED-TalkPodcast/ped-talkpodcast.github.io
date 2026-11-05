@@ -47,6 +47,20 @@ const server = http.createServer((req,res)=>{
     await visible('#homeView');
     await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
     assert.equal(await page.evaluate(()=>history.state?.view),'home');
+    assert.equal(await page.locator('main#homeView > .hope-card').count(),1,'Gift of Hope must be the primary Home feature');
+    const routePage=await context.newPage();
+    await routePage.goto('http://127.0.0.1:4173/app/?view=saved',{waitUntil:'domcontentloaded'});
+    await routePage.waitForFunction(()=>!document.querySelector('#savedEpisodesView')?.hidden,null,{timeout:10000});
+    assert.equal(new URL(routePage.url()).searchParams.get('view'),'saved','Saved direct link must encode the view');
+    await routePage.reload({waitUntil:'domcontentloaded'});
+    await routePage.waitForFunction(()=>!document.querySelector('#savedEpisodesView')?.hidden,null,{timeout:10000});
+    await routePage.goto('http://127.0.0.1:4173/app/?view=the-show',{waitUntil:'domcontentloaded'});
+    await routePage.waitForFunction(()=>!document.querySelector('#theShowView')?.hidden,null,{timeout:10000});
+    await routePage.waitForFunction(()=>document.querySelector('#showMessageCount')?.textContent!=='—',null,{timeout:10000});
+    assert.ok(Number(await routePage.locator('#showMessageCount').textContent())>0,'The Show must display the synced published-message count');
+    assert.ok(await routePage.locator('#showWeeklyRhythm').textContent(),'The Show must display its publishing rhythm');
+    assert.ok(await routePage.locator('#showStartYear').textContent(),'The Show must display its data-derived start year');
+    await routePage.close();
     assert.equal(await page.locator('.bottom-nav [data-view]').count(),4,'bottom navigation must follow Home, Archive, Saved and The Show');
     assert.deepEqual(await page.locator('.bottom-nav [data-view] span').allTextContents(),['Home','Archive','Saved','The Show']);
     await page.locator('.bottom-nav [data-view="the-show"]').click();
@@ -257,7 +271,9 @@ const server = http.createServer((req,res)=>{
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
     await page.waitForSelector('.episode-open-card',{timeout:10000});
-    await page.waitForFunction(()=>document.querySelector('#latestEpisodeHero')?.hidden===false,null,{timeout:10000});
+    await visible('#giftDevotional');
+    assert.equal(await page.locator('#latestEpisodeHero').count(),0,'Gift of Hope must remain the first Home feature; no latest-episode hero may displace it');
+    assert.ok(await page.locator('#homeView > .hope-card').count()===1,'Gift of Hope must lead the Home page');
     assert.equal(await page.locator('.episode-open-card .episode-open-mark').count(),0,'small episode rows must use the row tap target, not a nested play button');
     assert.equal(await page.locator('.episode-card-prompt').count(),0,'episode rows must not contain descriptive prompt copy');
     await page.locator('.episode-open-card').first().click();
@@ -279,6 +295,7 @@ const server = http.createServer((req,res)=>{
     assert.ok(episodeHeader.title.right<=episodeHeader.card.right,'episode title must remain inside the window');
 
     const expandedPlay=await page.locator('[data-play-main]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
+    assert.notEqual(await page.locator('[data-play-main]').evaluate(el=>getComputedStyle(el,'::before').animationName),'none','expanded play button must have a subtle radar glow');
     assert.ok(expandedPlay.width>=68&&expandedPlay.width<=76&&expandedPlay.height>=68&&expandedPlay.height<=76,'expanded player must use the 68–76px primary play control from the brief');
     assert.equal(expandedPlay.radius,'50%','expanded player primary play control must be circular');
     assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
@@ -322,11 +339,11 @@ const server = http.createServer((req,res)=>{
     await widePage.setViewportSize({width:430,height:932});
     widePage.on('pageerror',error=>errors.push('430px viewport: '+error.message));
     await widePage.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
-    await widePage.waitForFunction(()=>!!window.PEDShowcase&&document.querySelector('#latestEpisodeHero')?.hidden===false,null,{timeout:15000});
-    const wideLayout=await widePage.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,hero:document.querySelector('#latestEpisodeHero')?.getBoundingClientRect().width,navCount:document.querySelectorAll('.bottom-nav [data-view]').length}));
+    await widePage.waitForFunction(()=>!!window.PEDShowcase&&!!document.querySelector('.hope-card'),null,{timeout:15000});
+    const wideLayout=await widePage.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,hero:document.querySelector('.hope-card')?.getBoundingClientRect().width,navCount:document.querySelectorAll('.bottom-nav [data-view]').length}));
     assert.equal(wideLayout.width,430,'second target viewport must be 430px wide');
     assert.ok(wideLayout.documentWidth<=430,'430px layout must not overflow horizontally');
-    assert.ok(wideLayout.hero<=430,'latest episode hero must fit the 430px viewport');
+    assert.ok(wideLayout.hero<=430,'Gift of Hope must fit the 430px viewport');
     assert.equal(wideLayout.navCount,4,'four-tab navigation must remain intact at 430px');
     await widePage.locator('.episode-open-card').first().click();
     await visibleOnWide(widePage,'#dwoopOverlay');
