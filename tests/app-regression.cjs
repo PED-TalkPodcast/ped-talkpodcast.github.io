@@ -53,12 +53,38 @@ const server = http.createServer((req,res)=>{
           return innerHTML.set.call(this,value);
         }});
       }
+      const inspectMarkup=(kind,markup,stack)=>{
+        const html=String(markup??'');
+        const match=html.match(/<img\\b[^>]*\\bsrc\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s>]+))[^>]*>/i);
+        const candidate=match&&(match[1]??match[2]??match[3]);
+        if(candidate!==undefined)report(kind,candidate,stack||new Error(kind).stack);
+      };
+      const adjacentHTML=Element.prototype.insertAdjacentHTML;
+      Element.prototype.insertAdjacentHTML=function(position,text){
+        inspectMarkup('insertAdjacentHTML',text,new Error('insertAdjacentHTML').stack);
+        return adjacentHTML.call(this,position,text);
+      };
+      const outerHTML=Object.getOwnPropertyDescriptor(Element.prototype,'outerHTML');
+      if(outerHTML?.set&&outerHTML?.get){
+        Object.defineProperty(Element.prototype,'outerHTML',{configurable:outerHTML.configurable,enumerable:outerHTML.enumerable,get:outerHTML.get,set(value){
+          inspectMarkup('outerHTML',value,new Error('outerHTML assignment').stack);
+          return outerHTML.set.call(this,value);
+        }});
+      }
+      for(const method of ['write','writeln']){
+        const original=document[method].bind(document);
+        document[method]=(...parts)=>{
+          inspectMarkup('document.'+method,parts.join(''),new Error('document.'+method).stack);
+          return original(...parts);
+        };
+      }
       const observer=new MutationObserver(records=>{
         for(const record of records){
           if(record.type==='attributes'&&record.target instanceof HTMLImageElement)report('mutated img src',record.target.getAttribute('src'),new Error('image src mutation').stack);
           for(const node of record.addedNodes||[]){
             if(node instanceof HTMLImageElement)report('inserted img',node.getAttribute('src'),new Error('image insertion').stack);
             if(node.querySelectorAll)for(const img of node.querySelectorAll('img'))report('inserted descendant img',img.getAttribute('src'),new Error('image insertion').stack);
+            if(node instanceof HTMLStyleElement)inspectMarkup('style element',node.textContent,new Error('style insertion').stack);
           }
         }
       });
@@ -69,26 +95,27 @@ const server = http.createServer((req,res)=>{
       diagnosticPage.on('console',message=>{if(message.type()==='error'&&message.text().startsWith('INVALID_IMAGE_TRACE '))errors.push(message.text());});
       diagnosticPage.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
       diagnosticPage.on('pageerror',error=>errors.push(error.message));
+      diagnosticPage.on('request',async request=>{
+        if(request.url().endsWith('/app/undefined')){
+          let snapshot={url:request.url(),pageUrl:diagnosticPage.url(),images:[],elements:[]};
+          try{snapshot=await diagnosticPage.evaluate(url=>{
+            const describe=el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',outerHTML:el.outerHTML.slice(0,700),src:el.getAttribute('src'),currentSrc:el.currentSrc||'',style:el.getAttribute('style')});
+            return{url,pageUrl:location.href,trace:window.__invalidImageTrace||[],images:[...document.images].map(describe),elements:[...document.querySelectorAll('[src],[style],link[rel*=preload]')].filter(el=>/undefined|null/.test((el.getAttribute('src')||'')+' '+(el.getAttribute('style')||''))).map(describe),bodyExcerpt:document.body?.innerHTML.match(/.{0,180}undefined.{0,180}/is)?.[0]||''};
+          },request.url());}catch(error){snapshot.captureError=error.message;}
+          errors.push('UNDEFINED_IMAGE_DOM_AT_REQUEST '+JSON.stringify(snapshot));
+        }
+      });
+      diagnosticPage.context().newCDPSession(diagnosticPage).then(async session=>{
+        await session.send('Network.enable');
+        session.on('Network.requestWillBeSent',event=>{
+          if(event.request.url.endsWith('/app/undefined')){
+            const frames=event.initiator?.stack?.callFrames||[];
+            errors.push('UNDEFINED_RESOURCE_INITIATOR '+JSON.stringify({pageUrl:diagnosticPage.url(),type:event.type,initiator:event.initiator?.type,frames:frames.map(frame=>({url:frame.url,lineNumber:frame.lineNumber,functionName:frame.functionName}))}));
+          }
+        });
+      }).catch(error=>errors.push('CDP_DIAGNOSTIC_SETUP '+error.message));
     });
     const page=await context.newPage();
-    const cdp=await context.newCDPSession(page);
-    await cdp.send('Network.enable');
-    cdp.on('Network.requestWillBeSent',event=>{
-      if(event.request.url.endsWith('/app/undefined')){
-        const frames=event.initiator?.stack?.callFrames||[];
-        errors.push('UNDEFINED_RESOURCE_INITIATOR '+JSON.stringify({type:event.type,initiator:event.initiator?.type,frames:frames.map(frame=>({url:frame.url,lineNumber:frame.lineNumber,functionName:frame.functionName}))}));
-      }
-    });
-    page.on('request',async request=>{
-      if(request.url().endsWith('/app/undefined')){
-        let snapshot={url:request.url(),pageUrl:page.url(),images:[],elements:[]};
-        try{snapshot=await page.evaluate(url=>{
-          const describe=el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',outerHTML:el.outerHTML.slice(0,700),src:el.getAttribute('src'),currentSrc:el.currentSrc||'',style:el.getAttribute('style')});
-          return{url,pageUrl:location.href,images:[...document.images].map(describe),elements:[...document.querySelectorAll('[src],[style],link[rel*=preload]')].filter(el=>/undefined|null/.test((el.getAttribute('src')||'')+' '+(el.getAttribute('style')||''))).map(describe),bodyExcerpt:document.body?.innerHTML.match(/.{0,180}undefined.{0,180}/is)?.[0]||''};
-        },request.url());}catch(error){snapshot.captureError=error.message;}
-        errors.push('UNDEFINED_IMAGE_DOM_AT_REQUEST '+JSON.stringify(snapshot));
-      }
-    });
     page.on('pageerror',error=>errors.push(error.message));
     page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
     page.on('console',message=>{if(message.type()==='error'&&!/Failed to load resource/.test(message.text()))errors.push('console: '+message.text());});
