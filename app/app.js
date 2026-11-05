@@ -1009,10 +1009,7 @@ window.addEventListener('popstate',event=>{
 });
 
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('../service-worker.js').catch(()=>{}));}
-const initialRouteView=new URLSearchParams(window.location.search).get('view');
-if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible'].includes(initialRouteView)){
- showView(initialRouteView,null,false,{history:'replace'});
-}
+
 
 
 /* Universal Library Progress & Reading Stats */
@@ -1211,3 +1208,9 @@ window.PEDReadingProgress={
 window.addEventListener('pagehide',finishReadingSession);
 document.addEventListener('visibilitychange',()=>{if(document.hidden)finishReadingSession();});
 window.setInterval(universalFlushTick,15000);
+
+// Apply direct-link routes only after all reading and navigation state is initialized.
+const initialRouteView=new URLSearchParams(window.location.search).get('view');
+if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible'].includes(initialRouteView)){
+ showView(initialRouteView,null,false,{history:'replace'});
+}
