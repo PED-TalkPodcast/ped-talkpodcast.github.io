@@ -31,6 +31,26 @@ const server = http.createServer((req,res)=>{
     page.on('console',message=>{if(message.type()==='error')errors.push('console: '+message.text());});
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
+    await page.waitForFunction(()=>!!window.PEDExploreBible,null,{timeout:5000});
+    await page.waitForFunction(()=>document.querySelector('#exploreDailyVisual')?.dataset.themeId||document.querySelector('#exploreDailyVisual')?.dataset.imageState==='fallback',null,{timeout:5000});
+    const exploreVisual=await page.evaluate(()=>({state:document.querySelector('#exploreDailyVisual')?.dataset.imageState,title:document.querySelector('#exploreDailyTitle')?.textContent,reference:document.querySelector('#exploreDailyReference')?.textContent,theme:document.querySelector('#exploreDailyVisual')?.dataset.themeId,opacity:getComputedStyle(document.querySelector('#exploreDailyVisual')).getPropertyValue('--explore-overlay-opacity'),width:document.querySelector('#exploreDailyVisual')?.getBoundingClientRect().width}));
+    assert.ok(exploreVisual.title&&exploreVisual.reference,'Explore daily visual must expose theme title and Scripture reference');
+    assert.ok(exploreVisual.width>0&&exploreVisual.width<=390,'Explore daily visual must fit a narrow mobile viewport');
+    assert.ok(Number(exploreVisual.opacity)>=0&&Number(exploreVisual.opacity)<=1,'Explore overlay opacity must remain within 0–1');
+    const exploreEaster=await page.evaluate(()=>window.PEDExploreBible.easterDate(2026));
+    assert.equal(exploreEaster,'2026-04-05','Easter override calculation must use the Gregorian computus');
+    await page.locator('.bottom-nav [data-view="the-show"]').click();
+    await visible('#theShowView');
+    await page.locator('#theShowView [data-show-view="explore"]').click();
+    await visible('#exploreBibleView');
+    await page.waitForFunction(()=>!!document.querySelector('#exploreDailyTitle')?.textContent);
+    assert.ok(await page.locator('#exploreStoryGrid .explore-story-card').count()>0,'Explore story library must remain available below the daily visual');
+    await page.locator('.explore-story-card').first().click();
+    await visible('#exploreStoryDetail');
+    await page.locator('#exploreDetailBack').click();
+    await visible('#exploreStoryGrid');
+    await page.locator('.bottom-nav [data-view="home"]').click();
+
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
     const visibleOnWide=async(widePage,selector)=>assert.equal(await widePage.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible at 430px');
