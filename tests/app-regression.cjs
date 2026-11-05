@@ -295,6 +295,7 @@ const server = http.createServer((req,res)=>{
     assert.ok(episodeHeader.title.right<=episodeHeader.card.right,'episode title must remain inside the window');
 
     const expandedPlay=await page.locator('[data-play-main]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
+    assert.notEqual(await page.locator('[data-play-main]').evaluate(el=>getComputedStyle(el,'::before').animationName),'none','expanded play button must have a subtle radar glow');
     assert.ok(expandedPlay.width>=68&&expandedPlay.width<=76&&expandedPlay.height>=68&&expandedPlay.height<=76,'expanded player must use the 68–76px primary play control from the brief');
     assert.equal(expandedPlay.radius,'50%','expanded player primary play control must be circular');
     assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
@@ -352,8 +353,6 @@ const server = http.createServer((req,res)=>{
     await widePage.locator('#dwoopClose').click();
     await widePage.close();
 
-    const themeSurfaces=await page.evaluate(()=>({mini:getComputedStyle(document.querySelector('.mini-player')).backgroundColor,nav:getComputedStyle(document.querySelector('.bottom-nav')).backgroundColor,radar:getComputedStyle(document.querySelector('[data-play-main]'),'::before').animationName}));
-    assert.notEqual(themeSurfaces.radar,'none','expanded play button must have a subtle radar glow');
     assert.deepEqual(errors,[],'browser JavaScript errors');
     process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, dedicated episode window, refined circular glass play control, seek bar and swipe navigation.\n');
     await context.close();
