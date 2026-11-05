@@ -24,7 +24,7 @@ concurrency:
 jobs:
   browser-regression:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 10
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -35,6 +35,8 @@ jobs:
       - name: Install browser test runtime
         run: npm install --no-save playwright
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        # The Ubuntu runner already supplies Chromium's common system libraries.
+        # Avoid apt-based --with-deps here; it can stall while installing man-db triggers.
+        run: npx playwright install chromium
       - name: Run PED-Talk browser flows
         run: node tests/app-regression.cjs
