@@ -126,6 +126,7 @@ const server = http.createServer((req,res)=>{
     const exploreVisual=await page.evaluate(()=>({state:document.querySelector('#exploreDailyVisual')?.dataset.imageState,title:document.querySelector('#exploreDailyTitle')?.textContent,reference:document.querySelector('#exploreDailyReference')?.textContent,theme:document.querySelector('#exploreDailyVisual')?.dataset.themeId,opacity:getComputedStyle(document.querySelector('#exploreDailyVisual')).getPropertyValue('--explore-overlay-opacity'),width:document.querySelector('#exploreDailyVisual')?.getBoundingClientRect().width}));
     assert.ok(exploreVisual.title&&exploreVisual.reference,'Explore daily visual must expose theme title and Scripture reference');
     assert.ok(Number(exploreVisual.opacity)>=0&&Number(exploreVisual.opacity)<=1,'Explore overlay opacity must remain within 0–1');
+    assert.equal(await page.evaluate(()=>window.__invalidImageTrace?.length||0),0,'missing Explore artwork URLs must not be assigned to image elements');
     const exploreCalendar=await page.evaluate(()=>{
       const manifest=window.__PEDExploreManifest;
       return {
