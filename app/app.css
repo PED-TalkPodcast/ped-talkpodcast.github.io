@@ -420,7 +420,7 @@ body.bible-dark #bibleReader .bible-pager button:active{background:#262f3a}
 .bible-highlight-palette button{display:grid;place-items:center;width:28px;height:28px;padding:0;border:1px solid #dce1e5;border-radius:50%;background:#fff;cursor:pointer;transition:transform .15s,border-color .15s}
 .bible-highlight-palette button i{display:block;width:14px;height:14px;border-radius:50%}
 .bible-highlight-palette button[data-highlight-color="pink"] i{background:#ef9dbd}
-.bible-highlight-palette button[data-highlight-color="green"] i{background:#8ca9cf}
+.bible-highlight-palette button[data-highlight-color="cyan"] i{background:#1E88E5}
 .bible-highlight-palette button[data-highlight-color="blue"] i{background:#91c5ed}
 .bible-highlight-palette button[data-highlight-color="purple"] i{background:#b9a4e8}
 .bible-highlight-palette button.active{border:2px solid #344451;transform:scale(1.08)}
@@ -1113,7 +1113,7 @@ body.app-dark .reading-drill-back,body.app-dark .dwoop-close{background:#17273d!
 .explore-art-exodus .explore-artwork,.explore-art-exodus{background:linear-gradient(135deg,#b17a4e,#49352f)}
 .explore-art-kingdom .explore-artwork,.explore-art-kingdom{background:linear-gradient(135deg,#a28b4f,#3b4b3b)}
 .explore-art-return .explore-artwork,.explore-art-return{background:linear-gradient(135deg,#9a7861,#3e5260)}
-.explore-art-church .explore-artwork,.explore-art-church{background:linear-gradient(135deg,#6d8a73,#283e43)}
+.explore-art-church .explore-artwork,.explore-art-church{background:linear-gradient(135deg,#39567b,#17283b)}
 .explore-card-copy{display:grid;gap:6px;padding:13px 13px 15px}
 .explore-card-tag{color:#8aabd5;font:800 8px 'DM Sans',sans-serif;letter-spacing:.11em}
 .explore-card-copy strong{font:600 20px/1.1 Georgia,serif;letter-spacing:-.03em}
@@ -3098,7 +3098,7 @@ main,.bible-view,.bible-library-view,.reading-stats-view,.books-view,.episodes-v
 .mini-player-state,.mini-player-copy small{color:#A7A7A7!important}
 .mini-player-toggle{background:var(--episode-accent,#1E88E5)!important;color:#fff!important}
 .app-showcase-anagkazo{background:radial-gradient(ellipse at 72% 25%,rgba(30,136,229,.22),transparent 38%),linear-gradient(145deg,#102A48,#101820 70%,#0A0A0A)!important}
-.app-showcase-anagkazo svg [stroke="#b7d58a"],.app-showcase-anagkazo svg [fill="#b7d58a"]{stroke:#70B7FF!important;fill:#70B7FF!important}
+.app-showcase-anagkazo svg [stroke="#8aabd5"],.app-showcase-anagkazo svg [fill="#8aabd5"]{stroke:#70B7FF!important;fill:#70B7FF!important}
 .anagkazo-copy .eyebrow,.voice-copy .eyebrow{color:#70B7FF!important}
 .anagkazo-copy h2 span{color:#1E88E5!important}
 .anagkazo-rule{background:linear-gradient(90deg,#0066FF,#70B7FF)!important}
