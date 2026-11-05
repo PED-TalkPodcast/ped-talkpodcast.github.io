@@ -3400,6 +3400,12 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
 }
 
 
+
+/* Narrow-screen containment: keep the Explore hero inside the visible phone canvas. */
+@media(max-width:600px){
+ #exploreBibleView{width:100%;max-width:100%;min-width:0;overflow-x:clip;box-sizing:border-box;}
+ #exploreDailyVisual{width:100%;max-width:calc(100vw - 32px);min-width:0;flex:0 1 auto;margin-inline:auto;box-sizing:border-box;}
+}
 /* Explore the Bible — daily Scripture visual system. */
 .explore-daily-visual{
  position:relative;isolation:isolate;overflow:hidden;min-height:clamp(280px,66vw,430px);
