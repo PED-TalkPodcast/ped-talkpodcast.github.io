@@ -89,7 +89,7 @@ function openDwoopModal(kind='upcoming'){
  const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
- const activePlayer=overlay.querySelector('.episode-page-audio');if(activePlayer){activePlayer.pause();activePlayer.removeAttribute('src');}
+ const activePlayer=document.getElementById('pedtalkAudioEngine');
  const detailCard=overlay.querySelector('.dwoop-card-expanded');detailCard?.classList.toggle('dwoop-light',document.body.classList.contains('app-light'));
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
@@ -110,7 +110,7 @@ function closeDwoopModal(fromHistory=false){
  const overlay=document.getElementById('dwoopOverlay');if(!overlay||overlay.hidden)return;
  if(!fromHistory&&window.history?.state?.overlay==='dwoop'){window.history.back();return;}
  const transitionToken=++dwoopTransitionToken;
- const player=overlay.querySelector('.episode-page-audio');if(player){player.pause();player.removeAttribute('src');}
+ const player=document.getElementById('pedtalkAudioEngine');
  overlay.querySelector('.dwoop-card-expanded')?.classList.remove('dwoop-light','dwoop-page-card','episode-swipe-next','episode-swipe-prev');
  overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode','dwoop-episode-mode');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
@@ -208,11 +208,29 @@ function renderEpisodeGroups(root,list,emptyMessage){
   return '<section class="season"><div class="season-heading"><div><p class="eyebrow">'+seasonLabel+'</p><h3 class="season-title">Season '+season+'</h3></div><span class="season-count">'+eps.length+' '+(eps.length===1?'episode':'episodes')+'</span></div><div class="episode-grid">'+eps.map(ep=>{
    const index=allEpisodes.indexOf(ep),number=episodeNumber(ep),title=displayEpisodeTitle(ep);
    const meta=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep).toUpperCase();
-   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt=""></span><span class="episode-info"><span class="tag">'+meta+'</span><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="episode-card-prompt">'+(ep.audio?'Tap to listen':'Episode details')+' · Open episode</span></span></button>'
+   const date=ep.published?new Date(ep.published).toLocaleDateString(undefined,{day:'numeric',month:'short',year:'numeric'}):'PED-Talk';
+   const rowMeta='SEASON '+String(episodeSeason(ep)).padStart(2,'0')+' · '+date;
+   return '<button type="button" class="episode episode-open-card" data-episode-index="'+index+'" aria-label="Open '+escapeBibleHTML(title)+' episode details"><span class="episode-art"><img loading="lazy" src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt=""></span><span class="episode-info"><strong class="episode-card-title">'+escapeBibleHTML(title)+'</strong><span class="tag">'+rowMeta+'</span></span><span class="episode-row-chevron" aria-hidden="true">›</span></button>'
   }).join('')+'</div></section>'
  }).join('');
 }
 let activeEpisodeSequence=[],activeEpisodeIndex=0;
+const persistentAudio=document.getElementById('pedtalkAudioEngine'),miniPlayer=document.getElementById('miniPlayer');
+function syncMiniPlayer(){
+ if(!persistentAudio||!miniPlayer||!persistentAudio.src)return;
+ miniPlayer.hidden=false;
+ const ep=window.pedTalkActiveEpisode||{},art=document.getElementById('miniPlayerArtwork'),name=document.getElementById('miniPlayerTitle'),state=document.getElementById('miniPlayerState'),progress=document.getElementById('miniPlayerProgress'),toggle=document.getElementById('miniPlayerToggle'),icon=document.getElementById('miniPlayerToggleIcon');
+ if(art&&art.src!==episodeArtworkUrl(ep.image))art.src=episodeArtworkUrl(ep.image);
+ if(name)name.textContent=displayEpisodeTitle(ep);
+ if(state)state.textContent=persistentAudio.paused?'Ready to listen':'Now playing';
+ if(progress)progress.style.width=(persistentAudio.duration?persistentAudio.currentTime/persistentAudio.duration*100:0)+'%';
+ if(toggle)toggle.setAttribute('aria-label',persistentAudio.paused?'Play episode':'Pause episode');
+ if(icon)icon.textContent=persistentAudio.paused?'▶':'Ⅱ';
+}
+persistentAudio?.addEventListener('play',syncMiniPlayer);persistentAudio?.addEventListener('pause',syncMiniPlayer);persistentAudio?.addEventListener('timeupdate',syncMiniPlayer);persistentAudio?.addEventListener('loadedmetadata',syncMiniPlayer);
+document.getElementById('miniPlayerToggle')?.addEventListener('click',()=>{if(!persistentAudio)return;if(persistentAudio.paused)persistentAudio.play().catch(()=>{});else persistentAudio.pause();});
+document.getElementById('miniPlayerOpen')?.addEventListener('click',()=>{const ep=window.pedTalkActiveEpisode;if(ep)openEpisodeModal(ep,window.pedTalkActiveEpisodeSequence||[ep]);});
+
 function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
@@ -227,7 +245,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const title=displayEpisodeTitle(ep),number=episodeNumber(ep),image=episodeArtworkUrl(ep.image);
  const audio=typeof ep.audio==='string'&&/^https:\/\//i.test(ep.audio)?ep.audio:'';
  const link=typeof ep.link==='string'&&/^https:\/\//i.test(ep.link)?ep.link:'';
- const previousAudio=document.querySelector('.episode-page-audio');if(previousAudio){previousAudio.pause();previousAudio.removeAttribute('src');}
+ const persistentAudio=document.getElementById('pedtalkAudioEngine');if(persistentAudio&&audio){const resolvedAudio=new URL(audio,window.location.href).href;if(persistentAudio.src!==resolvedAudio){persistentAudio.pause();persistentAudio.src=resolvedAudio;persistentAudio.load();}window.pedTalkActiveEpisode=ep;window.pedTalkActiveEpisodeSequence=activeEpisodeSequence;window.pedTalkActiveEpisodeIndex=activeEpisodeIndex;syncMiniPlayer();}
  card.classList.add('dwoop-light');card.classList.remove('dwoop-page-card');overlay.classList.remove('dwoop-page-mode','dwoop-reading-mode');overlay.classList.add('dwoop-episode-mode');
  document.getElementById('dwoopEyebrow').textContent='PED-TALK · SEASON '+episodeSeason(ep);
  document.getElementById('dwoopTitle').textContent=title;
@@ -236,19 +254,23 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  if(artwork)artwork.innerHTML='<img class="episode-feature-art" src="'+escapeBibleHTML(image)+'" alt="'+escapeBibleHTML(title)+' artwork">';
  const description=plainText(ep.description),others=activeEpisodeSequence.filter(item=>item!==ep);
  const content=document.getElementById('dwoopContent');
- const player=audio?'<div class="episode-player-window" data-episode-swipe-area><audio class="episode-page-audio" preload="none" playsinline src="'+escapeBibleHTML(audio)+'"></audio><div class="episode-player-controls"><button type="button" class="episode-play-button" data-episode-play aria-label="Play episode"><span class="episode-play-symbol" aria-hidden="true">▶</span></button><div class="episode-player-meta"><div class="episode-player-track" data-player-seek role="slider" tabindex="0" aria-label="Seek through episode" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><div class="episode-player-times"><span data-player-current>0:00</span><span data-player-duration>--:--</span></div></div></div><p class="episode-player-hint">Swipe left or right to change episodes</p></div>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>';
+ const player=audio?'<div class="episode-player-window" data-episode-swipe-area><div class="episode-player-controls"><button type="button" class="episode-play-button" data-episode-play aria-label="Play episode"><span class="episode-play-symbol" aria-hidden="true">▶</span></button><div class="episode-player-meta"><div class="episode-player-track" data-player-seek role="slider" tabindex="0" aria-label="Seek through episode" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><div class="episode-player-times"><span data-player-current>0:00</span><span data-player-duration>--:--</span></div></div></div><div class="episode-transport-controls"><button type="button" data-skip-back aria-label="Skip back 15 seconds">↶<small>15</small></button><button type="button" data-play-main aria-label="Play episode" class="episode-main-play"><span class="episode-play-symbol" aria-hidden="true">▶</span></button><button type="button" data-skip-forward aria-label="Skip forward 30 seconds">↷<small>30</small></button></div><div class="episode-secondary-controls"><button type="button" data-playback-speed>1×</button><button type="button" data-episode-favorite aria-pressed="false">♡ Save</button><button type="button" data-episode-share>↗ Share</button></div><p class="episode-player-hint">Swipe left or right to change episodes</p></div>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>'
  content.innerHTML='<div class="episode-feature-panel">'+(description?'<p class="episode-feature-description">'+escapeBibleHTML(description)+'</p>':'<p class="episode-feature-description">A PED-Talk conversation. Press play when you are ready to listen.</p>')+player+(link?'<a class="episode-detail-link" href="'+escapeBibleHTML(link)+'" target="_blank" rel="noopener">More episode details ↗</a>':'')+'</div>'+(others.length?'<div class="episode-more-heading"><span>CONTINUE EXPLORING</span><strong>More from Season '+episodeSeason(ep)+'</strong></div><div class="episode-more-tiles">'+others.map(item=>'<button type="button" class="episode-more-tile" data-episode-index="'+allEpisodes.indexOf(item)+'"><img src="'+escapeBibleHTML(episodeArtworkUrl(item.image))+'" alt=""><span><small>EPISODE '+String(episodeNumber(item)||'—').padStart(2,'0')+'</small><strong>'+escapeBibleHTML(displayEpisodeTitle(item))+'</strong></span><b aria-hidden="true">›</b></button>').join('')+'</div>':'');
- const audioEl=content.querySelector('.episode-page-audio'),playButton=content.querySelector('[data-episode-play]');
+ const audioEl=document.getElementById('pedtalkAudioEngine'),playButton=content.querySelector('[data-episode-play]'),mainPlayButton=content.querySelector('[data-play-main]');
  if(audioEl&&playButton){
   const symbol=playButton.querySelector('.episode-play-symbol'),current=content.querySelector('[data-player-current]'),duration=content.querySelector('[data-player-duration]'),track=content.querySelector('.episode-player-track span'),seek=content.querySelector('[data-player-seek]');
   const clock=value=>{if(!Number.isFinite(value))return'--:--';const m=Math.floor(value/60),s=Math.floor(value%60);return m+':'+String(s).padStart(2,'0');};
   const paint=()=>{const ratio=audioEl.duration?audioEl.currentTime/audioEl.duration:0;current.textContent=clock(audioEl.currentTime);track.style.width=(ratio*100)+'%';seek?.setAttribute('aria-valuenow',String(Math.round(ratio*100)));};
-  playButton.addEventListener('click',()=>{if(audioEl.paused){const result=audioEl.play();if(result?.catch)result.catch(()=>{playButton.setAttribute('aria-label','Playback unavailable — try again');});}else audioEl.pause();});
-  audioEl.addEventListener('play',()=>{playButton.setAttribute('aria-label','Pause episode');symbol.textContent='Ⅱ';});
-  audioEl.addEventListener('pause',()=>{playButton.setAttribute('aria-label','Play episode');symbol.textContent='▶';});
-  audioEl.addEventListener('loadedmetadata',()=>{duration.textContent=clock(audioEl.duration);paint();});
-  audioEl.addEventListener('timeupdate',paint);
-  audioEl.addEventListener('ended',()=>{playButton.setAttribute('aria-label','Play episode again');symbol.textContent='↻';});
+  const togglePlayback=()=>{if(audioEl.paused){const result=audioEl.play();if(result?.catch)result.catch(()=>{playButton.setAttribute('aria-label','Playback unavailable — try again');});}else audioEl.pause();};
+  playButton.addEventListener('click',togglePlayback);mainPlayButton?.addEventListener('click',togglePlayback);
+  const back=content.querySelector('[data-skip-back]'),forward=content.querySelector('[data-skip-forward]'),speed=content.querySelector('[data-playback-speed]'),favorite=content.querySelector('[data-episode-favorite]'),share=content.querySelector('[data-episode-share]');
+  back?.addEventListener('click',()=>{audioEl.currentTime=Math.max(0,audioEl.currentTime-15);paint();});forward?.addEventListener('click',()=>{audioEl.currentTime=Math.min(audioEl.duration||Infinity,audioEl.currentTime+30);paint();});
+  const rates=[1,1.25,1.5,2];let rateIndex=Math.max(0,rates.indexOf(audioEl.playbackRate||1));if(speed){speed.textContent=String(rates[rateIndex])+'×';speed.addEventListener('click',()=>{rateIndex=(rateIndex+1)%rates.length;audioEl.playbackRate=rates[rateIndex];speed.textContent=String(rates[rateIndex])+'×';});}
+  const savedKey='pedtalk-saved-episodes-v1';const readSaved=()=>{try{return JSON.parse(localStorage.getItem(savedKey)||'[]')}catch(e){return[]}};const episodeKey=ep.title||link||title;const paintFavorite=()=>{const saved=readSaved().includes(episodeKey);if(favorite){favorite.setAttribute('aria-pressed',String(saved));favorite.textContent=saved?'♥ Saved':'♡ Save';}};paintFavorite();favorite?.addEventListener('click',()=>{const saved=readSaved(),next=saved.includes(episodeKey)?saved.filter(item=>item!==episodeKey):[...saved,episodeKey];try{localStorage.setItem(savedKey,JSON.stringify(next));}catch(e){}paintFavorite();});
+  share?.addEventListener('click',async()=>{const shareData={title, text:'Listen to '+title+' on PED-Talk',url:link||window.location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard)await navigator.clipboard.writeText(shareData.url);share.textContent='✓ Shared';}catch(e){}});
+  const updatePlayState=()=>{const playing=!audioEl.paused;playButton.setAttribute('aria-label',playing?'Pause episode':'Play episode');symbol.textContent=playing?'Ⅱ':'▶';if(mainPlayButton){mainPlayButton.setAttribute('aria-label',playing?'Pause episode':'Play episode');mainPlayButton.querySelector('.episode-play-symbol').textContent=playing?'Ⅱ':'▶';}};
+  audioEl.onplay=updatePlayState;audioEl.onpause=updatePlayState;audioEl.onloadedmetadata=()=>{duration.textContent=clock(audioEl.duration);paint();};audioEl.ontimeupdate=paint;audioEl.onended=()=>{playButton.setAttribute('aria-label','Play episode again');symbol.textContent='↻';};
+  updatePlayState();if(audioEl.readyState>=1){duration.textContent=clock(audioEl.duration);paint();}
   const seekTo=clientX=>{if(!audioEl.duration||!seek)return;const rect=seek.getBoundingClientRect();audioEl.currentTime=Math.max(0,Math.min(1,(clientX-rect.left)/rect.width))*audioEl.duration;paint();};
   seek?.addEventListener('click',event=>seekTo(event.clientX));
   seek?.addEventListener('keydown',event=>{if(!['ArrowLeft','ArrowRight','Home','End'].includes(event.key))return;event.preventDefault();const step=audioEl.duration?audioEl.duration*.02:5;if(event.key==='Home')audioEl.currentTime=0;else if(event.key==='End'&&Number.isFinite(audioEl.duration))audioEl.currentTime=audioEl.duration;else audioEl.currentTime=Math.max(0,Math.min(audioEl.duration||Infinity,audioEl.currentTime+(event.key==='ArrowRight'?step:-step)));paint();});
@@ -306,6 +328,17 @@ function episodeArtworkUrl(source){
  const value=typeof source==='string'&&source?source:'../icons/ped-talk-icon.svg';
  try{const url=new URL(value,window.location.href);if(episodeCatalogueUpdated)url.searchParams.set('pedtalk-art',episodeCatalogueUpdated);return url.href;}catch(error){return value;}
 }
+function renderLatestEpisodeHero(){
+ const hero=document.getElementById('latestEpisodeHero');if(!hero||!allEpisodes.length)return;
+ const ep=sortedEpisodes(allEpisodes)[0],index=allEpisodes.indexOf(ep),title=displayEpisodeTitle(ep);
+ const art=document.getElementById('latestEpisodeArt'),heading=document.getElementById('latestEpisodeTitle'),label=document.getElementById('latestEpisodeLabel'),meta=document.getElementById('latestEpisodeMeta'),button=document.getElementById('latestEpisodeListen');
+ if(art)art.innerHTML='<img src="'+escapeBibleHTML(episodeArtworkUrl(ep.image))+'" alt="" fetchpriority="high">';
+ if(heading)heading.textContent=title;
+ if(label)label.textContent='SEASON '+String(episodeSeason(ep)).padStart(2,'0')+(episodeNumber(ep)?' · EPISODE '+String(episodeNumber(ep)).padStart(2,'0'):'');
+ if(meta)meta.textContent=ep.published?new Date(ep.published).toLocaleDateString(undefined,{day:'numeric',month:'long',year:'numeric'}):'A PED-Talk conversation';
+ if(button){button.dataset.episodeIndex=String(index);button.disabled=!ep.audio;}
+}
+document.getElementById('latestEpisodeListen')?.addEventListener('click',event=>{const ep=allEpisodes[Number(event.currentTarget.dataset.episodeIndex)];if(ep)openEpisodeModal(ep,allEpisodes.filter(item=>episodeSeason(item)===episodeSeason(ep)));});
 async function refreshEpisodeCatalogue(showError=false){
  try{
   const response=await fetch('../episodes.json?refresh='+Date.now(),{cache:'no-store'});
@@ -315,7 +348,7 @@ async function refreshEpisodeCatalogue(showError=false){
   if(updated!==episodeCatalogueUpdated||!allEpisodes.length){
    episodeCatalogueUpdated=updated||String(Date.now());
    allEpisodes=Array.isArray(data.episodes)?data.episodes:[];
-   render();
+   render();renderLatestEpisodeHero();
   }
   return true;
  }catch(error){
