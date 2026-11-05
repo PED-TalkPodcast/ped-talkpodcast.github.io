@@ -240,6 +240,34 @@ persistentAudio?.addEventListener('play',syncMiniPlayer);persistentAudio?.addEve
 document.getElementById('miniPlayerToggle')?.addEventListener('click',()=>{if(!persistentAudio)return;if(persistentAudio.paused)persistentAudio.play().catch(()=>{});else persistentAudio.pause();});
 document.getElementById('miniPlayerOpen')?.addEventListener('click',()=>{const ep=window.pedTalkActiveEpisode;if(ep)openEpisodeModal(ep,window.pedTalkActiveEpisodeSequence||[ep]);});
 
+/* Artwork-led episode palette. Canvas sampling is best-effort; remote images without CORS safely use the neutral studio palette. */
+function applyEpisodeArtworkTheme(imageUrl, token){
+ const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
+ if(!card)return;
+ const fallback={r:28,g:48,b:39};
+ const apply=(rgb)=>{
+  if(!card.isConnected||card.dataset.paletteToken!==token)return;
+  const [r,g,b]=rgb.map(value=>Math.max(0,Math.min(255,Math.round(value))));
+  card.style.setProperty('--episode-rgb',r+','+g+','+b);
+  card.style.setProperty('--episode-color','rgb('+r+' '+g+' '+b+')');
+  card.style.setProperty('--episode-color-soft','rgba('+r+','+g+','+b+',.34)');
+  card.style.setProperty('--episode-color-deep','rgb('+Math.round(r*.24)+' '+Math.round(g*.24)+' '+Math.round(b*.24)+')');
+ };
+ card.dataset.paletteToken=token;apply([fallback.r,fallback.g,fallback.b]);
+ if(!imageUrl)return;
+ const image=new Image();image.crossOrigin='anonymous';image.decoding='async';
+ image.onload=()=>{
+  try{
+   const canvas=document.createElement('canvas'),size=36;canvas.width=size;canvas.height=size;
+   const context=canvas.getContext('2d',{willReadFrequently:true});if(!context)return;
+   context.drawImage(image,0,0,size,size);const pixels=context.getImageData(0,0,size,size).data;
+   let r=0,g=0,b=0,count=0;
+   for(let i=0;i<pixels.length;i+=16){const alpha=pixels[i+3]/255;if(alpha<.6)continue;const brightness=(pixels[i]+pixels[i+1]+pixels[i+2])/3;if(brightness<22||brightness>238)continue;r+=pixels[i];g+=pixels[i+1];b+=pixels[i+2];count++;}
+   if(count){r/=count;g/=count;b/=count;const max=Math.max(r,g,b),min=Math.min(r,g,b);if(max-min<18){r=Math.min(255,r+12);g=Math.min(255,g+18);b=Math.min(255,b+14);}apply([r,g,b]);}
+  }catch(error){/* Cross-origin artwork may disallow canvas sampling. Keep the neutral palette. */}
+ };
+ image.onerror=()=>apply([fallback.r,fallback.g,fallback.b]);image.src=imageUrl;
+}
 function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  const transitionToken=++dwoopTransitionToken;
  const overlay=document.getElementById('dwoopOverlay'),card=overlay?.querySelector('.dwoop-card-expanded');
@@ -273,6 +301,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
  document.getElementById('dwoopIntro').textContent=(number?'EPISODE '+String(number).padStart(2,'0')+' · ':'')+categoryFor(ep);
  const artwork=document.getElementById('dwoopArtwork');
  if(artwork)artwork.innerHTML='<img class="episode-feature-art" src="'+escapeBibleHTML(image)+'" alt="'+escapeBibleHTML(title)+' artwork">';
+ applyEpisodeArtworkTheme(image, String(transitionToken));
  const description=plainText(ep.description),others=activeEpisodeSequence.filter(item=>item!==ep);
  const content=document.getElementById('dwoopContent');
  const player=audio?'<div class="episode-player-window" data-episode-swipe-area><div class="episode-player-controls"><button type="button" class="episode-play-button" data-episode-play aria-label="Play episode"><span class="episode-play-symbol" aria-hidden="true">▶</span></button><div class="episode-player-meta"><div class="episode-player-track" data-player-seek role="slider" tabindex="0" aria-label="Seek through episode" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span></span></div><div class="episode-player-times"><span data-player-current>0:00</span><span data-player-duration>--:--</span></div></div></div><div class="episode-transport-controls"><button type="button" data-skip-back aria-label="Skip back 15 seconds">↶<small>15</small></button><button type="button" data-play-main aria-label="Play episode" class="episode-main-play"><span class="episode-play-symbol" aria-hidden="true">▶</span></button><button type="button" data-skip-forward aria-label="Skip forward 30 seconds">↷<small>30</small></button></div><div class="episode-secondary-controls"><button type="button" data-playback-speed>1×</button><button type="button" data-episode-favorite aria-pressed="false">♡ Save</button><button type="button" data-episode-share>↗ Share</button></div><p class="episode-player-hint">Swipe left or right to change episodes</p></div>':'<p class="episode-audio-unavailable">Audio will be available here when it is published.</p>'
