@@ -28,7 +28,8 @@ const server = http.createServer((req,res)=>{
     const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
     const page=await context.newPage();
     page.on('pageerror',error=>errors.push(error.message));
-    page.on('console',message=>{if(message.type()==='error')errors.push('console: '+message.text());});
+    page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
+    page.on('console',message=>{if(message.type()==='error'&&!/Failed to load resource/.test(message.text()))errors.push('console: '+message.text());});
     await page.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     await page.waitForFunction(()=>!!window.PEDExploreBible,null,{timeout:5000});
