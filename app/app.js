@@ -403,7 +403,8 @@ function showView(view,reference=null,preserveBible=false,options={}){
  document.body.classList.toggle('hope-open',target==='hope');
  document.body.classList.remove('modal-open');
  if(target!=='bible')document.body.classList.remove('scripture-reading');
- document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===(target==='bible-library'?'bible':target)));
+ const navTarget=['bible','bible-library','reading-stats','books','explore-bible'].includes(target)?'the-show':target;
+ document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>button.classList.toggle('selected',button.dataset.view===navTarget));
  const token=++viewTransitionToken;
  if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
  window.scrollTo({top:0,behavior:'smooth'});
