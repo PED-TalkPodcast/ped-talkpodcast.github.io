@@ -266,7 +266,7 @@ function openEpisodeModal(ep,seasonEpisodes,slideDirection=0){
   const back=content.querySelector('[data-skip-back]'),forward=content.querySelector('[data-skip-forward]'),speed=content.querySelector('[data-playback-speed]'),favorite=content.querySelector('[data-episode-favorite]'),share=content.querySelector('[data-episode-share]');
   back?.addEventListener('click',()=>{audioEl.currentTime=Math.max(0,audioEl.currentTime-15);paint();});forward?.addEventListener('click',()=>{audioEl.currentTime=Math.min(audioEl.duration||Infinity,audioEl.currentTime+30);paint();});
   const rates=[1,1.25,1.5,2];let rateIndex=Math.max(0,rates.indexOf(audioEl.playbackRate||1));if(speed){speed.textContent=String(rates[rateIndex])+'×';speed.addEventListener('click',()=>{rateIndex=(rateIndex+1)%rates.length;audioEl.playbackRate=rates[rateIndex];speed.textContent=String(rates[rateIndex])+'×';});}
-  const savedKey='pedtalk-saved-episodes-v1';const readSaved=()=>{try{return JSON.parse(localStorage.getItem(savedKey)||'[]')}catch(e){return[]}};const episodeKey=ep.title||link||title;const paintFavorite=()=>{const saved=readSaved().includes(episodeKey);if(favorite){favorite.setAttribute('aria-pressed',String(saved));favorite.textContent=saved?'♥ Saved':'♡ Save';}};paintFavorite();favorite?.addEventListener('click',()=>{const saved=readSaved(),next=saved.includes(episodeKey)?saved.filter(item=>item!==episodeKey):[...saved,episodeKey];try{localStorage.setItem(savedKey,JSON.stringify(next));}catch(e){}paintFavorite();});
+  const savedKey='pedtalk-saved-episodes-v1';const readSaved=()=>{try{return JSON.parse(localStorage.getItem(savedKey)||'[]')}catch(e){return[]}};const episodeKey=ep.title||link||title;const paintFavorite=()=>{const saved=readSaved().includes(episodeKey);if(favorite){favorite.setAttribute('aria-pressed',String(saved));favorite.textContent=saved?'♥ Saved':'♡ Save';}};paintFavorite();favorite?.addEventListener('click',()=>{const saved=readSaved(),next=saved.includes(episodeKey)?saved.filter(item=>item!==episodeKey):[...saved,episodeKey];try{localStorage.setItem(savedKey,JSON.stringify(next));}catch(e){}paintFavorite();if(currentAppView()==='saved')renderSavedEpisodes();});
   share?.addEventListener('click',async()=>{const shareData={title, text:'Listen to '+title+' on PED-Talk',url:link||window.location.href};try{if(navigator.share)await navigator.share(shareData);else if(navigator.clipboard)await navigator.clipboard.writeText(shareData.url);share.textContent='✓ Shared';}catch(e){}});
   const updatePlayState=()=>{const playing=!audioEl.paused;playButton.setAttribute('aria-label',playing?'Pause episode':'Play episode');symbol.textContent=playing?'Ⅱ':'▶';if(mainPlayButton){mainPlayButton.setAttribute('aria-label',playing?'Pause episode':'Play episode');mainPlayButton.querySelector('.episode-play-symbol').textContent=playing?'Ⅱ':'▶';}};
   audioEl.onplay=updatePlayState;audioEl.onpause=updatePlayState;audioEl.onloadedmetadata=()=>{duration.textContent=clock(audioEl.duration);paint();};audioEl.ontimeupdate=paint;audioEl.onended=()=>{playButton.setAttribute('aria-label','Play episode again');symbol.textContent='↻';};
@@ -321,7 +321,8 @@ function renderArchive(){
  const filtered=allEpisodes.filter(ep=>archiveCategory==='All'||categoryFor(ep)===archiveCategory);
  renderEpisodeGroups(archiveRoot,filtered,'No archived episodes in this category yet.');
 }
-function render(){renderHomeSeason();renderArchive()}
+function renderSavedEpisodes(){const root=document.getElementById('savedEpisodeGroups');if(!root)return;let keys=[];try{keys=JSON.parse(localStorage.getItem('pedtalk-saved-episodes-v1')||'[]')}catch(error){}const saved=allEpisodes.filter(ep=>keys.includes(ep.title));renderEpisodeGroups(root,saved,'You have not saved an episode yet. Open a conversation and tap Save to keep it here.');}
+function render(){renderHomeSeason();renderArchive();renderSavedEpisodes()}
 document.getElementById('archiveFilters').addEventListener('click',event=>{const button=event.target.closest('button[data-category]');if(!button)return;archiveCategory=button.dataset.category;document.querySelectorAll('#archiveFilters .filter').forEach(item=>item.classList.toggle('active',item===button));renderArchive()});
 let episodeCatalogueUpdated='';
 function episodeArtworkUrl(source){
@@ -369,6 +370,8 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshEpi
 
 const homeView=document.getElementById('homeView');
 const episodesView=document.getElementById('episodesView');
+const savedEpisodesView=document.getElementById('savedEpisodesView');
+const theShowView=document.getElementById('theShowView');
 const bibleView=document.getElementById('bibleView');
 const bibleLibraryView=document.getElementById('bibleLibraryView');
 const bibleBooks=[
@@ -383,7 +386,7 @@ const booksView=document.getElementById('booksView');
 const exploreBibleView=document.getElementById('exploreBibleView');
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false,options={}){
- const target=['home','episodes','bible','bible-library','reading-stats','books','explore-bible','hope'].includes(view)?view:'home';
+ const target=['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible','hope'].includes(view)?view:'home';
  activeAppView=target;
  const historyMode=options.history||'push';
  if(historyMode!=='none'){
@@ -393,9 +396,9 @@ function showView(view,reference=null,preserveBible=false,options={}){
   else if((window.history.state?.view||'home')!==target)window.history.pushState({pedTalkApp:true,view:target},'',window.location.href);
  }
  const readingStatsView=document.getElementById('readingStatsView');
- const next=target==='episodes'?episodesView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='explore-bible'?exploreBibleView:target==='hope'?hopeModal:homeView;
+ const next=target==='episodes'?episodesView:target==='saved'?savedEpisodesView:target==='the-show'?theShowView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='explore-bible'?exploreBibleView:target==='hope'?hopeModal:homeView;
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
- [homeView,episodesView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
+ [homeView,episodesView,savedEpisodesView,theShowView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
  hopeModal.hidden=target!=='hope';
  document.body.classList.toggle('hope-open',target==='hope');
  document.body.classList.remove('modal-open');
@@ -405,6 +408,7 @@ function showView(view,reference=null,preserveBible=false,options={}){
  if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
  window.scrollTo({top:0,behavior:'smooth'});
  if(target==='bible'){if(reference)openBibleReference(reference);else if(!preserveBible)resetBibleFlow();}
+ if(target==='saved')renderSavedEpisodes();
  if(target==='reading-stats')renderReadingDashboard();
  if(target==='explore-bible')renderExploreBible('stories');
  if(target==='home')window.PEDShowcase?.resume();else window.PEDShowcase?.pause();
@@ -807,6 +811,7 @@ function setBibleMode(mode){
 setBibleMode('light');
 bibleModeButton?.addEventListener('click',()=>applyAppTheme(document.body.classList.contains('app-dark')?'light':'dark'));
 document.querySelectorAll('.bottom-nav [data-view],.bible-home').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home',null,false,{history:button.closest('.bottom-nav')?'replace':'push'});}));
+document.querySelectorAll('[data-show-view]').forEach(button=>button.addEventListener('click',()=>showView(button.dataset.showView)));
 document.querySelectorAll('[data-view="explore-bible"],[data-view="home"]:not(.bottom-nav button),[data-view="episodes"]:not(.bottom-nav button)').forEach(button=>button.addEventListener('click',event=>{event.preventDefault();showView(button.dataset.view||'home');}));
 const exploreHomeTile=document.querySelector('.explore-promo');
 if(exploreHomeTile){exploreHomeTile.tabIndex=0;exploreHomeTile.setAttribute('role','button');exploreHomeTile.setAttribute('aria-label','Explore Bible stories and history');exploreHomeTile.addEventListener('click',()=>showView('explore-bible'));exploreHomeTile.addEventListener('keydown',event=>{if(event.target===exploreHomeTile&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('explore-bible');}});}
