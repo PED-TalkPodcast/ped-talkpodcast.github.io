@@ -46,6 +46,16 @@ const server = http.createServer((req,res)=>{
     await visible('#homeView');
     await page.waitForFunction(()=>document.querySelector('.bottom-nav [data-view="home"]')?.classList.contains('selected'));
     assert.equal(await page.evaluate(()=>history.state?.view),'home');
+    assert.equal(await page.locator('.bottom-nav [data-view]').count(),4,'bottom navigation must follow Home, Archive, Saved and The Show');
+    assert.deepEqual(await page.locator('.bottom-nav [data-view] span').allTextContents(),['Home','Archive','Saved','The Show']);
+    await page.locator('.bottom-nav [data-view="the-show"]').click();
+    await visible('#theShowView');
+    assert.equal(await page.locator('#theShowView [data-show-view]').count(),4,'The Show must retain access to Bible, reading stats, books and Explore Bible');
+    await page.locator('#theShowView [data-show-view="bible"]').click();
+    await visible('#bibleView');
+    assert.equal(await page.locator('.bottom-nav [data-view="the-show"]').evaluate(el=>el.classList.contains('selected')),true,'The Show tab remains selected for linked resources');
+    await page.locator('.bottom-nav [data-view="home"]').click();
+    await visible('#homeView');
     await page.locator('#appSettingsButton').click();
     await page.evaluate(()=>history.back());
     await hidden('#appSettingsModal');
@@ -288,10 +298,18 @@ const server = http.createServer((req,res)=>{
     assert.ok(Math.abs(playerLayout.current.y-playerLayout.duration.y)<=2,'current and total time must share one line');
     assert.ok(playerLayout.hint.y>=playerLayout.times.bottom-1,'swipe hint must sit below timestamps, not overlap them');
     assert.ok(playerLayout.hint.right<=playerLayout.window.right+1,'swipe hint must remain inside the player surface');
+    await page.locator('[data-episode-favorite]').click();
+    assert.equal(await page.locator('[data-episode-favorite]').getAttribute('aria-pressed'),'true','Save control must mark the episode as saved');
     await page.locator('#dwoopClose').click();
     await hidden('#dwoopOverlay');
     assert.equal(await page.locator('#miniPlayer').evaluate(el=>!el.hidden),true,'mini-player must remain available after closing the expanded player');
     assert.ok(await page.locator('#pedtalkAudioEngine').evaluate(el=>!!el.src),'audio source must persist after closing the expanded player');
+    await page.locator('.bottom-nav [data-view="saved"]').click();
+    await visible('#savedEpisodesView');
+    await page.waitForSelector('#savedEpisodeGroups .episode-open-card',{timeout:5000});
+    assert.equal(await page.locator('#savedEpisodeGroups .episode-open-card').count(),1,'saved episode must appear in the Saved tab');
+    await page.locator('.bottom-nav [data-view="home"]').click();
+    await visible('#homeView');
 
     // One autoplay timeout advances exactly one slide.
     await page.evaluate(()=>window.PEDShowcase.goTo(0));
