@@ -246,7 +246,9 @@ const server = http.createServer((req,res)=>{
     await page.locator('#settingsHome').click();
     await hidden('#appSettingsModal');
     await page.waitForSelector('.episode-open-card',{timeout:10000});
-    assert.equal(await page.locator('.episode-open-card .episode-open-mark').count(),0,'small episode cards must not show a play button; the whole card is the tap target');
+    await page.waitForFunction(()=>document.querySelector('#latestEpisodeHero')?.hidden===false,null,{timeout:10000});
+    assert.equal(await page.locator('.episode-open-card .episode-open-mark').count(),0,'small episode rows must use the row tap target, not a nested play button');
+    assert.equal(await page.locator('.episode-card-prompt').count(),0,'episode rows must not contain descriptive prompt copy');
     await page.locator('.episode-open-card').first().click();
     await visible('#dwoopOverlay');
     const episodeWindow=await page.locator('.dwoop-card-expanded').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,viewportWidth:innerWidth,viewportHeight:innerHeight,classes:el.className,overlayClasses:el.parentElement.className}));
@@ -265,10 +267,16 @@ const server = http.createServer((req,res)=>{
     assert.ok(episodeHeader.title.y>=episodeHeader.close.bottom,'episode title must not collide with the close control');
     assert.ok(episodeHeader.title.right<=episodeHeader.card.right,'episode title must remain inside the window');
 
-    const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,hasTextLabel:!!el.querySelector('.episode-play-label')}));
-    assert.ok(compactPlay.width>=48&&compactPlay.width<=58&&compactPlay.height>=48&&compactPlay.height<=58,'player play control must be a refined circular button');
-    assert.equal(compactPlay.radius,'50%','player play control must be circular');
+    const expandedPlay=await page.locator('[data-play-main]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius}));
+    assert.ok(expandedPlay.width>=68&&expandedPlay.width<=76&&expandedPlay.height>=68&&expandedPlay.height<=76,'expanded player must use the 68–76px primary play control from the brief');
+    assert.equal(expandedPlay.radius,'50%','expanded player primary play control must be circular');
     assert.equal(await page.locator('[data-player-seek]').count(),1,'episode player must include a seek control');
+    assert.equal(await page.locator('[data-skip-back]').count(),1,'expanded player must include 15-second skip back');
+    assert.equal(await page.locator('[data-skip-forward]').count(),1,'expanded player must include 30-second skip forward');
+    assert.equal(await page.locator('[data-playback-speed]').count(),1,'expanded player must include playback speed');
+    assert.equal(await page.locator('[data-episode-favorite]').count(),1,'expanded player must include save/favorite');
+    assert.equal(await page.locator('[data-episode-share]').count(),1,'expanded player must include share');
+    assert.equal(await page.locator('#miniPlayer').evaluate(el=>!el.hidden),true,'persistent mini-player must appear when an episode is selected');
     assert.equal(await page.locator('[data-episode-swipe-area]').count(),1,'episode audio surface must support swipe navigation');
     const playerLayout=await page.evaluate(()=>{
       const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
@@ -282,6 +290,8 @@ const server = http.createServer((req,res)=>{
     assert.ok(playerLayout.hint.right<=playerLayout.window.right+1,'swipe hint must remain inside the player surface');
     await page.locator('#dwoopClose').click();
     await hidden('#dwoopOverlay');
+    assert.equal(await page.locator('#miniPlayer').evaluate(el=>!el.hidden),true,'mini-player must remain available after closing the expanded player');
+    assert.ok(await page.locator('#pedtalkAudioEngine').evaluate(el=>!!el.src),'audio source must persist after closing the expanded player');
 
     // One autoplay timeout advances exactly one slide.
     await page.evaluate(()=>window.PEDShowcase.goTo(0));
