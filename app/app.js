@@ -606,7 +606,7 @@ function applyExploreDailyVisual(theme,date,opacity=0.68){
  document.getElementById('exploreDailyTitle').textContent=theme.name||'A moment in Scripture';
  document.getElementById('exploreDailyReference').textContent=theme.scripture_reference||'Explore the Bible';
  document.getElementById('exploreDailyDate').textContent=new Intl.DateTimeFormat('en',{dateStyle:'long',timeZone:'Africa/Accra'}).format(new Date(date+'T12:00:00Z'));
- panel.style.setProperty('--explore-overlay-opacity',String(Math.max(0,Math.min(1,Number(opacity)||0.68))));
+ const numericOpacity=Number(opacity);panel.style.setProperty('--explore-overlay-opacity',String(Number.isFinite(numericOpacity)?Math.max(0,Math.min(1,numericOpacity)):0.68));
  panel.dataset.testament=theme.testament||'NT';
  panel.dataset.themeId=theme.id||'';
  panel.dataset.imageState='fallback';
@@ -624,6 +624,7 @@ async function loadExploreDailyVisual(){
   if(!response.ok)throw new Error('Explore theme manifest unavailable');
   const manifest=await response.json();
   if(!Array.isArray(manifest.themes)||!manifest.themes.length)throw new Error('Explore theme manifest is empty');
+  window.__PEDExploreManifest=manifest;
   const date=exploreLocalDate(manifest.timezone||'Africa/Accra');
   let payload=null;
   const endpoint=window.PED_EXPLORE_TODAY_ENDPOINT;
@@ -638,6 +639,8 @@ async function loadExploreDailyVisual(){
   try{localStorage.setItem(EXPLORE_CACHE_KEY,JSON.stringify({date,theme,opacity:payload?.ui?.overlay_gradient_opacity??0.68}));}catch{}
   return {date,theme,source:payload?'api':'local',imageState:panel.dataset.imageState};
  }catch(error){
+  let cached=null;try{cached=JSON.parse(localStorage.getItem(EXPLORE_CACHE_KEY)||'null');}catch{}
+  if(cached?.theme&&cached?.date){applyExploreDailyVisual(cached.theme,cached.date,cached.opacity);panel.dataset.cacheState='stale-fallback';return {date:cached.date,theme:cached.theme,source:'cache',imageState:panel.dataset.imageState};}
   console.warn('Explore daily visual could not load; keeping the accessible fallback.',error);
   panel.dataset.imageState='fallback';
   return null;
