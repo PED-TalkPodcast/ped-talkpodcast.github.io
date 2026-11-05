@@ -3290,3 +3290,104 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
  .welcome.hope-card .hope-heading,.welcome.hope-card .hope-devotional{animation:none!important}
  .app-showcase-track{transition:none!important}
 }
+
+
+/* v92 — content-sized upcoming carousel and a stationary, full-screen episode player. */
+/* The carousel must size itself to its artwork and list instead of clipping the lower part of the slide. */
+#appShowcase{
+ display:block!important;width:100%!important;height:auto!important;min-height:0!important;
+ overflow:hidden!important;contain:layout paint;
+}
+#appShowcaseTrack{
+ display:flex!important;align-items:stretch!important;width:100%!important;height:auto!important;
+}
+#appShowcase .app-showcase-slide{
+ display:flex!important;flex:0 0 100%!important;width:100%!important;min-width:100%!important;
+ height:auto!important;min-height:0!important;aspect-ratio:auto!important;overflow:hidden!important;
+}
+#appShowcase .app-showcase-upcoming{
+ min-height:0!important;height:auto!important;align-items:stretch!important;
+ padding:clamp(8px,2.5vw,16px)!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-card{
+ display:flex!important;flex-direction:column!important;gap:0!important;
+ width:100%!important;height:auto!important;max-width:600px!important;margin:auto!important;
+ box-sizing:border-box!important;overflow:visible!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-artwork{
+ display:block!important;visibility:visible!important;position:relative!important;
+ width:100%!important;height:auto!important;min-height:0!important;max-width:none!important;
+ margin:0!important;padding:0!important;overflow:hidden!important;
+}
+#appShowcase #appUpcomingGraphic{
+ display:block!important;visibility:visible!important;position:relative!important;
+ width:100%!important;height:clamp(180px,50vw,310px)!important;min-height:0!important;
+ max-height:none!important;aspect-ratio:auto!important;object-fit:contain!important;
+ object-position:center!important;border:0!important;border-radius:15px!important;
+ opacity:1!important;background:#181818!important;
+}
+#appShowcase #appUpcomingGraphic.is-unavailable{opacity:.0!important}
+#appShowcase .app-showcase-upcoming .upcoming-list{
+ display:grid!important;visibility:visible!important;position:relative!important;
+ width:100%!important;height:auto!important;max-height:none!important;overflow:visible!important;
+}
+#appShowcase .app-showcase-anagkazo,#appShowcase .app-showcase-voice{
+ min-height:clamp(300px,78vw,430px)!important;height:auto!important;
+}
+#appShowcase .app-showcase-voice>img{width:100%!important;height:100%!important;min-height:300px!important;object-fit:cover!important}
+@media(max-width:420px){
+ #appShowcase .app-showcase-upcoming .upcoming-card{padding:9px!important}
+ #appShowcase #appUpcomingGraphic{height:clamp(180px,52vw,235px)!important;border-radius:13px!important}
+}
+
+/* Episode detail is a stable page, not a spring-animated floating card. */
+.dwoop-overlay.dwoop-episode-mode{
+ position:fixed!important;inset:0!important;display:flex!important;
+ align-items:stretch!important;justify-content:stretch!important;
+ width:100%!important;height:100%!important;min-height:100%!important;
+ padding:0!important;overflow:hidden!important;border-radius:0!important;
+ background:#0A0A0A!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+ position:relative!important;display:block!important;flex:1 1 auto!important;
+ width:100%!important;max-width:none!important;height:100%!important;
+ min-height:100%!important;max-height:100%!important;margin:0!important;
+ box-sizing:border-box!important;overflow-x:hidden!important;overflow-y:auto!important;
+ overscroll-behavior:contain!important;border:0!important;border-radius:0!important;
+ padding:calc(25px + env(safe-area-inset-top)) max(18px,calc((100vw - 760px)/2)) calc(30px + env(safe-area-inset-bottom))!important;
+ opacity:1!important;transform:none!important;animation:none!important;
+ transition:none!important;box-shadow:none!important;
+}
+.dwoop-overlay.dwoop-episode-mode.active .dwoop-card-expanded{
+ opacity:1!important;transform:none!important;animation:none!important;transition:none!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+ position:relative!important;
+ padding-top:calc(82px + env(safe-area-inset-top))!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-close{
+ position:absolute!important;top:calc(18px + env(safe-area-inset-top))!important;
+ right:max(18px,calc((100vw - 760px)/2))!important;
+ float:none!important;z-index:12!important;margin:0!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-artwork{
+ max-height:none!important;margin:14px 0 20px!important;background:#101010!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-art{
+ display:block!important;width:100%!important;height:clamp(170px,34vh,300px)!important;
+ max-height:none!important;object-fit:contain!important;background:#101010!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window,
+.dwoop-overlay.dwoop-episode-mode .episode-feature-panel,
+.dwoop-overlay.dwoop-episode-mode .episode-more-tiles{
+ transform:none!important;animation:none!important;transition:none!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window{
+ position:relative!important;display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+ margin:18px 0!important;touch-action:pan-y!important;
+}
+@media(prefers-reduced-motion:reduce){
+ #appShowcaseTrack{transition:none!important}
+ .dwoop-overlay.dwoop-episode-mode,.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{transition:none!important;animation:none!important}
+}
