@@ -603,7 +603,7 @@ function validExploreAssetUrl(value){
  try{
   const url=new URL(candidate,window.location.href);
   if(!['http:','https:'].includes(url.protocol))return null;
-  if(/(?:^|\\/)(?:undefined|null)(?:$|[?#])/i.test(url.pathname))return null;
+  if(/(?:^|\/)(?:undefined|null)(?:$|[?#])/i.test(url.pathname))return null;
   return url.href;
  }catch{return null;}
 }
