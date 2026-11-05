@@ -3577,3 +3577,127 @@ button:focus-visible,a:focus-visible,[role="button"]:focus-visible{
 @media(prefers-reduced-motion:reduce){
  .app-install-button,.app-settings-header-button,.hope-scripture .scripture-open,.upcoming-row{transition:none!important}
 }
+
+/* v130 — restore the compact upcoming carousel wedge and archive-style home episode rows. */
+/* Keep the showcase at its original compact proportion; slide content must never set its height. */
+#appShowcase .app-showcase-slide{
+  aspect-ratio:1.5/1!important;
+  height:auto!important;
+  min-height:0!important;
+}
+#appShowcase .app-showcase-upcoming{
+  display:flex!important;
+  align-items:stretch!important;
+  justify-content:stretch!important;
+  padding:10px!important;
+  overflow:hidden!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-card{
+  display:grid!important;
+  grid-template-columns:minmax(88px,.38fr) minmax(0,.62fr)!important;
+  grid-template-rows:auto minmax(0,1fr)!important;
+  align-items:stretch!important;
+  gap:8px 11px!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:10px!important;
+  overflow:hidden!important;
+  border:0!important;
+  border-radius:14px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-card-head{
+  grid-column:1/-1!important;
+  width:100%!important;
+  margin:0!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-card-head h2{
+  font-size:clamp(14px,3vw,19px)!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-artwork{
+  grid-column:1!important;
+  grid-row:2!important;
+  display:block!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border-radius:10px!important;
+}
+#appShowcase #appUpcomingGraphic{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  aspect-ratio:1/1!important;
+  object-fit:cover!important;
+  border-radius:10px!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-list{
+  grid-column:2!important;
+  grid-row:2!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-width:0!important;
+  min-height:0!important;
+  overflow:hidden!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-row{
+  min-width:0!important;
+  padding:5px 0!important;
+  gap:6px!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-episode{
+  flex-basis:38px!important;
+  font-size:7px!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-title{
+  font-size:clamp(9px,1.7vw,11px)!important;
+  line-height:1.25!important;
+}
+#appShowcase .app-showcase-upcoming .upcoming-subtitle{font-size:8px!important}
+@media(max-width:520px){
+  #appShowcase .app-showcase-slide{aspect-ratio:1.38/1!important}
+  #appShowcase .app-showcase-upcoming{padding:7px!important}
+  #appShowcase .app-showcase-upcoming .upcoming-card{
+    grid-template-columns:minmax(76px,.34fr) minmax(0,.66fr)!important;
+    gap:7px 9px!important;
+    padding:8px!important;
+  }
+  #appShowcase .app-showcase-upcoming .upcoming-card-head{margin:0!important}
+  #appShowcase .app-showcase-upcoming .upcoming-artwork,
+  #appShowcase #appUpcomingGraphic{border-radius:8px!important}
+  #appShowcase .app-showcase-upcoming .upcoming-row{padding:4px 0!important}
+}
+
+/* Home's swipeable season rail uses the same plain, unboxed rows as the Archive. */
+body.app-dark .current-season-section .episode-open-card,
+body:not(.app-light) .current-season-section .episode-open-card,
+body.app-light .current-season-section .episode-open-card{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-bottom:1px solid var(--app-border)!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+body.app-dark .current-season-section .episode-open-card:active,
+body:not(.app-light) .current-season-section .episode-open-card:active,
+body.app-light .current-season-section .episode-open-card:active{
+  background:transparent!important;
+  transform:none!important;
+}
+body.app-dark .current-season-section .episode-open-card .episode-art,
+body:not(.app-light) .current-season-section .episode-open-card .episode-art,
+body.app-light .current-season-section .episode-open-card .episode-art{
+  background:transparent!important;
+  box-shadow:none!important;
+}
