@@ -33,6 +33,7 @@ const server = http.createServer((req,res)=>{
     await page.waitForFunction(()=>!!window.PEDShowcase&&!!window.PEDDevotional,null,{timeout:15000});
     const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
     const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
+    const visibleOnWide=async(widePage,selector)=>assert.equal(await widePage.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible at 430px');
     const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('button[data-app-theme="'+theme+'"]').click();};
     const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
 
@@ -315,6 +316,25 @@ const server = http.createServer((req,res)=>{
     await page.evaluate(()=>window.PEDShowcase.goTo(0));
     await page.waitForTimeout(8300);
     assert.equal(await page.evaluate(()=>window.PEDShowcase.activeIndex),1,'autoplay should advance one slide');
+
+    // Validate the second target phone viewport from the implementation brief.
+    const widePage=await context.newPage();
+    await widePage.setViewportSize({width:430,height:932});
+    widePage.on('pageerror',error=>errors.push('430px viewport: '+error.message));
+    await widePage.goto('http://127.0.0.1:4173/app/',{waitUntil:'domcontentloaded'});
+    await widePage.waitForFunction(()=>!!window.PEDShowcase&&document.querySelector('#latestEpisodeHero')?.hidden===false,null,{timeout:15000});
+    const wideLayout=await widePage.evaluate(()=>({width:innerWidth,documentWidth:document.documentElement.scrollWidth,hero:document.querySelector('#latestEpisodeHero')?.getBoundingClientRect().width,navCount:document.querySelectorAll('.bottom-nav [data-view]').length}));
+    assert.equal(wideLayout.width,430,'second target viewport must be 430px wide');
+    assert.ok(wideLayout.documentWidth<=430,'430px layout must not overflow horizontally');
+    assert.ok(wideLayout.hero<=430,'latest episode hero must fit the 430px viewport');
+    assert.equal(wideLayout.navCount,4,'four-tab navigation must remain intact at 430px');
+    await widePage.locator('.episode-open-card').first().click();
+    await visibleOnWide(widePage,'#dwoopOverlay');
+    const widePlayer=await widePage.locator('.dwoop-card-expanded').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth,play:document.querySelector('[data-play-main]').getBoundingClientRect().width}));
+    assert.ok(widePlayer.width<=widePlayer.viewport,'expanded player must fit the 430px viewport');
+    assert.ok(widePlayer.play>=68&&widePlayer.play<=76,'expanded player control must retain the specified size at 430px');
+    await widePage.locator('#dwoopClose').click();
+    await widePage.close();
 
     assert.deepEqual(errors,[],'browser JavaScript errors');
     process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, dedicated episode window, refined circular glass play control, seek bar and swipe navigation.\n');
