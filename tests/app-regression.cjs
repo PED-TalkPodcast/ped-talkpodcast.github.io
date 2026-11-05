@@ -51,6 +51,12 @@ const server = http.createServer((req,res)=>{
     assert.match(exploreCalendar.goodFridayTheme,/^CAL-CHRISTMAS-/,'Good Friday must select the crown-of-thorns override');
     assert.match(exploreCalendar.christmasTheme,/^CAL-NATIVITY-/,'Christmas Day must select a Nativity theme');
     assert.match(exploreCalendar.nativityEveTheme,/^CAL-NATIVITY-/,'Christmas Eve must select a Nativity theme');
+    const hidden=async selector=>{await page.waitForFunction(sel=>document.querySelector(sel)?.hidden===true,selector,{timeout:5000});assert.equal(await page.locator(selector).evaluate(el=>el.hidden),true,selector+' should be hidden');}
+    const visible=async selector=>assert.equal(await page.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible');
+    const visibleOnWide=async(widePage,selector)=>assert.equal(await widePage.locator(selector).evaluate(el=>!el.hidden),true,selector+' should be visible at 430px');
+    const setTheme=async theme=>{await page.locator('#appSettingsButton').click();await page.locator('button[data-app-theme="'+theme+'"]').click();};
+    const bodyHas=async cls=>assert.equal(await page.locator('body').evaluate((el,name)=>el.classList.contains(name),cls),true,'body should have '+cls);
+
     await page.locator('.bottom-nav [data-view="the-show"]').click();
     await visible('#theShowView');
     await page.locator('#theShowView [data-show-view="explore"]').click();
