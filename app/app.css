@@ -3434,3 +3434,26 @@ body.app-light .reading-section-head .eyebrow,body.app-light .reading-summary-to
  .explore-daily-credit{top:15px;right:15px;font-size:7px;}
 }
 @media(prefers-reduced-motion:reduce){.explore-daily-visual{scroll-behavior:auto;transition:none!important;animation:none!important;}}
+
+
+/* Episode cards: remove the enclosing grey tile and let content sit directly on the page. */
+.episode,
+.episode-open-card,
+.current-season-section .episode-open-card,
+#archiveEpisodeGroups .episode-open-card,
+#savedEpisodeGroups .episode-open-card{
+  background:transparent!important;
+  background-color:transparent!important;
+  background-image:none!important;
+  border:0!important;
+  border-radius:0!important;
+  box-shadow:none!important;
+}
+.episode{
+  overflow:visible!important;
+}
+.episode-art,
+.episode-open-card .episode-art{
+  background:transparent!important;
+  box-shadow:none!important;
+}
