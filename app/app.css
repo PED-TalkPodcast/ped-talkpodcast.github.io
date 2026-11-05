@@ -2929,3 +2929,35 @@ body.app-dark .bible-reader,body.app-dark .bible-reading-surface{background:#111
  .dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play::before,
  .dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play::after{animation:none!important;opacity:0!important}
 }
+
+/* v122 — Spotify-inspired broadcast studio polish and responsive alignment. */
+:root{--studio-black:#0A0A0A;--studio-surface:#121212;--studio-raised:#181818;--studio-line:rgba(255,255,255,.09);--studio-muted:#A7A7A7}
+body.app-dark,body:not(.app-light){--app-background:#0A0A0A!important;--app-surface:#121212!important;--app-surface-elevated:#181818!important;--app-text-primary:#F5F5F5!important;--app-text-secondary:#C2C2C2!important;--app-text-muted:#A7A7A7!important;--app-accent:#D8E8D1!important;--app-border:var(--studio-line)!important;background:#0A0A0A!important;color:#F5F5F5}
+body.app-dark .topbar,body:not(.app-light) .topbar{background:rgba(10,10,10,.94)!important;border-bottom:1px solid var(--studio-line)}
+body.app-dark .welcome,body:not(.app-light) .welcome,body.app-dark .library,body:not(.app-light) .library,body.app-dark .episodes-view,body:not(.app-light) .episodes-view,body.app-dark .saved-view,body:not(.app-light) .saved-view,body.app-dark .the-show-view,body:not(.app-light) .the-show-view{color:#F5F5F5}
+body.app-dark .episode-open-card,body:not(.app-light) .episode-open-card,body.app-dark .show-resource,body:not(.app-light) .show-resource,body.app-dark .reading-summary-card,body:not(.app-light) .reading-summary-card{background:#121212!important;border:1px solid var(--studio-line)!important;box-shadow:none!important}
+body.app-dark .episode-open-card:hover,body:not(.app-light) .episode-open-card:hover,body.app-dark .show-resource:hover,body:not(.app-light) .show-resource:hover{background:#1B1B1B!important}
+body.app-dark .eyebrow,body:not(.app-light) .eyebrow{color:#A7A7A7!important;letter-spacing:.13em}
+body.app-dark .section-head,body:not(.app-light) .section-head,body.app-dark .the-show-resource-grid,body:not(.app-light) .the-show-resource-grid{max-width:1120px;margin-left:auto;margin-right:auto}
+.show-resource{display:flex;align-items:center;justify-content:space-between;gap:18px;text-align:left;min-width:0}
+.show-resource>span:first-child{min-width:0;flex:1}
+.show-resource-icon,.home-hint-icon{width:42px;height:42px;flex:0 0 42px;display:grid;place-items:center;border:1px solid var(--app-border);border-radius:14px;background:rgba(255,255,255,.035);color:#DCE8D8}
+.show-resource-icon svg,.home-hint-icon svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.65;stroke-linecap:round;stroke-linejoin:round}
+.home-tile-hint{display:flex;align-items:center;gap:12px}
+.home-hint-icon{width:30px;height:30px;flex-basis:30px;border-radius:10px}
+.home-hint-icon svg{width:16px;height:16px}
+body:not(.app-light) main,body.app-dark main,body:not(.app-light) #episodesView,body.app-dark #episodesView,body:not(.app-light) #savedView,body.app-dark #savedView,body:not(.app-light) #theShowView,body.app-dark #theShowView{width:min(100% - 40px,1120px);margin-inline:auto}
+body:not(.app-light) .hope-card,body.app-dark .hope-card,body:not(.app-light) .upcoming-section,body.app-dark .upcoming-section,body:not(.app-light) .current-season-section,body.app-dark .current-season-section{margin-inline:0}
+body:not(.app-light) .episode-grid,body.app-dark .episode-grid{gap:14px}
+body:not(.app-light) .episode-open-card,body.app-dark .episode-open-card{align-items:center;min-width:0}
+body:not(.app-light) .episode-open-card .episode-copy,body.app-dark .episode-open-card .episode-copy{min-width:0}
+body:not(.app-light) .episode-open-card h3,body.app-dark .episode-open-card h3{overflow-wrap:anywhere}
+body:not(.app-light) .the-show-resource-grid,body.app-dark .the-show-resource-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{--episode-rgb:28,48,39;background:linear-gradient(180deg,var(--episode-color-soft,rgba(28,48,39,.34)) 0%,rgba(10,10,10,.96) 38%,#0A0A0A 76%)!important;transition:background 650ms ease,color 300ms ease}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 0%,var(--episode-color-soft,rgba(28,48,39,.3)),transparent 62%);opacity:.9;transition:background 650ms ease}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>*{position:relative;z-index:1}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-art{box-shadow:0 24px 65px rgba(0,0,0,.36),0 0 0 1px rgba(255,255,255,.09)}
+.dwoop-overlay.dwoop-episode-mode .episode-transport-controls .episode-main-play{background:var(--episode-color,#D8E8D1)!important;color:#0A0A0A!important;box-shadow:0 10px 34px var(--episode-color-soft,rgba(28,48,39,.34))!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window,.dwoop-overlay.dwoop-episode-mode .episode-more-tile{background:rgba(18,18,18,.78)!important;border-color:rgba(255,255,255,.1)!important;backdrop-filter:blur(18px)}
+@media(max-width:680px){body:not(.app-light) main,body.app-dark main,body:not(.app-light) #episodesView,body.app-dark #episodesView,body:not(.app-light) #savedView,body.app-dark #savedView,body:not(.app-light) #theShowView,body.app-dark #theShowView{width:calc(100% - 32px)}body:not(.app-light) .the-show-resource-grid,body.app-dark .the-show-resource-grid{grid-template-columns:1fr}.show-resource{padding:16px!important}.show-resource-icon{width:38px;height:38px;flex-basis:38px}}
+@media(prefers-reduced-motion:reduce){.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded,.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded::before{transition:none!important}}
