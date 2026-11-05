@@ -396,6 +396,8 @@ const server = http.createServer((req,res)=>{
     await widePage.locator('#dwoopClose').click();
     await widePage.close();
 
+    const invalidImageState=await page.evaluate(()=>({images:[...document.images].map(img=>({id:img.id,src:img.getAttribute('src'),resolved:img.src})).filter(img=>/undefined|null/.test((img.src||'')+' '+img.resolved)),backgrounds:[...document.querySelectorAll('body *')].map(el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',background:getComputedStyle(el).backgroundImage})).filter(item=>/undefined|null/.test(item.background))}));
+    if(invalidImageState.images.length||invalidImageState.backgrounds.length)errors.push('INVALID_IMAGE_DOM '+JSON.stringify(invalidImageState));
     assert.deepEqual(errors,[],'browser JavaScript errors');
     process.stdout.write('PASS: Settings Home, Settings Back, system/manual theme persistence, Gift of Hope day asset, devotional cycle, WEB Revelation 3:21, comments, modal outside/Back/swipe dismissal, carousel controls/theme retention, Voice of Healing light treatment, Episodes navigation and single-step autoplay, dedicated episode window, refined circular glass play control, seek bar and swipe navigation.\n');
     await context.close();
