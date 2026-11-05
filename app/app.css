@@ -2595,3 +2595,60 @@ body.app-dark .dwoop-overlay.dwoop-episode-mode .episode-play-button{
  .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{padding-left:18px;padding-right:18px}
  .dwoop-overlay.dwoop-episode-mode .episode-player-controls{grid-template-columns:54px minmax(0,1fr);gap:13px}
 }
+
+
+/* v117 — keep episode-window controls out of the text flow and stabilize text alignment. */
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+  padding-top:calc(76px + env(safe-area-inset-top))!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-close{
+  position:absolute!important;float:none!important;top:calc(16px + env(safe-area-inset-top))!important;
+  right:clamp(16px,4vw,34px)!important;z-index:8!important;margin:0!important;
+  display:grid!important;place-items:center!important;flex:none!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>.gradient-shimmer-bar{
+  display:block!important;width:100%!important;clear:both!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopEyebrow,
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopTitle,
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopIntro{
+  position:relative!important;float:none!important;clear:both!important;
+  display:block!important;width:100%!important;max-width:100%!important;
+  box-sizing:border-box!important;text-align:left!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopTitle{
+  margin:0!important;line-height:1.14!important;overflow-wrap:anywhere!important;
+  word-break:normal!important;text-wrap:pretty;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopIntro{
+  margin:10px 0 20px!important;line-height:1.6!important;
+}
+.dwoop-overlay.dwoop-episode-mode .dwoop-artwork,
+.dwoop-overlay.dwoop-episode-mode .dwoop-content,
+.dwoop-overlay.dwoop-episode-mode .episode-feature-panel{
+  clear:both!important;min-width:0!important;width:100%!important;box-sizing:border-box!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-description{
+  max-width:720px!important;margin:0 auto!important;text-align:left!important;
+  overflow-wrap:anywhere!important;line-height:1.75!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-more-heading{
+  display:flex!important;flex-wrap:wrap!important;align-items:baseline!important;
+  justify-content:space-between!important;gap:8px 14px!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-more-tile span{
+  min-width:0!important;overflow-wrap:anywhere!important;
+}
+@media(max-width:520px){
+  .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{
+    padding-top:calc(72px + env(safe-area-inset-top))!important;
+    padding-left:18px!important;padding-right:18px!important;
+  }
+  .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded .dwoop-close{
+    top:calc(13px + env(safe-area-inset-top))!important;right:16px!important;
+  }
+  .dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded>#dwoopTitle{
+    font-size:clamp(25px,7.2vw,34px)!important;line-height:1.12!important;
+  }
+  .dwoop-overlay.dwoop-episode-mode .episode-feature-description{font-size:13px!important}
+}
