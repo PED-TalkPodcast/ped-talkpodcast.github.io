@@ -37,8 +37,21 @@ const server = http.createServer((req,res)=>{
     assert.ok(exploreVisual.title&&exploreVisual.reference,'Explore daily visual must expose theme title and Scripture reference');
     assert.ok(exploreVisual.width>0&&exploreVisual.width<=390,'Explore daily visual must fit a narrow mobile viewport');
     assert.ok(Number(exploreVisual.opacity)>=0&&Number(exploreVisual.opacity)<=1,'Explore overlay opacity must remain within 0–1');
-    const exploreEaster=await page.evaluate(()=>window.PEDExploreBible.easterDate(2026));
-    assert.equal(exploreEaster,'2026-04-05','Easter override calculation must use the Gregorian computus');
+    const exploreCalendar=await page.evaluate(()=>{
+      const manifest=window.__PEDExploreManifest;
+      return {
+        easter:window.PEDExploreBible.easterDate(2026),
+        easterTheme:window.PEDExploreBible.selectTheme('2026-04-05',manifest).id,
+        goodFridayTheme:window.PEDExploreBible.selectTheme('2026-04-03',manifest).id,
+        christmasTheme:window.PEDExploreBible.selectTheme('2026-12-25',manifest).id,
+        nativityEveTheme:window.PEDExploreBible.selectTheme('2026-12-24',manifest).id
+      };
+    });
+    assert.equal(exploreCalendar.easter,'2026-04-05','Easter override calculation must use the Gregorian computus');
+    assert.match(exploreCalendar.easterTheme,/^NT-CROSS-/,'Easter Sunday must select an empty-cross theme');
+    assert.match(exploreCalendar.goodFridayTheme,/^CAL-CHRISTMAS-/,'Good Friday must select the crown-of-thorns override');
+    assert.match(exploreCalendar.christmasTheme,/^CAL-NATIVITY-/,'Christmas Day must select a Nativity theme');
+    assert.match(exploreCalendar.nativityEveTheme,/^CAL-NATIVITY-/,'Christmas Eve must select a Nativity theme');
     await page.locator('.bottom-nav [data-view="the-show"]').click();
     await visible('#theShowView');
     await page.locator('#theShowView [data-show-view="explore"]').click();
