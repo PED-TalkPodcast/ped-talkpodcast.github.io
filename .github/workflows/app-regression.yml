@@ -8,6 +8,13 @@ on:
       - 'service-worker.js'
       - 'tests/**'
       - '.github/workflows/app-regression.yml'
+  pull_request:
+    paths:
+      - 'app/**'
+      - 'assets/gift-of-hope-day.svg'
+      - 'service-worker.js'
+      - 'tests/**'
+      - '.github/workflows/app-regression.yml'
   workflow_dispatch:
 permissions:
   contents: read
