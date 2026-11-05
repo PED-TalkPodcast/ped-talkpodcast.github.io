@@ -3107,3 +3107,6 @@ main,.bible-view,.bible-library-view,.reading-stats-view,.books-view,.episodes-v
 
 /* Preserve the accessible light-mode comment field text contrast. */
 body.app-light .hope-comments textarea{color:#24382b!important}
+
+/* Retain the established dark showcase title contrast verified by browser regression. */
+body.app-dark .app-showcase-upcoming .upcoming-title{color:#f5fff8!important}
