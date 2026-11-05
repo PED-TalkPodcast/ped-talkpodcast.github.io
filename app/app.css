@@ -3064,7 +3064,7 @@ main,.bible-view,.bible-library-view,.reading-stats-view,.books-view,.episodes-v
 .bible-library-view .saved-highlight-text{color:#D9DEE5!important}
 .reading-progress-track,.episode-player-track{background:#303030!important}
 .reading-progress-track span,.episode-player-track span,
-.mini-player-progress span{background:linear-gradient(90deg,#0066FF,#1E88E5)!important}
+.mini-player-progress span{background:linear-gradient(90deg,var(--episode-accent,#0066FF),#1E88E5)!important}
 .reading-period-total strong,.reading-detail-book strong,.reading-session-row>b,
 .reading-breakdown-row>b{color:#70B7FF!important}
 .reading-breakdown-row{background:#171717!important;border-color:#303030!important}
@@ -3092,11 +3092,11 @@ main,.bible-view,.bible-library-view,.reading-stats-view,.books-view,.episodes-v
 }
 .dwoop-card-expanded .episode-play-symbol{background:rgba(255,255,255,.18)!important;color:#fff!important}
 .dwoop-card-expanded .episode-play-label{color:#fff!important}
-.gradient-shimmer-bar{background:linear-gradient(90deg,#0066FF,#1E88E5,#70B7FF,#0066FF)!important}
+.gradient-shimmer-bar{background:linear-gradient(90deg,var(--episode-accent,#0066FF),#1E88E5,#70B7FF,var(--episode-accent,#0066FF))!important}
 .mini-player{background:rgba(20,20,20,.98)!important;border-color:#303030!important}
 .mini-player-title,.mini-player-copy strong{color:#F5F7FA!important}
 .mini-player-state,.mini-player-copy small{color:#A7A7A7!important}
-.mini-player-toggle{background:#1E88E5!important;color:#fff!important}
+.mini-player-toggle{background:var(--episode-accent,#1E88E5)!important;color:#fff!important}
 .app-showcase-anagkazo{background:radial-gradient(ellipse at 72% 25%,rgba(30,136,229,.22),transparent 38%),linear-gradient(145deg,#102A48,#101820 70%,#0A0A0A)!important}
 .app-showcase-anagkazo svg [stroke="#b7d58a"],.app-showcase-anagkazo svg [fill="#b7d58a"]{stroke:#70B7FF!important;fill:#70B7FF!important}
 .anagkazo-copy .eyebrow,.voice-copy .eyebrow{color:#70B7FF!important}
