@@ -35,6 +35,16 @@ const server = http.createServer((req,res)=>{
         errors.push('UNDEFINED_RESOURCE_INITIATOR '+JSON.stringify({type:event.type,initiator:event.initiator?.type,frames:frames.map(frame=>({url:frame.url,lineNumber:frame.lineNumber,functionName:frame.functionName}))}));
       }
     });
+    page.on('request',async request=>{
+      if(request.url().endsWith('/app/undefined')){
+        let snapshot={url:request.url(),pageUrl:page.url(),images:[],elements:[]};
+        try{snapshot=await page.evaluate(url=>{
+          const describe=el=>({tag:el.tagName,id:el.id,className:typeof el.className==='string'?el.className:'',outerHTML:el.outerHTML.slice(0,700),src:el.getAttribute('src'),currentSrc:el.currentSrc||'',style:el.getAttribute('style')});
+          return{url,pageUrl:location.href,images:[...document.images].map(describe),elements:[...document.querySelectorAll('[src],[style],link[rel*=preload]')].filter(el=>/undefined|null/.test((el.getAttribute('src')||'')+' '+(el.getAttribute('style')||''))).map(describe),bodyExcerpt:document.body?.innerHTML.match(/.{0,180}undefined.{0,180}/is)?.[0]||''};
+        },request.url());}catch(error){snapshot.captureError=error.message;}
+        errors.push('UNDEFINED_IMAGE_DOM_AT_REQUEST '+JSON.stringify(snapshot));
+      }
+    });
     page.on('pageerror',error=>errors.push(error.message));
     page.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
     page.on('console',message=>{if(message.type()==='error'&&!/Failed to load resource/.test(message.text()))errors.push('console: '+message.text());});
