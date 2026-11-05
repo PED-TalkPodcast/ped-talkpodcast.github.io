@@ -2652,3 +2652,54 @@ body.app-dark .dwoop-overlay.dwoop-episode-mode .episode-play-button{
   }
   .dwoop-overlay.dwoop-episode-mode .episode-feature-description{font-size:13px!important}
 }
+
+/* v118 — normalize text sizing and prevent cross-section grid/flex overflow. */
+html,body{width:100%;max-width:100%;overflow-x:clip!important}
+body{min-width:0!important}
+body :is(main,section,article,header,footer,nav,aside,[class*="-view"],[class*="-panel"],[class*="-card"]){min-width:0;box-sizing:border-box}
+body :is(h1,h2,h3,h4,p,small,strong,span,a,label,blockquote){min-width:0;max-width:100%;overflow-wrap:anywhere}
+body :is(.dwoop-card-expanded,.dwoop-content,.episode-feature-panel,.episode-feature-description,.episode-more-heading,.episode-more-tiles,.episode-more-tile,.episode-player-window,.episode-player-controls,.episode-player-meta){min-width:0;max-width:100%;box-sizing:border-box}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window{
+ display:grid!important;grid-template-columns:minmax(0,1fr)!important;
+ grid-template-rows:auto auto!important;grid-template-areas:"controls" "hint"!important;
+ align-items:stretch!important;gap:12px!important;width:100%!important;
+ padding:16px!important;overflow:hidden!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-window>.episode-page-audio{display:none!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-controls{
+ grid-area:controls!important;display:grid!important;
+ grid-template-columns:54px minmax(0,1fr)!important;
+ align-items:center!important;gap:14px!important;width:100%!important;min-width:0!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-meta{
+ display:block!important;min-width:0!important;width:100%!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-track{display:block!important;width:100%!important;min-width:0!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-times{
+ display:flex!important;flex-direction:row!important;align-items:center!important;
+ justify-content:space-between!important;gap:12px!important;width:100%!important;
+ min-width:0!important;position:static!important;float:none!important;
+ line-height:1.35!important;white-space:normal!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-times>span{
+ display:block!important;position:static!important;float:none!important;
+ flex:0 0 auto!important;transform:none!important;white-space:nowrap!important;
+ margin:0!important;line-height:1.35!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-player-hint{
+ grid-area:hint!important;display:block!important;position:static!important;
+ float:none!important;clear:both!important;width:100%!important;max-width:100%!important;
+ margin:0!important;padding:0!important;line-height:1.45!important;
+ white-space:normal!important;overflow-wrap:anywhere!important;
+}
+.dwoop-overlay.dwoop-episode-mode .episode-feature-description{
+ display:block!important;position:static!important;float:none!important;
+ width:100%!important;max-width:100%!important;line-height:1.65!important;
+}
+@media(max-width:520px){
+ .dwoop-overlay.dwoop-episode-mode .episode-player-window{padding:14px!important;gap:11px!important}
+ .dwoop-overlay.dwoop-episode-mode .episode-player-controls{grid-template-columns:48px minmax(0,1fr)!important;gap:12px!important}
+ .dwoop-overlay.dwoop-episode-mode .episode-play-button{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important;max-width:48px!important;max-height:48px!important;flex-basis:48px!important}
+ .dwoop-overlay.dwoop-episode-mode .episode-player-times{font-size:10px!important}
+ .dwoop-overlay.dwoop-episode-mode .episode-player-hint{font-size:9px!important}
+}
