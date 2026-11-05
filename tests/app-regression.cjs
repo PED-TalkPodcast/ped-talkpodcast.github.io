@@ -253,6 +253,18 @@ const server = http.createServer((req,res)=>{
     assert.ok(episodeWindow.width<=episodeWindow.viewportWidth,'episode window must fit the viewport');
     assert.ok(episodeWindow.height<=episodeWindow.viewportHeight,'episode window must fit the viewport');
     assert.match(episodeWindow.overlayClasses,/dwoop-episode-mode/,'episode must open in its own dedicated window/page');
+    const episodeHeader=await page.evaluate(()=>{
+      const card=document.querySelector('.dwoop-card-expanded'),eyebrow=document.querySelector('#dwoopEyebrow'),title=document.querySelector('#dwoopTitle'),intro=document.querySelector('#dwoopIntro'),close=document.querySelector('#dwoopClose');
+      const rect=el=>{const r=el.getBoundingClientRect();return{x:r.x,y:r.y,right:r.right,bottom:r.bottom,width:r.width,height:r.height};};
+      return{eyebrow:rect(eyebrow),title:rect(title),intro:rect(intro),close:rect(close),closePosition:getComputedStyle(close).position,closeFloat:getComputedStyle(close).float,card:rect(card)};
+    });
+    assert.equal(episodeHeader.closePosition,'absolute','episode close control must be anchored and removed from text flow');
+    assert.equal(episodeHeader.closeFloat,'none','episode close control must not float beside text');
+    assert.ok(Math.abs(episodeHeader.eyebrow.x-episodeHeader.title.x)<=1,'episode eyebrow and title must share the same left alignment');
+    assert.ok(Math.abs(episodeHeader.title.x-episodeHeader.intro.x)<=1,'episode title and intro must share the same left alignment');
+    assert.ok(episodeHeader.title.y>=episodeHeader.close.bottom,'episode title must not collide with the close control');
+    assert.ok(episodeHeader.title.right<=episodeHeader.card.right,'episode title must remain inside the window');
+
     const compactPlay=await page.locator('[data-episode-play]').evaluate(el=>({width:el.getBoundingClientRect().width,height:el.getBoundingClientRect().height,radius:getComputedStyle(el).borderRadius,hasTextLabel:!!el.querySelector('.episode-play-label')}));
     assert.ok(compactPlay.width>=48&&compactPlay.width<=58&&compactPlay.height>=48&&compactPlay.height<=58,'player play control must be a refined circular button');
     assert.equal(compactPlay.radius,'50%','player play control must be circular');
