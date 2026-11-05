@@ -330,7 +330,7 @@ const server = http.createServer((req,res)=>{
     await page.locator('button[data-app-theme="dark"]').click();
     await page.locator('#settingsHome').click();
     const darkUpcoming=await page.locator('.app-showcase-upcoming .upcoming-card').evaluate(el=>getComputedStyle(el).backgroundImage);
-    assert.match(darkUpcoming,/linear-gradient/,'dark Upcoming card must have a theme-specific surface');
+    assert.equal(darkUpcoming,'none','dark Upcoming card must remain transparent inside the compact showcase');
     const darkUpcomingTitle=await page.locator('.app-showcase-upcoming .upcoming-card-head h2').evaluate(el=>getComputedStyle(el).color);
     assert.equal(darkUpcomingTitle,'rgb(245, 255, 248)','dark Upcoming title must use the primary high-contrast text token');
     await page.locator('#appSettingsButton').click();
