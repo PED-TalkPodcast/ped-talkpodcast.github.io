@@ -26,6 +26,50 @@ const server = http.createServer((req,res)=>{
     await new Promise(resolve=>server.listen(4173,'127.0.0.1',resolve));
     browser=await chromium.launch({headless:true,args:['--no-sandbox']});
     const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'light',serviceWorkers:'block'});
+    // Install before navigation so every page (including route and wide-viewport pages)
+    // records the code path that assigns an invalid image URL.
+    await context.addInitScript(()=>{
+      const report=(kind,value,stack)=>{
+        const raw=String(value??'');
+        if(!/(?:^|\\/)undefined(?:$|[?#])|^undefined$/i.test(raw))return;
+        const detail={kind,value:raw,stack:stack||new Error('invalid image source').stack,url:location.href,time:performance.now()};
+        (window.__invalidImageTrace||(window.__invalidImageTrace=[])).push(detail);
+        console.error('INVALID_IMAGE_TRACE '+JSON.stringify(detail));
+      };
+      const srcDescriptor=Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,'src');
+      if(srcDescriptor?.set&&srcDescriptor?.get){
+        Object.defineProperty(HTMLImageElement.prototype,'src',{configurable:srcDescriptor.configurable,enumerable:srcDescriptor.enumerable,get:srcDescriptor.get,set(value){report('img.src',value,new Error('img.src assignment').stack);return srcDescriptor.set.call(this,value);}});
+      }
+      const setAttribute=Element.prototype.setAttribute;
+      Element.prototype.setAttribute=function(name,value){
+        if(this instanceof HTMLImageElement&&String(name).toLowerCase()==='src')report('setAttribute(src)',value,new Error('setAttribute(src)').stack);
+        return setAttribute.call(this,name,value);
+      };
+      const innerHTML=Object.getOwnPropertyDescriptor(Element.prototype,'innerHTML');
+      if(innerHTML?.set&&innerHTML?.get){
+        Object.defineProperty(Element.prototype,'innerHTML',{configurable:innerHTML.configurable,enumerable:innerHTML.enumerable,get:innerHTML.get,set(value){
+          const html=String(value??'');
+          if(/<img\\b[^>]*\\bsrc\\s*=\\s*["'][^"']*undefined/i.test(html))report('innerHTML',html.match(/<img\\b[^>]*>/i)?.[0]||html,new Error('innerHTML assignment').stack);
+          return innerHTML.set.call(this,value);
+        }});
+      }
+      const observer=new MutationObserver(records=>{
+        for(const record of records){
+          if(record.type==='attributes'&&record.target instanceof HTMLImageElement)report('mutated img src',record.target.getAttribute('src'),new Error('image src mutation').stack);
+          for(const node of record.addedNodes||[]){
+            if(node instanceof HTMLImageElement)report('inserted img',node.getAttribute('src'),new Error('image insertion').stack);
+            if(node.querySelectorAll)for(const img of node.querySelectorAll('img'))report('inserted descendant img',img.getAttribute('src'),new Error('image insertion').stack);
+          }
+        }
+      });
+      const start=()=>observer.observe(document.documentElement,{subtree:true,childList:true,attributes:true,attributeFilter:['src']});
+      if(document.documentElement)start();else document.addEventListener('DOMContentLoaded',start,{once:true});
+    });
+    context.on('page',diagnosticPage=>{
+      diagnosticPage.on('console',message=>{if(message.type()==='error'&&message.text().startsWith('INVALID_IMAGE_TRACE '))errors.push(message.text());});
+      diagnosticPage.on('response',response=>{if(response.status()>=400)errors.push('HTTP '+response.status()+': '+response.url());});
+      diagnosticPage.on('pageerror',error=>errors.push(error.message));
+    });
     const page=await context.newPage();
     const cdp=await context.newCDPSession(page);
     await cdp.send('Network.enable');
