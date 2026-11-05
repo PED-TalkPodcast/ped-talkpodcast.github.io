@@ -3110,3 +3110,7 @@ body.app-light .hope-comments textarea{color:#24382b!important}
 
 /* Retain the established dark showcase title contrast verified by browser regression. */
 body.app-dark .app-showcase-upcoming .upcoming-title{color:#f5fff8!important}
+
+/* Preserve the established readable title tokens in both appearance modes. */
+body.app-dark .app-showcase-upcoming .upcoming-card-head h2{color:#f5fff8!important}
+body.app-light .app-showcase-upcoming .upcoming-card-head h2{color:#263c30!important}
