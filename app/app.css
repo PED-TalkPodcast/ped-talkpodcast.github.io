@@ -3865,3 +3865,29 @@ body.fiction-archive-open{overflow:hidden}
 .fiction-pdf-page-canvas canvas{display:block;width:100%;height:auto}
 .fiction-pdf-page-canvas:not(:has(canvas)){padding:24px;font-size:12px;line-height:1.6}
 @media(max-width:520px){.fiction-pdf-pages{gap:12px}.fiction-pdf-page{border-radius:7px}.fiction-pdf-loading{padding:16px}}
+
+/* v136 — Fiction opens as a dedicated, theme-aware reading page. */
+.fiction-view{min-height:calc(100dvh - 110px);padding:clamp(20px,4vw,42px) clamp(16px,4vw,38px) 70px;overflow-y:auto;overscroll-behavior:contain}
+.fiction-page-header{display:flex;align-items:flex-start;gap:18px;padding:4px 0 22px;border-bottom:1px solid var(--app-border)}
+.fiction-page-header>div{min-width:0}
+.fiction-page-header h2{margin:5px 0 7px;font:600 clamp(28px,5vw,42px)/1.1 'Playfair Display',Georgia,serif;color:var(--pt-text-primary)}
+.fiction-page-header p:last-child{margin:0;color:var(--pt-text-secondary);font-size:13px}
+.fiction-page-back{flex:0 0 auto;border:1px solid var(--app-border);border-radius:999px;padding:9px 14px;background:transparent;color:var(--pt-text-primary);font:700 12px 'DM Sans',sans-serif}
+.fiction-featured-book{max-width:900px;margin:0 auto;padding:30px 0 12px}
+.fiction-cover-stage{width:min(100%,380px);margin:0 auto 28px}
+.fiction-cover-frame{width:100%;max-height:560px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:transparent}
+.fiction-cover-frame canvas{display:block;width:100%;height:auto;max-height:560px;object-fit:contain}
+.fiction-cover-desk{height:1px;width:100%;margin-top:15px;background:linear-gradient(90deg,transparent 0%,var(--app-border) 12%,var(--app-border) 88%,transparent 100%);box-shadow:0 5px 9px rgba(70,80,60,.09)}
+.fiction-featured-copy{text-align:center;padding:0 12px 18px}
+.fiction-featured-copy .fiction-book-series{color:#6e9b50;font-size:9px;letter-spacing:.18em;font-weight:800}
+.fiction-featured-copy h3{margin:10px 0 8px;color:var(--pt-text-primary);font:700 clamp(21px,4vw,30px)/1.2 'Playfair Display',Georgia,serif}
+.fiction-featured-copy .fiction-book-author{margin:0;color:var(--pt-text-secondary);font-size:13px}
+.fiction-featured-copy .fiction-book-subtitle{margin:7px 0 0;color:var(--pt-text-tertiary);font-size:12px;font-style:italic}
+.fiction-view .fiction-pdf-reader{max-width:900px;margin:22px auto 0;border-top:1px solid var(--app-border);padding-top:22px}
+.fiction-view .fiction-pdf-toolbar strong{color:var(--pt-text-secondary)}
+.fiction-view .fiction-pdf-toolbar a{color:var(--pt-text-primary);border-color:var(--app-border)}
+.fiction-view .fiction-pdf-loading{border-color:var(--app-border);color:var(--pt-text-secondary)}
+body.app-light .fiction-view{background:#fff;color:#202b38;--app-border:rgba(32,43,56,.14)}
+body.app-dark .fiction-view,body:not(.app-light) .fiction-view{background:#0b0e11;color:#f5f7fa;--app-border:rgba(255,255,255,.14)}
+body.app-light .fiction-view .fiction-pdf-page{border-color:rgba(32,43,56,.12)}
+@media(max-width:520px){.fiction-view{padding:18px 16px 56px}.fiction-page-header{gap:12px;padding-bottom:18px}.fiction-cover-stage{width:min(100%,310px);margin-bottom:22px}.fiction-cover-frame{max-height:470px}.fiction-cover-frame canvas{max-height:470px}.fiction-featured-book{padding-top:22px}.fiction-view .fiction-pdf-toolbar{align-items:flex-start}}
