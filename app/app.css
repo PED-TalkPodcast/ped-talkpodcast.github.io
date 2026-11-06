@@ -3750,3 +3750,14 @@ body.app-light .current-season-section .episode-open-card .episode-art{
 
 /* v132 — enforce a genuinely unboxed scripture wallpaper in both themes. */
 #hopeModal .hope-modal-panel,body.app-light #hopeModal .hope-modal-panel,body.app-dark #hopeModal .hope-modal-panel{background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+
+/* v133 — put the cover art first and keep one clear primary play action. */
+.dwoop-overlay.dwoop-episode-mode .dwoop-card-expanded{display:flex!important;flex-direction:column!important}
+.dwoop-overlay.dwoop-episode-mode #dwoopEyebrow{order:1!important}
+.dwoop-overlay.dwoop-episode-mode #dwoopArtwork{order:2!important}
+.dwoop-overlay.dwoop-episode-mode #dwoopTitle{order:3!important;margin-top:2px!important}
+.dwoop-overlay.dwoop-episode-mode #dwoopIntro{order:4!important;margin-top:7px!important}
+.dwoop-overlay.dwoop-episode-mode #dwoopContent{order:5!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-controls{display:block!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-controls .episode-play-button{display:none!important}
+.dwoop-overlay.dwoop-episode-mode .episode-player-meta{width:100%!important}
