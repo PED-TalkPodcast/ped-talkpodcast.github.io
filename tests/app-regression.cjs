@@ -225,7 +225,9 @@ const server = http.createServer((req,res)=>{
     await page.locator('[data-detail-back]').click();
     await visible('#booksView');
 
-    await page.locator('#theShowView [data-show-view="bible"]').click();
+    await page.locator('.bottom-nav [data-view="the-show"]').click();
+    await visible("#theShowView");
+    await page.locator("#theShowView [data-show-view=\"bible\"]").click();
     await visible('#bibleView');
     assert.equal(await page.locator('.bottom-nav [data-view="the-show"]').evaluate(el=>el.classList.contains('selected')),true,'The Show tab remains selected for linked resources');
     await page.locator('.bottom-nav [data-view="home"]').click();
