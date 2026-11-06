@@ -3922,3 +3922,46 @@ body.app-light .app-showcase-real .voice-copy .eyebrow{color:#d8edc9}
 .fiction-view .fiction-pdf-page{border-radius:4px;box-shadow:none}
 .fiction-view .fiction-pdf-page-number{font-size:8px;opacity:.65}
 @media(max-width:520px){.fiction-reader-chrome{padding:7px 8px}.fiction-reader-topbar{gap:6px}.fiction-reader-topbar button{padding:7px 9px}.fiction-reader-bottombar{gap:6px}}
+
+
+/* Book details + in-app reader usability pass */
+.fiction-detail-view{min-height:calc(100dvh - 100px);padding:clamp(16px,4vw,36px);background:var(--app-bg);color:var(--pt-text-primary)}
+.fiction-detail-card{width:min(100%,760px);margin:clamp(20px,5vh,48px) auto 0;display:grid;grid-template-columns:minmax(130px,210px) minmax(0,1fr);align-items:start;gap:clamp(18px,4vw,30px);padding:clamp(16px,3vw,26px);background:var(--pt-surface);color:var(--pt-text-primary);border:1px solid var(--app-border);border-radius:20px;box-shadow:0 14px 38px rgba(0,0,0,.13)}
+.fiction-detail-cover-button{width:100%;max-width:210px;display:flex;flex-direction:column;align-items:center;gap:9px;padding:0;border:0;background:transparent;color:var(--pt-text-secondary);cursor:pointer}
+.fiction-detail-cover-frame{display:block;width:100%;aspect-ratio:2/3;height:auto;overflow:hidden;border-radius:9px;background:#e8e4d9;box-shadow:0 12px 28px rgba(0,0,0,.24)}
+.fiction-detail-cover{display:block;width:100%;height:100%;object-fit:contain;object-position:center}
+.fiction-detail-cover-hint{font-size:10px;line-height:1.45}
+.fiction-detail-copy{min-width:0}
+.fiction-detail-copy h2{color:var(--pt-text-primary)!important;font-size:clamp(22px,4vw,32px);line-height:1.14}
+.fiction-detail-copy .fiction-book-author{color:var(--pt-text-secondary)!important;font-size:13px}
+.fiction-detail-description{display:block!important;margin:17px 0;padding:14px 15px;border-left:3px solid #8caf67;background:color-mix(in srgb,var(--pt-surface) 88%,#8caf67 12%);border-radius:0 11px 11px 0}
+.fiction-detail-description[hidden]{display:none!important}
+.fiction-detail-description p{color:var(--pt-text-primary)!important;font-size:13px;line-height:1.75}
+.fiction-read-book-button{display:flex!important;align-items:center;justify-content:center;gap:12px;width:100%;min-height:50px;margin-top:14px;padding:13px 20px;border:0;border-radius:999px;background:linear-gradient(110deg,#315d38,#8caf67);color:#fff!important;font:800 14px 'DM Sans',sans-serif;letter-spacing:.02em;box-shadow:0 8px 22px rgba(54,100,57,.24);cursor:pointer}
+.fiction-detail-note{font-size:11px}
+.fiction-view{min-height:calc(100dvh - 90px);padding-bottom:calc(28px + env(safe-area-inset-bottom))}
+.fiction-view .fiction-page-header{position:sticky;top:0;z-index:20;background:var(--app-bg);padding:8px 0 16px}
+.fiction-view .fiction-page-header h2{font-size:clamp(21px,4vw,30px)}
+.fiction-view .fiction-pdf-reader{margin:16px auto 0;padding-top:14px}
+.fiction-view .fiction-pdf-toolbar{position:sticky;top:70px;z-index:10;padding:8px 0;background:var(--app-bg)}
+.fiction-reader-retry{display:block;margin:16px 0 0;padding:11px 20px;border:0;border-radius:999px;background:#527b43;color:#fff;font-weight:800;cursor:pointer}
+.fiction-reader-chrome [data-reader-back]::after{content:' Back to book';font:700 10px 'DM Sans',sans-serif}
+.fiction-reader-topbar{flex-wrap:wrap}
+.fiction-view .fiction-pdf-page{width:100%;max-width:900px;margin-inline:auto}
+.fiction-view .fiction-pdf-page-canvas{overflow-wrap:anywhere}
+@media(max-width:560px){
+ .fiction-detail-card{grid-template-columns:104px minmax(0,1fr);gap:14px;padding:14px;margin-top:18px}
+ .fiction-detail-cover-button{max-width:104px}
+ .fiction-detail-copy h2{font-size:21px;overflow-wrap:anywhere}
+ .fiction-detail-description{margin:12px 0;padding:11px}
+ .fiction-detail-description p{font-size:12px;line-height:1.65}
+ .fiction-read-book-button{min-height:48px;padding:12px 10px;font-size:13px}
+ .fiction-view{padding:14px 10px calc(30px + env(safe-area-inset-bottom))}
+ .fiction-view .fiction-page-header{gap:9px}
+ .fiction-view .fiction-page-back{padding:9px 10px;font-size:11px}
+ .fiction-reader-chrome{position:sticky;top:0}
+ .fiction-reader-topbar{gap:5px}
+ .fiction-reader-topbar strong{font-size:9px}
+ .fiction-reader-topbar button{padding:7px 8px}
+ .fiction-reader-bottombar span{font-size:9px}
+}
