@@ -1368,6 +1368,93 @@ if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-librar
 
 document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
 
+/* Fiction Archive PDF.js reader: render the original PDF pages on mobile and desktop. */
+(()=>{
+ const modal=document.getElementById('fictionArchiveModal');
+ const pagesRoot=document.getElementById('fictionPdfPages');
+ const status=document.getElementById('fictionPdfStatus');
+ const pdfUrl=new URL("./assets/books/I%20am%20sharing%20%27THE%20BLACK%20MAN%27S%20JESUS%27%20with%20you.pdf",document.baseURI).href;
+ if(!modal||!pagesRoot||!status)return;
+ let documentPromise=null,observer=null;
+ const setStatus=message=>{if(status)status.textContent=message;};
+ const loadPdfJs=()=>{
+  if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
+  if(window.__pedTalkPdfJsPromise)return window.__pedTalkPdfJsPromise;
+  window.__pedTalkPdfJsPromise=new Promise((resolve,reject)=>{
+   const script=document.createElement('script');
+   script.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+   script.onload=()=>window.pdfjsLib?resolve(window.pdfjsLib):reject(new Error('PDF.js did not initialise'));
+   script.onerror=()=>reject(new Error('PDF reader library could not be loaded'));
+   document.head.appendChild(script);
+  });
+  return window.__pedTalkPdfJsPromise;
+ };
+ const renderPage=async(pdf,pageNumber,container)=>{
+  if(container.dataset.rendered==='true'||container.dataset.rendering==='true')return;
+  container.dataset.rendering='true';
+  try{
+   const page=await pdf.getPage(pageNumber);
+   const availableWidth=Math.max(280,Math.min(container.clientWidth||760,900));
+   const base=page.getViewport({scale:1});
+   const viewport=page.getViewport({scale:Math.min(2.2,Math.max(1,availableWidth/base.width*1.5))});
+   const canvas=document.createElement('canvas');
+   canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Page '+pageNumber+' of The Black Man’s Jesus');
+   canvas.style.width='100%';canvas.style.height='auto';canvas.style.display='block';
+   await page.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;
+   container.replaceChildren(canvas);container.dataset.rendered='true';
+  }catch(error){
+   container.dataset.rendering='false';
+   container.textContent='This page could not be displayed here. Use Open separately or Download PDF above.';
+   console.warn('Fiction Archive page render failed',pageNumber,error);
+  }
+ };
+ const prepare=async()=>{
+  if(documentPromise)return documentPromise;
+  setStatus('Opening the original book…');
+  documentPromise=(async()=>{
+   const pdfjs=await loadPdfJs();
+   pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+   const pdf=await pdfjs.getDocument({url:pdfUrl}).promise;
+   pagesRoot.querySelectorAll('.fiction-pdf-page').forEach(node=>node.remove());
+   setStatus('The book is ready. Scroll to read all '+pdf.numPages+' pages.');
+   const fragment=document.createDocumentFragment(),containers=[];
+   for(let number=1;number<=pdf.numPages;number++){
+    const section=document.createElement('section');section.className='fiction-pdf-page';section.setAttribute('aria-label','Page '+number);
+    const label=document.createElement('span');label.className='fiction-pdf-page-number';label.textContent='PAGE '+number;
+    const host=document.createElement('div');host.className='fiction-pdf-page-canvas';
+    section.append(label,host);fragment.appendChild(section);containers.push({number,host});
+   }
+   pagesRoot.appendChild(fragment);
+   if(observer)observer.disconnect();
+   observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
+    if(entry.isIntersecting){const item=containers.find(row=>row.host===entry.target);if(item)renderPage(pdf,item.number,item.host);observer.unobserve(entry.target);}
+   }),{root:modal.querySelector('.fiction-archive-window'),rootMargin:'700px 0px'});
+   containers.forEach(item=>observer.observe(item.host));
+   await renderPage(pdf,1,containers[0].host);
+   const coverPage=await pdf.getPage(1),base=coverPage.getViewport({scale:1});
+   for(const imageEl of modal.querySelectorAll('.fiction-book-cover,.fiction-book-detail-cover')){
+    const viewport=coverPage.getViewport({scale:Math.min(2.5,Math.max(1.5,240/base.width))});
+    const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+    await coverPage.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;
+    canvas.className=imageEl.className+' fiction-cover-canvas';canvas.setAttribute('role','img');canvas.setAttribute('aria-label',imageEl.alt||'The Black Man’s Jesus original cover');
+    imageEl.replaceWith(canvas);
+   }
+   return pdf;
+  })().catch(error=>{
+   documentPromise=null;
+   setStatus('The in-app reader could not load on this device. Use Open separately to read the original PDF, or Download PDF to save it.');
+   console.warn('Fiction Archive PDF could not be opened in-app',error);
+   throw error;
+  });
+  return documentPromise;
+ };
+ modal.addEventListener('click',event=>{if(event.target.closest('#fictionBookEntry'))prepare().catch(()=>{});});
+ modal.addEventListener('keydown',event=>{if(event.target.closest('#fictionBookEntry')&&(event.key==='Enter'||event.key===' '))prepare().catch(()=>{});});
+ const details=document.getElementById('fictionBookDetails');
+ if(details)new MutationObserver(()=>{if(!details.hidden)prepare().catch(()=>{});}).observe(details,{attributes:true,attributeFilter:['hidden']});
+})();
+
 /* Fiction Archive: an in-app archive window, not a navigation tab. */
 (()=>{
  const modal=document.getElementById('fictionArchiveModal');
