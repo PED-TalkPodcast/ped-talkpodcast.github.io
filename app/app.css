@@ -3761,3 +3761,52 @@ body.app-light .current-season-section .episode-open-card .episode-art{
 .dwoop-overlay.dwoop-episode-mode .episode-player-controls{display:block!important}
 .dwoop-overlay.dwoop-episode-mode .episode-player-controls .episode-play-button{display:none!important}
 .dwoop-overlay.dwoop-episode-mode .episode-player-meta{width:100%!important}
+
+/* v120 — consistent, accessible typography across Light, Dark and System appearance. */
+:root{
+  --pt-text-primary:#F5F7FA;
+  --pt-text-secondary:#A7B3C0;
+  --pt-text-tertiary:#8795A4;
+  --pt-focus-ring:#70B7FF;
+}
+body.app-dark{
+  --pt-text-primary:#F5F7FA;
+  --pt-text-secondary:#B4C0CC;
+  --pt-text-tertiary:#94A2B0;
+  --pt-focus-ring:#70B7FF;
+}
+body.app-light{
+  --pt-text-primary:#202B38;
+  --pt-text-secondary:#526273;
+  --pt-text-tertiary:#68798A;
+  --pt-focus-ring:#145FA8;
+}
+body.app-light :is(.bible-view,.bible-library-view,.books-view,.episodes-view,.reading-stats-view,.explore-bible-view,.explore-bible-page){
+  color:var(--pt-text-primary)!important;
+}
+body.app-light :is(.bible-view,.bible-library-view,.books-view,.episodes-view,.reading-stats-view,.explore-bible-view,.explore-bible-page)
+:is(h1,h2,h3,h4,.section-head h2,.season-title,.bible-stage-heading h3,.bible-reader-top h3,.reading-stats-head h2,.reading-section-head h3){
+  color:var(--pt-text-primary)!important;
+}
+body.app-light :is(.bible-view,.bible-library-view,.books-view,.episodes-view,.reading-stats-view,.explore-bible-view,.explore-bible-page)
+:is(p,.desc,.description,.subtitle,.supporting-copy,.reading-local-note,.bible-local-note){
+  color:var(--pt-text-secondary);
+}
+body.app-dark :is(.bible-view,.bible-library-view,.books-view,.episodes-view,.reading-stats-view,.explore-bible-view,.explore-bible-page)
+:is(h1,h2,h3,h4){
+  color:var(--pt-text-primary);
+}
+body.app-dark :is(.bible-view,.bible-library-view,.books-view,.episodes-view,.reading-stats-view,.explore-bible-view,.explore-bible-page)
+:is(p,.desc,.description,.subtitle,.supporting-copy,.reading-local-note,.bible-local-note){
+  color:var(--pt-text-secondary);
+}
+body.app-light :is(input,textarea,select){color:#202B38;caret-color:#145FA8}
+body.app-light :is(input,textarea,select)::placeholder{color:#68798A;opacity:1}
+body.app-dark :is(input,textarea,select)::placeholder{color:#A7B3C0;opacity:1}
+:where(button,a,input,textarea,select,[tabindex]):focus-visible{
+  outline:2px solid var(--pt-focus-ring);
+  outline-offset:3px;
+}
+@media(prefers-reduced-motion:reduce){
+  :where(button,a,input,textarea,select,[tabindex]){scroll-behavior:auto}
+}
