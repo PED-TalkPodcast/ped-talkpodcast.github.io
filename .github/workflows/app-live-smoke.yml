@@ -56,7 +56,8 @@ jobs:
             try {
               const response = await page.goto(process.env.PED_TALK_LIVE_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
               assert.ok(response && response.ok(), 'Published app URL must return a successful HTTP response');
-              await page.waitForFunction(() => !!window.PEDShowcase, null, { timeout: 30000 });
+              await page.locator('#homeView').waitFor({ state: 'visible', timeout: 30000 });
+          await page.locator('.bottom-nav [data-view="the-show"]').waitFor({ state: 'visible', timeout: 15000 });
 
               await page.locator('.bottom-nav [data-view="the-show"]').click();
               await page.locator('#theShowView').waitFor({ state: 'visible' });
