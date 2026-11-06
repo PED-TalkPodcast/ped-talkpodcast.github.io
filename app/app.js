@@ -472,9 +472,31 @@ const bibleBookSelect=document.getElementById('bibleBook');
 const bibleChapterSelect=document.getElementById('bibleChapter');
 const booksView=document.getElementById('booksView');
 const exploreBibleView=document.getElementById('exploreBibleView');
+const fictionDetailView=document.createElement('section');
+fictionDetailView.id='fictionDetailView';fictionDetailView.className='fiction-detail-view';fictionDetailView.hidden=true;fictionDetailView.setAttribute('aria-labelledby','fictionDetailTitle');
+fictionDetailView.innerHTML=`
+<header class="fiction-detail-header"><button type="button" class="fiction-page-back" data-detail-back>‹ Books</button><p class="eyebrow">ANAGKAZO MEDIA LIBRARY</p></header>
+<article class="fiction-detail-card">
+<button type="button" class="fiction-detail-cover-button" aria-expanded="false" aria-controls="fictionDetailDescription" aria-label="Show book description"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg" alt="The Black Man’s Jesus by Antwi Boasiako Papa Kofi book cover"><span class="fiction-detail-cover-hint">Tap cover to discover the story</span></button>
+<div class="fiction-detail-copy"><p class="fiction-book-series">A RENAISSANCE SERIES · A SHORT STORY</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Boasiako Papa Kofi</p>
+<div id="fictionDetailDescription" class="fiction-detail-description" hidden><p>Set across two eras, this story follows Kwamina, a captive in the dungeons of Cape Coast Castle in 1767, and Jeffrey, a Ghanaian-American university student in 2025. Through the account of Archibald Coffie, a Black priest who risks his freedom to bring hope to a fellow prisoner, the story explores compassion, faith, history and the difference between the message of Jesus and the cruelty of people who claim his name.</p></div>
+<button type="button" class="fiction-read-book-button" data-open-fiction-reader>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">The original uploaded book is preserved. Your reading experience opens separately from this book information page.</p>`;
+document.getElementById('fictionView')?.before(fictionDetailView);
+const fictionDetailStyle=document.createElement('style');
+fictionDetailStyle.textContent=`
+.fiction-detail-view{min-height:calc(100dvh - 110px);padding:clamp(18px,4vw,42px) clamp(15px,4vw,38px) 70px;background:var(--app-bg);color:var(--pt-text-primary)}
+.fiction-detail-header{display:flex;align-items:center;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--app-border)}.fiction-detail-header .eyebrow{margin:0;font-size:10px;letter-spacing:.15em}
+.fiction-detail-card{max-width:920px;margin:clamp(22px,5vw,48px) auto 0;padding:clamp(18px,4vw,34px);display:grid;grid-template-columns:minmax(180px,330px) minmax(0,1fr);gap:clamp(22px,5vw,48px);align-items:center;background:var(--pt-surface,#fff);border:1px solid var(--app-border);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.08)}
+.fiction-detail-cover-button{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:center;cursor:pointer}.fiction-detail-cover{display:block;width:100%;height:auto;max-height:470px;object-fit:contain;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.2)}.fiction-detail-cover-hint{display:block;margin-top:12px;font-size:11px;color:var(--pt-text-secondary)}
+.fiction-detail-copy .fiction-book-series{font-size:9px;letter-spacing:.15em;color:#6e9b50;font-weight:800}.fiction-detail-copy h2{margin:12px 0 10px;font:700 clamp(24px,4vw,38px)/1.12 'Playfair Display',Georgia,serif;color:var(--pt-text-primary)}.fiction-detail-copy .fiction-book-author{color:var(--pt-text-secondary);font-size:14px}
+.fiction-detail-description{margin:18px 0;padding:14px 16px;border-left:3px solid #8caf67;background:color-mix(in srgb,var(--pt-surface,#fff) 90%,#8caf67 10%);border-radius:0 10px 10px 0}.fiction-detail-description p{margin:0;color:var(--pt-text-primary);font:400 14px/1.8 'DM Sans',sans-serif}
+.fiction-read-book-button{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;max-width:280px;margin-top:24px;padding:15px 20px;border:0;border-radius:999px;background:#739b55;color:#fff;font:700 14px 'DM Sans',sans-serif;cursor:pointer}.fiction-detail-note{max-width:920px;margin:18px auto;color:var(--pt-text-secondary);font-size:11px;line-height:1.6;text-align:center}
+@media(max-width:640px){.fiction-detail-card{grid-template-columns:1fr;max-width:440px;gap:22px}.fiction-detail-cover{max-height:430px;width:min(100%,300px);margin:auto}.fiction-detail-copy{text-align:center}.fiction-detail-description{text-align:left}.fiction-read-book-button{margin:22px auto 0}.fiction-detail-header{gap:12px}}
+`;
+document.head.appendChild(fictionDetailStyle);
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false,options={}){
- const target=['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible','fiction','hope'].includes(view)?view:'home';
+ const target=['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible','fiction-detail','fiction','hope'].includes(view)?view:'home';
  activeAppView=target;
  const historyMode=options.history||'push';
  if(historyMode!=='none'){
@@ -487,14 +509,14 @@ function showView(view,reference=null,preserveBible=false,options={}){
   else if((window.history.state?.view||'home')!==target)window.history.pushState({pedTalkApp:true,view:target},'',routeHref);
  }
  const readingStatsView=document.getElementById('readingStatsView');
- const next=target==='episodes'?episodesView:target==='saved'?savedEpisodesView:target==='the-show'?theShowView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='explore-bible'?exploreBibleView:target==='fiction'?document.getElementById('fictionView'):target==='hope'?hopeModal:homeView;
+ const next=target==='episodes'?episodesView:target==='saved'?savedEpisodesView:target==='the-show'?theShowView:target==='bible'?bibleView:target==='bible-library'?bibleLibraryView:target==='reading-stats'?readingStatsView:target==='books'?booksView:target==='explore-bible'?exploreBibleView:target==='fiction-detail'?fictionDetailView:target==='fiction'?document.getElementById('fictionView'):target==='hope'?hopeModal:homeView;
  if(target!=='bible'&&typeof finishReadingSession==='function')finishReadingSession();
- [homeView,episodesView,savedEpisodesView,theShowView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView,document.getElementById('fictionView')].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
+ [homeView,episodesView,savedEpisodesView,theShowView,bibleView,bibleLibraryView,readingStatsView,booksView,exploreBibleView,fictionDetailView,document.getElementById('fictionView')].forEach(el=>{if(el){el.hidden=target==='hope'?el!==homeView:el!==next;el.classList.remove('view-enter');}});
  hopeModal.hidden=target!=='hope';
  document.body.classList.toggle('hope-open',target==='hope');
  document.body.classList.remove('modal-open');
  if(target!=='bible')document.body.classList.remove('scripture-reading');
- const navTarget=['bible','bible-library','reading-stats','books','explore-bible','fiction'].includes(target)?'the-show':target;
+ const navTarget=['bible','bible-library','reading-stats','books','explore-bible','fiction-detail','fiction'].includes(target)?'the-show':target;
  document.querySelectorAll('.bottom-nav [data-view]').forEach(button=>{const active=button.dataset.view===navTarget;button.classList.toggle('selected',active);if(active)button.setAttribute('aria-current','page');else button.removeAttribute('aria-current');});
  const token=++viewTransitionToken;
  if(target!=='hope')requestAnimationFrame(()=>{if(token!==viewTransitionToken)return;next.classList.remove('view-enter');void next.offsetWidth;next.classList.add('view-enter');window.setTimeout(()=>{if(token===viewTransitionToken)next.classList.remove('view-enter');},420);});
@@ -1364,7 +1386,7 @@ window.setInterval(universalFlushTick,15000);
 
 // Apply direct-link routes only after all reading and navigation state is initialized.
 const initialRouteView=new URLSearchParams(window.location.search).get('view');
-if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible','fiction'].includes(initialRouteView)){
+if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-library','reading-stats','books','explore-bible','fiction-detail','fiction'].includes(initialRouteView)){
  showView(initialRouteView,null,false,{history:'replace'});
 }
 
@@ -1455,13 +1477,22 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   });
   return documentPromise;
  };
+ fictionDetailView.querySelector('[data-detail-back]')?.addEventListener('click',()=>showView('books'));
+ const coverButton=fictionDetailView.querySelector('.fiction-detail-cover-button');
+ coverButton?.addEventListener('click',()=>{
+  const description=fictionDetailView.querySelector('#fictionDetailDescription');
+  const reveal=description.hidden;description.hidden=!reveal;
+  coverButton.setAttribute('aria-expanded',String(reveal));
+  coverButton.querySelector('.fiction-detail-cover-hint').textContent=reveal?'Tap cover to hide description':'Tap cover to discover the story';
+ });
+ fictionDetailView.querySelector('[data-open-fiction-reader]')?.addEventListener('click',()=>{showView('fiction');prepare().catch(()=>{});});
  document.addEventListener('click',event=>{
   const trigger=event.target.closest('[data-open-fiction-archive]');
-  if(trigger){event.preventDefault();showView('fiction');prepare().catch(()=>{});}
+  if(trigger){event.preventDefault();const url=new URL(window.location.href);url.searchParams.set('view','fiction-detail');window.open(url.href,'_blank','noopener');}
  });
  document.addEventListener('keydown',event=>{
   const trigger=event.target.closest?.('[data-open-fiction-archive]');
-  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('fiction');prepare().catch(()=>{});}
+  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();const url=new URL(window.location.href);url.searchParams.set('view','fiction-detail');window.open(url.href,'_blank','noopener');}
  });
  back?.addEventListener('click',()=>showView('books'));
  const fictionNavBack=document.querySelector('#fictionView [data-view="books"]');
