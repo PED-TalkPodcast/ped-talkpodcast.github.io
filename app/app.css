@@ -3891,3 +3891,14 @@ body.app-light .fiction-view{background:#fff;color:#202b38;--app-border:rgba(32,
 body.app-dark .fiction-view,body:not(.app-light) .fiction-view{background:#0b0e11;color:#f5f7fa;--app-border:rgba(255,255,255,.14)}
 body.app-light .fiction-view .fiction-pdf-page{border-color:rgba(32,43,56,.12)}
 @media(max-width:520px){.fiction-view{padding:18px 16px 56px}.fiction-page-header{gap:12px;padding-bottom:18px}.fiction-cover-stage{width:min(100%,310px);margin-bottom:22px}.fiction-cover-frame{max-height:470px}.fiction-cover-frame canvas{max-height:470px}.fiction-featured-book{padding-top:22px}.fiction-view .fiction-pdf-toolbar{align-items:flex-start}}
+
+/* Dedicated Real Conversations artwork card — kept separate from Voice of Healing. */
+.app-showcase-real{position:relative;overflow:hidden;background:#071b16}
+.app-showcase-real>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.app-showcase-real .voice-shade{background:linear-gradient(180deg,rgba(5,24,17,.04) 20%,rgba(5,24,17,.18) 52%,rgba(5,24,17,.82) 100%)}
+.app-showcase-real .voice-copy .eyebrow{color:#c7e8b2}
+.app-showcase-real .voice-copy h2,.app-showcase-real .voice-copy p:last-child{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.38)}
+body.app-light .app-showcase-real{background:#eef5e9}
+body.app-light .app-showcase-real>img{filter:brightness(1.06) saturate(1.04)}
+body.app-light .app-showcase-real .voice-shade{background:linear-gradient(180deg,rgba(8,35,22,.02) 20%,rgba(8,35,22,.12) 52%,rgba(8,35,22,.76) 100%)}
+body.app-light .app-showcase-real .voice-copy .eyebrow{color:#d8edc9}

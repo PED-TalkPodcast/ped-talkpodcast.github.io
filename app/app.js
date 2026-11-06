@@ -106,13 +106,15 @@ function openDwoopModal(kind='upcoming'){
  const activePlayer=document.getElementById('pedtalkAudioEngine');
  const detailCard=overlay.querySelector('.dwoop-card-expanded');detailCard?.classList.toggle('dwoop-light',document.body.classList.contains('app-light'));
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
- const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):kind==='world'?document.querySelector('.app-showcase-world img'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
+ const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):kind==='world'?document.querySelector('.app-showcase-world img'):kind==='real'?document.querySelector('.app-showcase-real img'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
  if(kind==='upcoming'){
   eyebrow.textContent='PED-TALK · COMING UP NEXT';title.textContent='Upcoming episodes';intro.textContent='A look at the conversations being prepared for you.';
   content.innerHTML=upcomingScheduleRows.length?upcomingScheduleRows.map((ep,index)=>'<article class="dwoop-episode"><span class="dwoop-episode-number">EP '+String(Number(ep.number)||index+1).padStart(2,'0')+'</span><div><h3>'+escapeBibleHTML(ep.title||'Upcoming conversation')+'</h3>'+(ep.subtitle?'<p>'+escapeBibleHTML(ep.subtitle)+'</p>':'')+'</div><span class="dwoop-status">COMING SOON</span></article>').join(''):'<p class="dwoop-empty">The next conversations will appear here when they are announced.</p>';
  }else if(kind==='anagkazo'){
   eyebrow.textContent='THE HOUSE BEHIND THE VOICE';title.textContent='ANAGKAZO.';intro.textContent='Christian · Broadcasting · Media';content.innerHTML='<p class="dwoop-feature-copy">Stories that help the world see a brighter day. A growing media house for conversations, creativity and meaningful stories.</p>';
- }else if(kind==='world'){
+ }else if(kind==='real'){
+   eyebrow.textContent='PED-TALK · ANAGKAZO MEDIA';title.textContent='Real conversations. Brighter days.';intro.textContent='Honest voices, meaningful stories and conversations that help us grow.';content.innerHTML='<p class="dwoop-feature-copy">PED-Talk creates room for honest conversations about faith, family, friendship, relationships and everyday life — helping people see a brighter day.</p>';
+  }else if(kind==='world'){
   eyebrow.textContent='ACROSS EVERY ROOM';title.textContent='Brighter conversations for a wider world.';intro.textContent='Stories that travel beyond one room, one voice and one moment.';content.innerHTML='<p class="dwoop-feature-copy">PED-Talk carries honest conversations into more rooms, more homes and more hearts — always making space for a brighter day.</p>';
  }else{
   eyebrow.textContent='VOICE OF HEALING';title.textContent='There is power in being heard.';intro.textContent='Stories, sound and stillness for the moments that need a gentler place to land.';content.innerHTML='<p class="dwoop-feature-copy">A space for thoughtful conversations and stories that meet people with care.</p>';
@@ -190,12 +192,12 @@ if(showcase){
  showcase.addEventListener('click',event=>{
   if(Date.now()<suppressClickUntil||event.target.closest('button,a,input,textarea,select,[data-view]'))return;
   const slide=event.target.closest('.app-showcase-slide');if(!slide||slides.indexOf(slide)!==slideIndex)return;
-  openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':slideIndex===2?'voice':'world');
+  openDwoopModal(slides[slideIndex].dataset.showcaseKind||(['upcoming','anagkazo','voice','world'][slideIndex]||'real'));
  });
  showcase.addEventListener('keydown',event=>{
   if(event.key==='ArrowRight'){event.preventDefault();showShowcaseSlide(slideIndex+1);return;}
   if(event.key==='ArrowLeft'){event.preventDefault();showShowcaseSlide(slideIndex-1);return;}
-  if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slideIndex===0?'upcoming':slideIndex===1?'anagkazo':slideIndex===2?'voice':'world');}
+  if((event.key==='Enter'||event.key===' ')&&event.target.classList.contains('app-showcase-slide')){event.preventDefault();openDwoopModal(slides[slideIndex].dataset.showcaseKind||(['upcoming','anagkazo','voice','world','real'][slideIndex]||'upcoming'));}
  });
  document.addEventListener('visibilitychange',()=>{if(document.hidden)stopShowcaseTimer();else scheduleShowcaseAdvance();});
  window.PEDShowcase={pause:stopShowcaseTimer,resume:scheduleShowcaseAdvance,goTo:showShowcaseSlide,get activeIndex(){return slideIndex;}};
