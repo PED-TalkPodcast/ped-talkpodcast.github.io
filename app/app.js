@@ -1421,6 +1421,8 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
    const pdfjs=await loadPdfJs();
    pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
    const pdf=await pdfjs.getDocument({url:pdfUrl}).promise;
+   window.__pedTalkFictionPdf=pdf;
+   window.dispatchEvent(new Event('pedTalkFictionPdfReady'));
    pagesRoot.querySelectorAll('.fiction-pdf-page').forEach(node=>node.remove());
    setStatus('The book is ready. Scroll to read all '+pdf.numPages+' pages.');
    const fragment=document.createDocumentFragment(),containers=[];
@@ -1469,4 +1471,96 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  // A direct ?view=fiction route is rendered before this reader controller is attached.
  // MutationObserver does not replay the existing visible state, so initialise it explicitly.
  if(!page.hidden)prepare().catch(()=>{});
+})();
+
+
+/* v140 — continuous-scroll reader controls: progress, bookmarks, search and auto-scroll. */
+(()=>{
+ const page=document.getElementById('fictionView');
+ const pagesRoot=document.getElementById('fictionPdfPages');
+ const reader=document.querySelector('#fictionView .fiction-pdf-reader');
+ if(!page||!pagesRoot||!reader)return;
+ const storageKey='pedtalk-fiction-black-mans-jesus-position-v1';
+ const bookmarkKey='pedtalk-fiction-black-mans-jesus-bookmark-v1';
+ const chrome=document.createElement('div');
+ chrome.className='fiction-reader-chrome';
+ chrome.innerHTML='<div class="fiction-reader-topbar"><button type="button" data-reader-back aria-label="Back to books">‹</button><strong>THE BLACK MAN’S JESUS</strong><button type="button" data-reader-bookmark aria-label="Save bookmark">☆</button><button type="button" data-reader-search-toggle aria-label="Search in book">⌕</button><button type="button" data-reader-more aria-label="Reader options">⋯</button></div><div class="fiction-reader-search" hidden><input type="search" data-reader-search placeholder="Search this book…" aria-label="Search this book"><button type="button" data-reader-search-go>Find</button><span data-reader-search-status></span></div><div class="fiction-reader-options" hidden><label>Auto-scroll speed <input data-reader-speed type="range" min="1" max="8" value="2"></label><button type="button" data-reader-auto>Start auto-scroll</button><button type="button" data-reader-resume>Resume bookmark</button></div><div class="fiction-reader-bottombar"><span data-reader-percent>0% read</span><input data-reader-progress type="range" min="0" max="1000" value="0" aria-label="Reading progress"><span data-reader-page>Scroll to read</span></div>';
+ reader.prepend(chrome);
+ const topbar=chrome.querySelector('.fiction-reader-topbar');
+ const bottom=chrome.querySelector('.fiction-reader-bottombar');
+ const searchPanel=chrome.querySelector('.fiction-reader-search');
+ const options=chrome.querySelector('.fiction-reader-options');
+ const progress=chrome.querySelector('[data-reader-progress]');
+ const percent=chrome.querySelector('[data-reader-percent]');
+ const pageLabel=chrome.querySelector('[data-reader-page]');
+ const searchInput=chrome.querySelector('[data-reader-search]');
+ const searchStatus=chrome.querySelector('[data-reader-search-status]');
+ let autoFrame=0,lastFrame=0,autoRunning=false,hideTimer=0,scrollingFromSlider=false;
+ const maxScroll=()=>Math.max(1,page.scrollHeight-page.clientHeight);
+ const currentPercent=()=>Math.max(0,Math.min(1,page.scrollTop/maxScroll()));
+ const update=()=>{
+  const value=currentPercent();
+  percent.textContent=Math.round(value*100)+'% read';
+  if(!scrollingFromSlider)progress.value=String(Math.round(value*1000));
+  const pages=pagesRoot.querySelectorAll('.fiction-pdf-page');
+  let current=0;
+  pages.forEach((el,index)=>{if(el.offsetTop-page.offsetTop<=page.scrollTop+page.clientHeight*.35)current=index+1;});
+  pageLabel.textContent=pages.length?(current+' / '+pages.length+' sections'):'Scroll to read';
+  try{localStorage.setItem(storageKey,String(value));}catch(e){}
+ };
+ const reveal=()=>{page.classList.remove('fiction-chrome-hidden');clearTimeout(hideTimer);hideTimer=setTimeout(()=>page.classList.add('fiction-chrome-hidden'),2600);};
+ const stopAuto=()=>{autoRunning=false;cancelAnimationFrame(autoFrame);chrome.querySelector('[data-reader-auto]').textContent='Start auto-scroll';};
+ const autoStep=now=>{
+  if(!autoRunning)return;
+  if(!lastFrame)lastFrame=now;
+  const delta=Math.min(40,now-lastFrame);lastFrame=now;
+  const speed=Number(chrome.querySelector('[data-reader-speed]').value)||2;
+  page.scrollTop+=delta*speed*.035;
+  if(page.scrollTop>=maxScroll()-1){stopAuto();return;}
+  autoFrame=requestAnimationFrame(autoStep);
+ };
+ const startAuto=()=>{if(autoRunning){stopAuto();return;}autoRunning=true;lastFrame=0;chrome.querySelector('[data-reader-auto]').textContent='Pause auto-scroll';autoFrame=requestAnimationFrame(autoStep);reveal();};
+ chrome.querySelector('[data-reader-back]').addEventListener('click',()=>showView('books'));
+ chrome.querySelector('[data-reader-bookmark]').addEventListener('click',()=>{
+  try{localStorage.setItem(bookmarkKey,String(currentPercent()));chrome.querySelector('[data-reader-bookmark]').textContent='★';}catch(e){}
+  reveal();
+ });
+ chrome.querySelector('[data-reader-search-toggle]').addEventListener('click',()=>{searchPanel.hidden=!searchPanel.hidden;options.hidden=true;if(!searchPanel.hidden)searchInput.focus();reveal();});
+ chrome.querySelector('[data-reader-more]').addEventListener('click',()=>{options.hidden=!options.hidden;searchPanel.hidden=true;reveal();});
+ chrome.querySelector('[data-reader-auto]').addEventListener('click',startAuto);
+ chrome.querySelector('[data-reader-resume]').addEventListener('click',()=>{
+  try{const value=Number(localStorage.getItem(bookmarkKey));if(Number.isFinite(value))page.scrollTop=value*maxScroll();}catch(e){}
+  reveal();update();
+ });
+ progress.addEventListener('input',()=>{scrollingFromSlider=true;page.scrollTop=(Number(progress.value)/1000)*maxScroll();scrollingFromSlider=false;update();reveal();});
+ page.addEventListener('scroll',()=>{update();if(autoRunning)reveal();},{passive:true});
+ page.addEventListener('click',event=>{
+  if(event.target.closest('.fiction-reader-chrome,button,a,input'))return;
+  if(event.target.closest('.fiction-pdf-page-canvas')){page.classList.toggle('fiction-chrome-hidden');if(!page.classList.contains('fiction-chrome-hidden'))reveal();}
+ });
+ const runSearch=async()=>{
+  const term=searchInput.value.trim().toLowerCase();
+  const pdf=window.__pedTalkFictionPdf;
+  if(!term){searchStatus.textContent='Enter a word or phrase.';return;}
+  if(!pdf){searchStatus.textContent='The book is still loading.';return;}
+  searchStatus.textContent='Searching…';
+  try{
+   for(let n=1;n<=pdf.numPages;n++){
+    const content=await (await pdf.getPage(n)).getTextContent();
+    const text=content.items.map(item=>item.str||'').join(' ').toLowerCase();
+    if(text.includes(term)){
+     const target=pagesRoot.querySelectorAll('.fiction-pdf-page')[n-1];
+     if(target){page.scrollTo({top:Math.max(0,target.offsetTop-page.offsetTop-18),behavior:'smooth'});searchStatus.textContent='Found on section '+n+'.';reveal();return;}
+    }
+   }
+   searchStatus.textContent='No match found in the book.';
+  }catch(e){searchStatus.textContent='Search is unavailable for this PDF.';}
+ };
+ chrome.querySelector('[data-reader-search-go]').addEventListener('click',runSearch);
+ searchInput.addEventListener('keydown',event=>{if(event.key==='Enter')runSearch();});
+ window.addEventListener('pedTalkFictionPdfReady',()=>{
+  try{const saved=Number(localStorage.getItem(storageKey));if(Number.isFinite(saved)&&saved>0&&saved<1){setTimeout(()=>{page.scrollTop=saved*maxScroll();update();},250);}}catch(e){}
+  try{if(localStorage.getItem(bookmarkKey)!==null)chrome.querySelector('[data-reader-bookmark]').textContent='★';}catch(e){}
+ });
+ update();
 })();
