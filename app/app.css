@@ -3747,3 +3747,6 @@ body.app-light .current-season-section .episode-open-card .episode-art{
 .dwoop-overlay.dwoop-episode-mode .episode-secondary-controls button{color:#b7d98e!important;background:transparent!important;border:0!important}
 .dwoop-overlay.dwoop-episode-mode .episode-feature-description{color:#aeb8c1!important;font-size:12px!important;line-height:1.75!important}
 @media(prefers-reduced-motion:reduce){.episode-live-waveform.is-playing i{animation:none!important;transform:scaleY(.55)!important}}
+
+/* v132 — enforce a genuinely unboxed scripture wallpaper in both themes. */
+#hopeModal .hope-modal-panel,body.app-light #hopeModal .hope-modal-panel,body.app-dark #hopeModal .hope-modal-panel{background:transparent!important;background-color:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
