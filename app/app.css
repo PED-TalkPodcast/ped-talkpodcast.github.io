@@ -3852,3 +3852,16 @@ body.fiction-archive-open{overflow:hidden}
 
 /* Fiction Archive PDF reader */
 .fiction-pdf-reader{margin-top:26px;border-top:1px solid rgba(183,213,138,.2);padding-top:18px}.fiction-pdf-toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}.fiction-pdf-toolbar strong{font-size:10px;letter-spacing:.14em;color:#b7d58a}.fiction-pdf-toolbar>div{display:flex;gap:14px;flex-wrap:wrap}.fiction-pdf-toolbar a{color:#dcebd0;font-size:11px;font-weight:700;text-decoration:none;border-bottom:1px solid rgba(183,213,138,.45);padding-bottom:3px}.fiction-pdf-toolbar a:hover,.fiction-pdf-toolbar a:focus-visible{color:#b7d58a}.fiction-pdf-frame{display:block;width:100%;height:min(72vh,820px);min-height:520px;border:1px solid rgba(183,213,138,.22);border-radius:12px;background:#f5f3ed}@media(max-width:520px){.fiction-pdf-frame{height:68vh;min-height:430px}.fiction-pdf-toolbar{align-items:flex-start}.fiction-pdf-toolbar>div{gap:12px}}
+
+/* Fiction Archive: crisp PDF-rendered cover and responsive in-app page reader. */
+.fiction-cover-canvas{display:block;width:100%;height:100%;object-fit:contain;background:#f5f3ed}
+.fiction-book-cover-wrap .fiction-cover-canvas{width:100%;height:100%;object-fit:cover}
+.fiction-book-detail-layout>.fiction-cover-canvas{width:100%;height:auto;aspect-ratio:2/3;object-fit:contain;border-radius:10px;box-shadow:0 16px 32px rgba(0,0,0,.32)}
+.fiction-pdf-pages{display:grid;gap:18px;min-height:160px}
+.fiction-pdf-loading{padding:22px;border:1px solid rgba(183,213,138,.22);border-radius:12px;color:#d8e5d5;font-size:13px;line-height:1.6}
+.fiction-pdf-page{overflow:hidden;background:#f5f3ed;border:1px solid rgba(183,213,138,.22);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.2)}
+.fiction-pdf-page-number{display:block;padding:8px 12px;background:#e9e6dd;color:#435044;font:700 9px 'DM Sans',sans-serif;letter-spacing:.12em}
+.fiction-pdf-page-canvas{width:100%;min-height:180px;color:#435044}
+.fiction-pdf-page-canvas canvas{display:block;width:100%;height:auto}
+.fiction-pdf-page-canvas:not(:has(canvas)){padding:24px;font-size:12px;line-height:1.6}
+@media(max-width:520px){.fiction-pdf-pages{gap:12px}.fiction-pdf-page{border-radius:7px}.fiction-pdf-loading{padding:16px}}
