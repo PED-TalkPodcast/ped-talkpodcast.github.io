@@ -2,7 +2,7 @@ name: PED-Talk live deployment smoke test
 
 on:
   workflow_run:
-    workflows: ["pages build and deployment"]
+    workflows: ["PED-Talk app regression"]
     types: [completed]
     branches: [main]
 
