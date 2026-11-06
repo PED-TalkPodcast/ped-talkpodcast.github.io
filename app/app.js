@@ -1403,10 +1403,9 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  const page=document.getElementById('fictionView');
  const pagesRoot=document.getElementById('fictionPdfPages');
  const status=document.getElementById('fictionPdfStatus');
- const coverCanvas=document.getElementById('fictionCoverCanvas');
  const back=document.getElementById('fictionPageBack');
  const pdfUrl=new URL("./assets/books/I%20am%20sharing%20%27THE%20BLACK%20MAN%27S%20JESUS%27%20with%20you.pdf",document.baseURI).href;
- if(!page||!pagesRoot||!status||!coverCanvas)return;
+ if(!page||!pagesRoot||!status)return;
  let documentPromise=null,observer=null;
  const setStatus=message=>{status.textContent=message;};
  const loadPdfJs=()=>{
@@ -1498,13 +1497,6 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
     if(entry.isIntersecting){const item=containers.find(row=>row.host===entry.target);if(item)renderPage(pdf,item.number,item.host);observer.unobserve(entry.target);}
    }),{root:page,rootMargin:'700px 0px'});
    containers.forEach(item=>observer.observe(item.host));
-   const cover=await pdf.getPage(1);
-   const coverBase=cover.getViewport({scale:1});
-   const coverScale=Math.min(6,Math.max(3.5,(window.devicePixelRatio||1)*4.2,1400/coverBase.width));
-   const coverViewport=cover.getViewport({scale:coverScale});
-   coverCanvas.width=Math.ceil(coverViewport.width);coverCanvas.height=Math.ceil(coverViewport.height);
-   coverCanvas.style.width='100%';coverCanvas.style.height='auto';
-   await cover.render({canvasContext:coverCanvas.getContext('2d',{alpha:false}),viewport:coverViewport}).promise;
    await renderPage(pdf,1,containers[0].host);
    return pdf;
   })().catch(error=>{
