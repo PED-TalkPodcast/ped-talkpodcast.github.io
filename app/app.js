@@ -1367,3 +1367,45 @@ if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-librar
 }
 
 document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
+
+/* Fiction Archive: an in-app archive window, not a navigation tab. */
+(()=>{
+ const modal=document.getElementById('fictionArchiveModal');
+ const windowEl=modal?.querySelector('.fiction-archive-window');
+ const collection=document.getElementById('fictionArchiveCollection');
+ const details=document.getElementById('fictionBookDetails');
+ const entry=document.getElementById('fictionBookEntry');
+ const back=document.getElementById('fictionArchiveBack');
+ let returnFocus=null;
+ if(!modal||!windowEl||!collection||!details||!entry||!back)return;
+ const close=()=>{
+  modal.hidden=true;modal.setAttribute('aria-hidden','true');document.body.classList.remove('fiction-archive-open');
+  collection.hidden=false;details.hidden=true;
+  if(returnFocus?.isConnected)returnFocus.focus();
+ };
+ const open=trigger=>{
+  returnFocus=trigger;modal.hidden=false;modal.setAttribute('aria-hidden','false');document.body.classList.add('fiction-archive-open');
+  collection.hidden=false;details.hidden=true;windowEl.focus();
+ };
+ document.addEventListener('click',event=>{
+  const trigger=event.target.closest('[data-open-fiction-archive]');
+  if(trigger){event.preventDefault();open(trigger);return;}
+  if(event.target.closest('[data-fiction-close]')){close();return;}
+ });
+ document.addEventListener('keydown',event=>{
+  const trigger=event.target.closest?.('[data-open-fiction-archive]');
+  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();open(trigger);return;}
+  if(modal.hidden)return;
+  if(event.key==='Escape'){event.preventDefault();close();return;}
+  if(event.key==='Tab'){
+   const focusable=[...modal.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter(el=>!el.hidden);
+   if(!focusable.length)return;
+   const first=focusable[0],last=focusable[focusable.length-1];
+   if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}
+   else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}
+  }
+ });
+ entry.addEventListener('click',()=>{collection.hidden=true;details.hidden=false;back.focus();});
+ back.addEventListener('click',()=>{details.hidden=true;collection.hidden=false;entry.focus();});
+ modal.querySelectorAll('.fiction-book-cover,.fiction-book-detail-cover').forEach(img=>img.addEventListener('error',()=>{img.classList.add('cover-unavailable');img.parentElement?.classList.add('cover-pending')}));
+})();
