@@ -477,10 +477,10 @@ fictionDetailView.id='fictionDetailView';fictionDetailView.className='fiction-de
 fictionDetailView.innerHTML=`
 <header class="fiction-detail-header"><button type="button" class="fiction-page-back" data-detail-back>‹ Books</button><p class="eyebrow">ANAGKAZO MEDIA LIBRARY</p></header>
 <article class="fiction-detail-card">
-<button type="button" class="fiction-detail-cover-button" aria-expanded="false" aria-controls="fictionDetailDescription" aria-label="Open The Black Man’s Jesus book details"><span class="fiction-detail-cover-frame"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg?v=2" alt="The Black Man’s Jesus by Antwi Boasiako Papa Kofi book cover"></span><span class="fiction-detail-cover-hint">Tap the book to view its description</span></button>
-<div class="fiction-detail-copy"><p class="fiction-book-series">FICTION · ANAGKAZO MEDIA</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Boasiako Papa Kofi</p>
-<div id="fictionDetailDescription" class="fiction-detail-description" hidden><p>Set across two eras, this story follows Kwamina, a captive in the dungeons of Cape Coast Castle in 1767, and Jeffrey, a Ghanaian-American university student in 2025. Through the account of Archibald Coffie, a Black priest who risks his freedom to bring hope to a fellow prisoner, the story explores compassion, faith, history and the difference between the message of Jesus and the cruelty of people who claim his name.</p></div>
-<button type="button" class="fiction-read-book-button" data-open-fiction-reader hidden>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">Choose the book cover to discover the story, then select Read Book to begin.</p>`;
+<button type="button" class="fiction-detail-cover-button" aria-expanded="true" aria-controls="fictionDetailDescription" aria-label="Show or hide the book summary"><span class="fiction-detail-cover-frame"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg?v=2" alt="The Black Man’s Jesus by Antwi Bosiako Papa Kofi book cover"></span><span class="fiction-detail-cover-hint">Book cover · tap to hide or show summary</span></button>
+<div class="fiction-detail-copy"><p class="fiction-book-series">FICTION · ANAGKAZO MEDIA</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Bosiako Papa Kofi</p>
+<div id="fictionDetailDescription" class="fiction-detail-description"><p>Set across two eras, this story follows Kwamina, a captive in the dungeons of Cape Coast Castle in 1767, and Jeffrey, a Ghanaian-American university student in 2025. Through the account of Archibald Coffie, a Black priest who risks his freedom to bring hope to a fellow prisoner, the story explores compassion, faith, history and the difference between the message of Jesus and the cruelty of people who claim his name.</p></div>
+<button type="button" class="fiction-read-book-button" data-open-fiction-reader>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">Read the complete story inside PED-Talk. Your reading progress is saved on this device.</p>`;
 document.getElementById('fictionView')?.before(fictionDetailView);
 const fictionDetailStyle=document.createElement('style');
 fictionDetailStyle.textContent=`
@@ -1509,7 +1509,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
    return pdf;
   })().catch(error=>{
    documentPromise=null;
-   setStatus('The in-app reader could not load on this device. Use Open separately to read the original PDF, or Download PDF to save it.');
+   status.innerHTML='The book could not be loaded. Check your connection and try again.';const retry=document.createElement('button');retry.type='button';retry.className='fiction-reader-retry';retry.textContent='Try again';retry.addEventListener('click',()=>{documentPromise=null;pagesRoot.querySelectorAll('.fiction-pdf-page').forEach(node=>node.remove());prepare().catch(()=>{});});status.appendChild(retry);
    console.warn('Fiction book could not be opened in-app',error);
    throw error;
   });
@@ -1528,18 +1528,18 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  coverButton?.addEventListener('click',()=>{
   const description=fictionDetailView.querySelector('#fictionDetailDescription');
   const reveal=description.hidden;description.hidden=!reveal;
-  if(readButton)readButton.hidden=!reveal;
+  if(readButton)readButton.hidden=false;
   coverButton.setAttribute('aria-expanded',String(reveal));
-  if(coverHint)coverHint.textContent=reveal?'Tap again to hide the description':'Tap the book to view its description';
+  if(coverHint)coverHint.textContent=reveal?'Book cover · tap to hide summary':'Book cover · tap to show summary';
  });
  fictionDetailView.querySelector('[data-open-fiction-reader]')?.addEventListener('click',()=>{showView('fiction');prepare().catch(()=>{});});
  document.addEventListener('click',event=>{
   const trigger=event.target.closest('[data-open-fiction-archive]');
-  if(trigger){event.preventDefault();const url=new URL(window.location.href);url.searchParams.set('view','fiction-detail');window.open(url.href,'_blank','noopener');}
+  if(trigger){event.preventDefault();showView('fiction-detail');}
  });
  document.addEventListener('keydown',event=>{
   const trigger=event.target.closest?.('[data-open-fiction-archive]');
-  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();const url=new URL(window.location.href);url.searchParams.set('view','fiction-detail');window.open(url.href,'_blank','noopener');}
+  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('fiction-detail');}
  });
  back?.addEventListener('click',()=>showView('fiction-detail'));
  const fictionNavBack=document.querySelector('#fictionView [data-view="books"]');
