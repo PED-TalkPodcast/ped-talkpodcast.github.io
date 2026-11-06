@@ -3844,3 +3844,8 @@ body.app-dark :is(input,textarea,select)::placeholder{color:#A7B3C0;opacity:1}
 .fiction-access-note{padding:12px 14px;border-left:2px solid #b7d58a;background:rgba(183,213,138,.07);color:#d8e5d5;font-size:11px;line-height:1.6}
 body.fiction-archive-open{overflow:hidden}
 @media(max-width:520px){.fiction-archive-modal{padding:10px}.fiction-archive-window{max-height:calc(100dvh - 20px);border-radius:19px;padding:20px 16px}.fiction-book-entry{gap:14px;padding:11px}.fiction-book-cover-wrap{flex-basis:94px}.fiction-book-detail-layout{grid-template-columns:112px minmax(0,1fr);gap:15px}.fiction-book-detail-copy h3{font-size:21px}}
+
+.fiction-book-cover.cover-unavailable,.fiction-book-detail-cover.cover-unavailable{display:none}
+.fiction-book-cover-wrap.cover-pending{display:grid;place-items:center;padding:10px;background:linear-gradient(145deg,#eee6d4,#b5a78d);color:#27382a;text-align:center}
+.fiction-book-cover-wrap.cover-pending::after{content:"Original book cover";font:700 10px/1.4 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.fiction-book-detail-layout.cover-pending::before{content:"Original book cover";display:grid;place-items:center;aspect-ratio:2/3;border-radius:10px;background:linear-gradient(145deg,#eee6d4,#b5a78d);color:#27382a;text-align:center;font:700 10px/1.4 'DM Sans',sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:10px}
