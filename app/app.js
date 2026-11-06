@@ -477,22 +477,28 @@ fictionDetailView.id='fictionDetailView';fictionDetailView.className='fiction-de
 fictionDetailView.innerHTML=`
 <header class="fiction-detail-header"><button type="button" class="fiction-page-back" data-detail-back>‹ Books</button><p class="eyebrow">ANAGKAZO MEDIA LIBRARY</p></header>
 <article class="fiction-detail-card">
-<button type="button" class="fiction-detail-cover-button" aria-expanded="false" aria-controls="fictionDetailDescription" aria-label="Show book description"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg" alt="The Black Man’s Jesus by Antwi Boasiako Papa Kofi book cover"><span class="fiction-detail-cover-hint">Tap cover to discover the story</span></button>
-<div class="fiction-detail-copy"><p class="fiction-book-series">A RENAISSANCE SERIES · A SHORT STORY</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Boasiako Papa Kofi</p>
+<button type="button" class="fiction-detail-cover-button" aria-expanded="false" aria-controls="fictionDetailDescription" aria-label="Open The Black Man’s Jesus book details"><span class="fiction-detail-cover-frame"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg?v=2" alt="The Black Man’s Jesus by Antwi Boasiako Papa Kofi book cover"></span><span class="fiction-detail-cover-hint">Tap the book to view its description</span></button>
+<div class="fiction-detail-copy"><p class="fiction-book-series">FICTION · ANAGKAZO MEDIA</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Boasiako Papa Kofi</p>
 <div id="fictionDetailDescription" class="fiction-detail-description" hidden><p>Set across two eras, this story follows Kwamina, a captive in the dungeons of Cape Coast Castle in 1767, and Jeffrey, a Ghanaian-American university student in 2025. Through the account of Archibald Coffie, a Black priest who risks his freedom to bring hope to a fellow prisoner, the story explores compassion, faith, history and the difference between the message of Jesus and the cruelty of people who claim his name.</p></div>
-<button type="button" class="fiction-read-book-button" data-open-fiction-reader>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">The original uploaded book is preserved. Your reading experience opens separately from this book information page.</p>`;
+<button type="button" class="fiction-read-book-button" data-open-fiction-reader hidden>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">Choose the book cover to discover the story, then select Read Book to begin.</p>`;
 document.getElementById('fictionView')?.before(fictionDetailView);
 const fictionDetailStyle=document.createElement('style');
 fictionDetailStyle.textContent=`
 .fiction-detail-view{min-height:calc(100dvh - 110px);padding:clamp(18px,4vw,42px) clamp(15px,4vw,38px) 70px;background:var(--app-bg);color:var(--pt-text-primary)}
 .fiction-detail-header{display:flex;align-items:center;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--app-border)}.fiction-detail-header .eyebrow{margin:0;font-size:10px;letter-spacing:.15em}
-.fiction-detail-card{max-width:920px;margin:clamp(22px,5vw,48px) auto 0;padding:clamp(18px,4vw,34px);display:grid;grid-template-columns:minmax(180px,330px) minmax(0,1fr);gap:clamp(22px,5vw,48px);align-items:center;background:var(--pt-surface,#fff);border:1px solid var(--app-border);border-radius:20px;box-shadow:0 16px 48px rgba(0,0,0,.08)}
-.fiction-detail-cover-button{display:block;width:100%;padding:0;border:0;background:transparent;color:inherit;text-align:center;cursor:pointer}.fiction-detail-cover{display:block;width:100%;height:auto;max-height:470px;object-fit:contain;border-radius:8px;box-shadow:0 14px 30px rgba(0,0,0,.2)}.fiction-detail-cover-hint{display:block;margin-top:12px;font-size:11px;color:var(--pt-text-secondary)}
-.fiction-detail-copy .fiction-book-series{font-size:9px;letter-spacing:.15em;color:#6e9b50;font-weight:800}.fiction-detail-copy h2{margin:12px 0 10px;font:700 clamp(24px,4vw,38px)/1.12 'Playfair Display',Georgia,serif;color:var(--pt-text-primary)}.fiction-detail-copy .fiction-book-author{color:var(--pt-text-secondary);font-size:14px}
-.fiction-detail-description{margin:18px 0;padding:14px 16px;border-left:3px solid #8caf67;background:color-mix(in srgb,var(--pt-surface,#fff) 90%,#8caf67 10%);border-radius:0 10px 10px 0}.fiction-detail-description p{margin:0;color:var(--pt-text-primary);font:400 14px/1.8 'DM Sans',sans-serif}
-.fiction-read-book-button{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;max-width:280px;margin-top:24px;padding:15px 20px;border:0;border-radius:999px;background:#739b55;color:#fff;font:700 14px 'DM Sans',sans-serif;cursor:pointer}.fiction-detail-note{max-width:920px;margin:18px auto;color:var(--pt-text-secondary);font-size:11px;line-height:1.6;text-align:center}
-@media(max-width:640px){.fiction-detail-card{grid-template-columns:1fr;max-width:440px;gap:22px}.fiction-detail-cover{max-height:430px;width:min(100%,300px);margin:auto}.fiction-detail-copy{text-align:center}.fiction-detail-description{text-align:left}.fiction-read-book-button{margin:22px auto 0}.fiction-detail-header{gap:12px}}
+.fiction-detail-card{width:min(100%,620px);margin:clamp(28px,8vh,76px) auto 0;padding:20px;display:flex;flex-direction:row;gap:20px;align-items:center;background:var(--pt-surface,#fff);border:1px solid var(--app-border);border-radius:18px;box-shadow:0 12px 36px rgba(0,0,0,.07)}
+.fiction-detail-cover-button{display:flex;flex:0 0 112px;flex-direction:column;align-items:center;width:112px;padding:0;border:0;background:transparent;color:inherit;text-align:center;cursor:pointer}
+.fiction-detail-cover-frame{display:grid;place-items:center;width:104px;height:156px;overflow:hidden;border-radius:7px;background:linear-gradient(145deg,#eee9dc,#c9c1ae);box-shadow:0 9px 22px rgba(0,0,0,.2)}
+.fiction-detail-cover{display:block;width:100%;height:100%;object-fit:cover;border-radius:7px}
+.fiction-detail-cover-hint{display:block;width:112px;margin-top:9px;font-size:9px;line-height:1.4;color:var(--pt-text-secondary)}
+.fiction-detail-copy{min-width:0;flex:1}.fiction-detail-copy .fiction-book-series{font-size:9px;letter-spacing:.15em;color:#6e9b50;font-weight:800}.fiction-detail-copy h2{margin:8px 0;font:700 clamp(18px,3vw,25px)/1.15 'Playfair Display',Georgia,serif;color:var(--pt-text-primary)}.fiction-detail-copy .fiction-book-author{color:var(--pt-text-secondary);font-size:12px;margin:0}
+.fiction-detail-description{margin:16px 0 0;padding:13px 14px;border-left:3px solid #8caf67;background:color-mix(in srgb,var(--pt-surface,#fff) 90%,#8caf67 10%);border-radius:0 10px 10px 0}.fiction-detail-description p{margin:0;color:var(--pt-text-primary);font:400 13px/1.75 'DM Sans',sans-serif}
+.fiction-read-book-button{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;max-width:250px;margin-top:16px;padding:13px 18px;border:0;border-radius:999px;background:#739b55;color:#fff;font:700 13px 'DM Sans',sans-serif;cursor:pointer}.fiction-read-book-button[hidden]{display:none!important}
+.fiction-detail-note{max-width:620px;margin:16px auto;color:var(--pt-text-secondary);font-size:10px;line-height:1.6;text-align:center}
+@media(max-width:430px){.fiction-detail-card{gap:14px;padding:14px}.fiction-detail-cover-button{flex-basis:94px;width:94px}.fiction-detail-cover-frame{width:88px;height:132px}.fiction-detail-cover-hint{width:94px;font-size:8px}.fiction-detail-copy h2{font-size:18px}.fiction-detail-copy .fiction-book-author{font-size:11px}}
+.fiction-detail-cover-button:focus-visible{outline:2px solid #8caf67;outline-offset:5px;border-radius:8px}
 `;
+fictionDetailStyle.textContent+=" \n/* v141 — compact book tile, readable reflow text and clear reader navigation. */\n.fiction-reflow-content{max-width:760px;margin:0 auto;padding:clamp(22px,5vw,48px) clamp(20px,5vw,54px);background:var(--pt-surface,#fff);color:var(--pt-text-primary);font-family:Georgia,'Times New Roman',serif;font-size:var(--fiction-reader-font-size,18px);line-height:1.9;letter-spacing:.005em}\n.fiction-reflow-content p{margin:0 0 1.25em;text-align:left;white-space:normal;overflow-wrap:anywhere}\n.fiction-reflow-content p:last-child{margin-bottom:0}\n.fiction-view .fiction-pdf-page{background:var(--pt-surface,#fff);border-color:var(--app-border);border-radius:10px}\n.fiction-view .fiction-pdf-page-number{background:transparent;color:var(--pt-text-tertiary);padding:12px 20px 0;font-size:9px}\n.fiction-view .fiction-pdf-page-canvas{min-height:90px}\n.fiction-reader-topbar button,.fiction-reader-bottombar button{min-width:34px;min-height:34px}\n.fiction-reader-bottombar button{border:1px solid var(--app-border);border-radius:50%;background:transparent;color:var(--pt-text-primary);font-size:18px;line-height:1}\n.fiction-reader-bottombar{gap:7px}\n.fiction-reader-bottombar span{font-variant-numeric:tabular-nums}\n.fiction-view .fiction-featured-book{padding-top:16px;padding-bottom:0}\n.fiction-view .fiction-cover-stage{width:min(100%,116px);margin:0 auto 12px}\n.fiction-view .fiction-cover-frame{max-height:none}\n.fiction-view .fiction-cover-frame canvas{max-height:none}\n.fiction-view .fiction-cover-desk{margin-top:7px}\n.fiction-view .fiction-featured-copy{padding-bottom:4px}\n.fiction-view .fiction-featured-copy h3{font-size:18px}\n@media(max-width:520px){.fiction-reflow-content{padding:22px 19px;font-size:var(--fiction-reader-font-size,18px);line-height:1.85}.fiction-reader-topbar{flex-wrap:wrap}.fiction-reader-topbar strong{flex-basis:100%;order:-1}.fiction-reader-bottombar{gap:5px}.fiction-reader-bottombar span{font-size:9px}}\n";
 document.head.appendChild(fictionDetailStyle);
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false,options={}){
@@ -1415,24 +1421,56 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   });
   return window.__pedTalkPdfJsPromise;
  };
+ const escapeReaderText=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
  const renderPage=async(pdf,pageNumber,container)=>{
   if(container.dataset.rendered==='true'||container.dataset.rendering==='true')return;
   container.dataset.rendering='true';
   try{
    const pdfPage=await pdf.getPage(pageNumber);
+   const textContent=await pdfPage.getTextContent();
+   const items=(textContent.items||[]).filter(item=>typeof item.str==='string'&&item.str.trim());
+   if(items.length){
+    const lines=[];
+    items.forEach(item=>{
+     const y=Number(item.transform?.[5]||0);
+     let line=lines.find(candidate=>Math.abs(candidate.y-y)<3.2);
+     if(!line){line={y,items:[]};lines.push(line);}
+     line.items.push(item);
+    });
+    lines.sort((a,b)=>b.y-a.y);
+    const heights=items.map(item=>Number(item.height)||10).filter(value=>value>0).sort((a,b)=>a-b);
+    const typicalHeight=heights[Math.floor(heights.length/2)]||10;
+    const paragraphs=[];let paragraph='',previousY=null;
+    lines.forEach(line=>{
+     line.items.sort((a,b)=>(Number(a.transform?.[4])||0)-(Number(b.transform?.[4])||0));
+     const lineText=line.items.map(item=>item.str).join(' ').replace(/\s+/g,' ').trim();
+     if(!lineText)return;
+     const gap=previousY===null?0:previousY-line.y;
+     if(paragraph&&gap>typicalHeight*1.85){paragraph=paragraph.replace(/-$/,'');paragraph=paragraph.trim();if(paragraph)paragraphs.push(paragraph);paragraph='';}
+     if(paragraph){paragraph+=/[-‐‑]$/.test(paragraph)?lineText:' '+lineText;}else paragraph=lineText;
+     previousY=line.y;
+    });
+    if(paragraph.trim())paragraphs.push(paragraph.trim());
+    const article=document.createElement('article');article.className='fiction-reflow-content';
+    paragraphs.forEach(text=>{
+     const p=document.createElement('p');p.textContent=text;article.appendChild(p);
+    });
+    if(article.childElementCount){container.replaceChildren(article);container.dataset.rendered='true';container.dataset.rendering='false';return;}
+   }
+   // Image-only pages retain the source PDF appearance when no selectable text exists.
    const width=Math.max(280,Math.min(container.clientWidth||760,1000));
    const base=pdfPage.getViewport({scale:1});
-   const scale=Math.min(3,Math.max(1.5,width/base.width*(window.devicePixelRatio||1)*1.35));
+   const scale=Math.min(2.5,Math.max(1.25,width/base.width*(window.devicePixelRatio||1)*1.15));
    const viewport=pdfPage.getViewport({scale});
    const canvas=document.createElement('canvas');
    canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Page '+pageNumber+' of The Black Man’s Jesus');
+   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Scanned page '+pageNumber+' of The Black Man’s Jesus');
    canvas.style.width='100%';canvas.style.height='auto';canvas.style.display='block';
    await pdfPage.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;
-   container.replaceChildren(canvas);container.dataset.rendered='true';
+   container.replaceChildren(canvas);container.dataset.rendered='true';container.dataset.rendering='false';
   }catch(error){
    container.dataset.rendering='false';
-   container.textContent='This page could not be displayed here. Use Open separately or Download PDF above.';
+   container.textContent='This page could not be displayed. Check your connection and try again.';
    console.warn('Fiction page render failed',pageNumber,error);
   }
  };
@@ -1479,11 +1517,20 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  };
  fictionDetailView.querySelector('[data-detail-back]')?.addEventListener('click',()=>showView('books'));
  const coverButton=fictionDetailView.querySelector('.fiction-detail-cover-button');
+ const coverImage=fictionDetailView.querySelector('.fiction-detail-cover');
+ const readButton=fictionDetailView.querySelector('[data-open-fiction-reader]');
+ const coverHint=coverButton?.querySelector('.fiction-detail-cover-hint');
+ coverImage?.addEventListener('error',()=>{
+  coverImage.hidden=true;
+  const frame=coverImage.closest('.fiction-detail-cover-frame');
+  if(frame){frame.textContent='THE BLACK MAN’S JESUS';frame.style.padding='10px';frame.style.textAlign='center';frame.style.font='700 10px/1.5 Georgia,serif';frame.style.color='#27382a';}
+ });
  coverButton?.addEventListener('click',()=>{
   const description=fictionDetailView.querySelector('#fictionDetailDescription');
   const reveal=description.hidden;description.hidden=!reveal;
+  if(readButton)readButton.hidden=!reveal;
   coverButton.setAttribute('aria-expanded',String(reveal));
-  coverButton.querySelector('.fiction-detail-cover-hint').textContent=reveal?'Tap cover to hide description':'Tap cover to discover the story';
+  if(coverHint)coverHint.textContent=reveal?'Tap again to hide the description':'Tap the book to view its description';
  });
  fictionDetailView.querySelector('[data-open-fiction-reader]')?.addEventListener('click',()=>{showView('fiction');prepare().catch(()=>{});});
  document.addEventListener('click',event=>{
@@ -1494,7 +1541,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   const trigger=event.target.closest?.('[data-open-fiction-archive]');
   if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();const url=new URL(window.location.href);url.searchParams.set('view','fiction-detail');window.open(url.href,'_blank','noopener');}
  });
- back?.addEventListener('click',()=>showView('books'));
+ back?.addEventListener('click',()=>showView('fiction-detail'));
  const fictionNavBack=document.querySelector('#fictionView [data-view="books"]');
  fictionNavBack?.addEventListener('click',()=>showView('books'));
  const observerPage=new MutationObserver(()=>{if(!page.hidden)prepare().catch(()=>{});});
@@ -1515,7 +1562,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  const bookmarkKey='pedtalk-fiction-black-mans-jesus-bookmark-v1';
  const chrome=document.createElement('div');
  chrome.className='fiction-reader-chrome';
- chrome.innerHTML='<div class="fiction-reader-topbar"><button type="button" data-reader-back aria-label="Back to books">‹</button><strong>THE BLACK MAN’S JESUS</strong><button type="button" data-reader-bookmark aria-label="Save bookmark">☆</button><button type="button" data-reader-search-toggle aria-label="Search in book">⌕</button><button type="button" data-reader-more aria-label="Reader options">⋯</button></div><div class="fiction-reader-search" hidden><input type="search" data-reader-search placeholder="Search this book…" aria-label="Search this book"><button type="button" data-reader-search-go>Find</button><span data-reader-search-status></span></div><div class="fiction-reader-options" hidden><label>Auto-scroll speed <input data-reader-speed type="range" min="1" max="8" value="2"></label><button type="button" data-reader-auto>Start auto-scroll</button><button type="button" data-reader-resume>Resume bookmark</button></div><div class="fiction-reader-bottombar"><span data-reader-percent>0% read</span><input data-reader-progress type="range" min="0" max="1000" value="0" aria-label="Reading progress"><span data-reader-page>Scroll to read</span></div>';
+ chrome.innerHTML='<div class="fiction-reader-topbar"><button type="button" data-reader-back aria-label="Back to book details">‹</button><strong>THE BLACK MAN’S JESUS</strong><button type="button" data-reader-font-decrease aria-label="Decrease text size">A−</button><button type="button" data-reader-font-increase aria-label="Increase text size">A+</button><button type="button" data-reader-bookmark aria-label="Save bookmark">☆</button><button type="button" data-reader-search-toggle aria-label="Search in book">⌕</button><button type="button" data-reader-more aria-label="Reader options">⋯</button></div><div class="fiction-reader-search" hidden><input type="search" data-reader-search placeholder="Search this book…" aria-label="Search this book"><button type="button" data-reader-search-go>Find</button><span data-reader-search-status></span></div><div class="fiction-reader-options" hidden><label>Auto-scroll speed <input data-reader-speed type="range" min="1" max="8" value="2"></label><button type="button" data-reader-auto>Start auto-scroll</button><button type="button" data-reader-resume>Resume bookmark</button></div><div class="fiction-reader-bottombar"><button type="button" data-reader-prev aria-label="Previous page">‹</button><span data-reader-percent>0% read</span><input data-reader-progress type="range" min="0" max="1000" value="0" aria-label="Reading progress"><span data-reader-page>Scroll to read</span><button type="button" data-reader-next aria-label="Next page">›</button></div>';
  reader.prepend(chrome);
  const topbar=chrome.querySelector('.fiction-reader-topbar');
  const bottom=chrome.querySelector('.fiction-reader-bottombar');
@@ -1536,10 +1583,19 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   const pages=pagesRoot.querySelectorAll('.fiction-pdf-page');
   let current=0;
   pages.forEach((el,index)=>{if(el.offsetTop-page.offsetTop<=page.scrollTop+page.clientHeight*.35)current=index+1;});
-  pageLabel.textContent=pages.length?(current+' / '+pages.length+' sections'):'Scroll to read';
+  pageLabel.textContent=pages.length?(current+' / '+pages.length):'Scroll to read';
   try{localStorage.setItem(storageKey,String(value));}catch(e){}
  };
  const reveal=()=>{page.classList.remove('fiction-chrome-hidden');clearTimeout(hideTimer);hideTimer=setTimeout(()=>page.classList.add('fiction-chrome-hidden'),2600);};
+ let readerFontSize=18;
+ const applyReaderFont=()=>{pagesRoot.style.setProperty('--fiction-reader-font-size',readerFontSize+'px');};
+ try{readerFontSize=Math.max(14,Math.min(28,Number(localStorage.getItem('pedtalk-fiction-reader-font-size'))||18));}catch(e){}
+ applyReaderFont();
+ chrome.querySelector('[data-reader-font-decrease]').addEventListener('click',()=>{readerFontSize=Math.max(14,readerFontSize-1);applyReaderFont();try{localStorage.setItem('pedtalk-fiction-reader-font-size',String(readerFontSize));}catch(e){}reveal();});
+ chrome.querySelector('[data-reader-font-increase]').addEventListener('click',()=>{readerFontSize=Math.min(28,readerFontSize+1);applyReaderFont();try{localStorage.setItem('pedtalk-fiction-reader-font-size',String(readerFontSize));}catch(e){}reveal();});
+ const jumpPage=direction=>{const pages=[...pagesRoot.querySelectorAll('.fiction-pdf-page')];if(!pages.length)return;let index=0;pages.forEach((item,i)=>{if(item.offsetTop-page.offsetTop<=page.scrollTop+page.clientHeight*.35)index=i;});const target=pages[Math.max(0,Math.min(pages.length-1,index+direction))];if(target)page.scrollTo({top:Math.max(0,target.offsetTop-page.offsetTop-12),behavior:'smooth'});reveal();};
+ chrome.querySelector('[data-reader-prev]').addEventListener('click',()=>jumpPage(-1));
+ chrome.querySelector('[data-reader-next]').addEventListener('click',()=>jumpPage(1));
  const stopAuto=()=>{autoRunning=false;cancelAnimationFrame(autoFrame);chrome.querySelector('[data-reader-auto]').textContent='Start auto-scroll';};
  const autoStep=now=>{
   if(!autoRunning)return;
@@ -1551,7 +1607,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   autoFrame=requestAnimationFrame(autoStep);
  };
  const startAuto=()=>{if(autoRunning){stopAuto();return;}autoRunning=true;lastFrame=0;chrome.querySelector('[data-reader-auto]').textContent='Pause auto-scroll';autoFrame=requestAnimationFrame(autoStep);reveal();};
- chrome.querySelector('[data-reader-back]').addEventListener('click',()=>showView('books'));
+ chrome.querySelector('[data-reader-back]').addEventListener('click',()=>showView('fiction-detail'));
  chrome.querySelector('[data-reader-bookmark]').addEventListener('click',()=>{
   try{localStorage.setItem(bookmarkKey,String(currentPercent()));chrome.querySelector('[data-reader-bookmark]').textContent='★';}catch(e){}
   reveal();
