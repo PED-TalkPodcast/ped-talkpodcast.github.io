@@ -8,6 +8,7 @@ on:
       - 'service-worker.js'
       - 'tests/**'
       - '.github/workflows/app-regression.yml'
+      - '.github/workflows/app-live-smoke.yml'
   pull_request:
     paths:
       - 'app/**'
