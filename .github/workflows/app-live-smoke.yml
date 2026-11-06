@@ -1,0 +1,105 @@
+name: PED-Talk live deployment smoke test
+
+on:
+  workflow_run:
+    workflows: ["pages build and deployment"]
+    types: [completed]
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ped-talk-live-smoke
+  cancel-in-progress: false
+
+jobs:
+  live-mobile-book-flow:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright
+        run: npm install --no-save playwright
+      - name: Install Chromium
+        run: npx playwright install chromium
+      - name: Test the published PED-Talk app on a mobile viewport
+        env:
+          PED_TALK_LIVE_URL: https://ped-talkpodcast.github.io/ped-talkpodcast.github.io/app/
+        run: |
+          node <<'NODE'
+          const assert = require('node:assert/strict');
+          const { chromium } = require('playwright');
+
+          (async () => {
+            const browser = await chromium.launch({ headless: true, args: ['--no-sandbox'] });
+            const page = await browser.newPage({
+              viewport: { width: 390, height: 844 },
+              deviceScaleFactor: 1,
+              isMobile: true,
+              hasTouch: true
+            });
+            const failures = [];
+            let popupOpened = false;
+            page.on('pageerror', error => failures.push('Browser error: ' + error.message));
+            page.on('popup', () => { popupOpened = true; });
+            page.on('response', response => {
+              if (response.status() >= 400 && new URL(response.url()).origin === new URL(process.env.PED_TALK_LIVE_URL).origin) {
+                failures.push('HTTP ' + response.status() + ': ' + response.url());
+              }
+            });
+
+            try {
+              const response = await page.goto(process.env.PED_TALK_LIVE_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+              assert.ok(response && response.ok(), 'Published app URL must return a successful HTTP response');
+              await page.waitForFunction(() => !!window.PEDShowcase, null, { timeout: 30000 });
+
+              await page.locator('.bottom-nav [data-view="the-show"]').click();
+              await page.locator('#theShowView').waitFor({ state: 'visible' });
+              await page.locator('#theShowView [data-show-view="books"]').click();
+              await page.locator('#booksView').waitFor({ state: 'visible' });
+              await page.locator('[data-open-fiction-archive]').click();
+              await page.locator('#fictionDetailView').waitFor({ state: 'visible' });
+
+              assert.match(await page.locator('#fictionDetailTitle').textContent(), /THE BLACK MAN’S JESUS/i);
+              assert.match(await page.locator('.fiction-detail-author,.fiction-detail-copy .fiction-book-author').first().textContent(), /Antwi Bosiako Papa Kofi/i);
+              await page.locator('#fictionDetailDescription').waitFor({ state: 'visible' });
+              await page.locator('[data-open-fiction-reader]').click();
+              await page.locator('#fictionView').waitFor({ state: 'visible' });
+              await page.waitForFunction(
+                () => document.querySelectorAll('#fictionPdfPages .fiction-pdf-page').length > 0 &&
+                  !!document.querySelector('#fictionPdfPages .fiction-pdf-page-canvas canvas, #fictionPdfPages .fiction-reflow-content'),
+                null,
+                { timeout: 45000 }
+              );
+
+              const result = await page.evaluate(() => ({
+                width: innerWidth,
+                documentWidth: document.documentElement.scrollWidth,
+                pages: document.querySelectorAll('#fictionPdfPages .fiction-pdf-page').length,
+                rendered: !!document.querySelector('#fictionPdfPages .fiction-pdf-page-canvas canvas, #fictionPdfPages .fiction-reflow-content'),
+                backVisible: !!document.querySelector('#fictionPageBack')
+              }));
+              assert.ok(result.documentWidth <= result.width, 'Published reader must not overflow horizontally on mobile');
+              assert.ok(result.pages > 0 && result.rendered, 'Published PDF pages must render inside PED-Talk');
+              assert.ok(result.backVisible, 'Published reader must provide a Back to book control');
+              assert.equal(popupOpened, false, 'Read Book must not open a new browser tab');
+
+              await page.locator('#fictionPageBack').click();
+              await page.locator('#fictionDetailView').waitFor({ state: 'visible' });
+              assert.equal(popupOpened, false, 'Returning to details must stay inside PED-Talk');
+              assert.deepEqual(failures, [], 'Published app must not produce browser or same-origin HTTP errors');
+
+              console.log('PASS: live Pages URL, mobile book details, author and summary, in-app PDF rendering, no popup, mobile width and Back to book navigation.');
+            } finally {
+              await browser.close();
+            }
+          })().catch(error => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+          NODE
