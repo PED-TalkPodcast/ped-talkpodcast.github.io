@@ -1417,7 +1417,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
    script.onload=()=>window.pdfjsLib?resolve(window.pdfjsLib):reject(new Error('PDF.js did not initialise'));
    script.onerror=()=>reject(new Error('PDF reader library could not be loaded'));
    document.head.appendChild(script);
-  });
+  }).catch(error=>{window.__pedTalkPdfJsPromise=null;throw error;});
   return window.__pedTalkPdfJsPromise;
  };
  const escapeReaderText=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
