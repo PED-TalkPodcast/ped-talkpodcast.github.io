@@ -3902,3 +3902,23 @@ body.app-light .app-showcase-real{background:#eef5e9}
 body.app-light .app-showcase-real>img{filter:brightness(1.06) saturate(1.04)}
 body.app-light .app-showcase-real .voice-shade{background:linear-gradient(180deg,rgba(8,35,22,.02) 20%,rgba(8,35,22,.12) 52%,rgba(8,35,22,.76) 100%)}
 body.app-light .app-showcase-real .voice-copy .eyebrow{color:#d8edc9}
+
+
+/* v140 — quiet controls for the continuous-scroll fiction reader. */
+.fiction-reader-chrome{position:sticky;top:0;z-index:12;margin:0 0 14px;padding:8px 10px 10px;background:color-mix(in srgb,var(--pt-surface,#101713) 92%,transparent);backdrop-filter:blur(16px);border:1px solid var(--app-border);border-radius:14px;transition:opacity .2s,transform .2s}
+.fiction-reader-topbar{display:flex;align-items:center;gap:10px;min-height:36px}
+.fiction-reader-topbar strong{flex:1;min-width:0;text-align:center;color:var(--pt-text-primary);font:700 10px 'DM Sans',sans-serif;letter-spacing:.1em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fiction-reader-topbar button,.fiction-reader-search button,.fiction-reader-options button{border:1px solid var(--app-border);border-radius:999px;background:transparent;color:var(--pt-text-primary);padding:7px 11px;font:700 12px 'DM Sans',sans-serif}
+.fiction-reader-search,.fiction-reader-options{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 2px 2px}
+.fiction-reader-search input{flex:1;min-width:130px;border:1px solid var(--app-border);border-radius:9px;padding:9px;background:transparent;color:var(--pt-text-primary)}
+.fiction-reader-search span{width:100%;font-size:11px;color:var(--pt-text-secondary)}
+.fiction-reader-options label{display:flex;align-items:center;gap:10px;flex:1;font-size:11px;color:var(--pt-text-secondary)}
+.fiction-reader-bottombar{display:flex;align-items:center;gap:10px;padding-top:8px}
+.fiction-reader-bottombar span{font-size:10px;color:var(--pt-text-secondary);white-space:nowrap}
+.fiction-reader-bottombar input{flex:1;min-width:50px;accent-color:#8caf67}
+.fiction-chrome-hidden .fiction-reader-chrome{opacity:.12;transform:translateY(-8px)}
+.fiction-chrome-hidden .fiction-reader-chrome:focus-within,.fiction-chrome-hidden .fiction-reader-chrome:hover{opacity:1;transform:none}
+.fiction-view .fiction-pdf-pages{display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth}
+.fiction-view .fiction-pdf-page{border-radius:4px;box-shadow:none}
+.fiction-view .fiction-pdf-page-number{font-size:8px;opacity:.65}
+@media(max-width:520px){.fiction-reader-chrome{padding:7px 8px}.fiction-reader-topbar{gap:6px}.fiction-reader-topbar button{padding:7px 9px}.fiction-reader-bottombar{gap:6px}}
