@@ -3965,3 +3965,16 @@ body.app-light .app-showcase-real .voice-copy .eyebrow{color:#d8edc9}
  .fiction-reader-topbar button{padding:7px 8px}
  .fiction-reader-bottombar span{font-size:9px}
 }
+
+
+/* Contrast and legibility safeguards for the dark-green PED-Talk book surfaces */
+.fiction-detail-card{background:linear-gradient(145deg,#10251d,#081710 88%)!important;color:#f2f7f0!important;border-color:rgba(183,213,138,.22)!important}
+.fiction-detail-copy h2{color:#f2f7f0!important}
+.fiction-detail-copy .fiction-book-author,.fiction-detail-cover-hint,.fiction-detail-note{color:#c6d3c5!important}
+.fiction-detail-description{background:rgba(183,213,138,.09)!important}
+.fiction-detail-description p{color:#f2f7f0!important}
+.fiction-view .fiction-pdf-page{background:#fbfaf6!important;color:#20251f!important}
+.fiction-view .fiction-pdf-page-number{color:#526052!important}
+.fiction-view .fiction-reflow-content{background:#fbfaf6!important;color:#20251f!important}
+.fiction-view .fiction-reflow-content p{color:#20251f!important}
+.fiction-view .fiction-pdf-loading{background:#10251d;color:#f2f7f0}
