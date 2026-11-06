@@ -1407,5 +1407,5 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  });
  entry.addEventListener('click',()=>{collection.hidden=true;details.hidden=false;back.focus();});
  back.addEventListener('click',()=>{details.hidden=true;collection.hidden=false;entry.focus();});
- modal.querySelectorAll('.fiction-book-cover,.fiction-book-detail-cover').forEach(img=>img.addEventListener('error',()=>img.classList.add('cover-unavailable')));
+ modal.querySelectorAll('.fiction-book-cover,.fiction-book-detail-cover').forEach(img=>img.addEventListener('error',()=>{img.classList.add('cover-unavailable');img.parentElement?.classList.add('cover-pending')}));
 })();
