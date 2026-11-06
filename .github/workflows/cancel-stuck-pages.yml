@@ -1,0 +1,32 @@
+name: Cancel stuck GitHub Pages deployment
+
+on:
+  workflow_dispatch:
+
+permissions:
+  pages: write
+
+jobs:
+  cancel-stuck-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Cancel the stuck Pages deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          url="https://api.github.com/repos/${GITHUB_REPOSITORY}/pages/deployments/ba7b34a7ba8cb25bc7c6382fa3d88d505138d8ac/cancel"
+          code=$(curl --silent --show-error --output response.json --write-out "%{http_code}" \
+            --request POST \
+            --header "Accept: application/vnd.github+json" \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "${url}")
+          if [ "${code}" = "204" ]; then
+            echo "SUCCESS: Cancelled the stuck GitHub Pages deployment."
+          else
+            echo "GitHub API returned HTTP ${code}:"
+            cat response.json
+            exit 1
+          fi
