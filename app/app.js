@@ -1464,4 +1464,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  fictionNavBack?.addEventListener('click',()=>showView('books'));
  const observerPage=new MutationObserver(()=>{if(!page.hidden)prepare().catch(()=>{});});
  observerPage.observe(page,{attributes:true,attributeFilter:['hidden']});
+ // A direct ?view=fiction route is rendered before this reader controller is attached.
+ // MutationObserver does not replay the existing visible state, so initialise it explicitly.
+ if(!page.hidden)prepare().catch(()=>{});
 })();
