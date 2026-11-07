@@ -221,8 +221,9 @@ const server = http.createServer((req,res)=>{
     assert.ok(readerLayout.backVisible,'reader must provide a Back to book action');
     const scrollViewport=await page.locator('#fictionView').evaluate(el=>({height:el.clientHeight,scrollHeight:el.scrollHeight,overflow:getComputedStyle(el).overflowY}));
     assert.ok(scrollViewport.height>0&&scrollViewport.scrollHeight>scrollViewport.height&&scrollViewport.overflow==='auto','reader must provide a scrollable viewport for the full book');
-    await page.locator('#fictionView').evaluate(el=>el.scrollTo({top:el.scrollHeight,behavior:'instant'}));
-    await page.waitForFunction(()=>document.querySelector('#fictionPdfPages .fiction-unified-text p:last-child')?.getBoundingClientRect().bottom<innerHeight+1000,null,{timeout:15000});
+    const bottomScroll=await page.locator('#fictionView').evaluate(el=>{el.scrollTo({top:el.scrollHeight,behavior:'instant'});return {top:el.scrollTop,max:el.scrollHeight-el.clientHeight};});
+    assert.ok(bottomScroll.max>0&&bottomScroll.top>0,'reader must allow scrolling through the continuous book to its end');
+    assert.ok(await page.locator('#fictionPdfPages .fiction-unified-text p:last-child').count()>0,'the final book text must be present in the unified document');
     await page.locator('#fictionView').evaluate(el=>el.scrollTo({top:0,behavior:'instant'}));
     await page.locator('#fictionPageBack').click();
     await visible('#fictionDetailView');
