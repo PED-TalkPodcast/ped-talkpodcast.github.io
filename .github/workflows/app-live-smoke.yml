@@ -86,26 +86,27 @@ jobs:
               await page.locator('[data-open-fiction-reader]').click();
               await page.locator('#fictionView').waitFor({ state: 'visible' });
               await page.waitForFunction(
-                () => document.querySelectorAll('#fictionPdfPages .fiction-pdf-page').length > 0 &&
-                  !!document.querySelector('#fictionPdfPages .fiction-pdf-page-canvas canvas, #fictionPdfPages .fiction-reflow-content'),
+                () => document.querySelector('#fictionPdfPages .fiction-unified-text p') &&
+                  document.querySelectorAll('#fictionPdfPages .fiction-unified-page-anchor').length > 2,
                 null,
-                { timeout: 45000 }
+                { timeout: 60000 }
               );
 
               const result = await page.evaluate(() => ({
                 width: innerWidth,
                 documentWidth: document.documentElement.scrollWidth,
-                pages: document.querySelectorAll('#fictionPdfPages .fiction-pdf-page').length,
-                rendered: !!document.querySelector('#fictionPdfPages .fiction-pdf-page-canvas canvas, #fictionPdfPages .fiction-reflow-content'),
+                pages: document.querySelectorAll('#fictionPdfPages .fiction-unified-page-anchor').length,
+                paragraphs: document.querySelectorAll('#fictionPdfPages .fiction-unified-text p').length,
+                unified: !!document.querySelector('#fictionPdfPages > .fiction-unified-text'),
                 backVisible: !!document.querySelector('#fictionPageBack')
               }));
               assert.ok(result.documentWidth <= result.width, 'Published reader must not overflow horizontally on mobile');
-              assert.ok(result.pages > 0 && result.rendered, 'Published PDF pages must render inside PED-Talk');
+              assert.ok(result.pages > 2 && result.paragraphs > 2 && result.unified, 'Published book must be one continuous reflowed text document with source-page anchors');
               assert.ok(result.backVisible, 'Published reader must provide a Back to book control');
               const scrollable = await page.locator('#fictionView').evaluate(el => ({height:el.clientHeight,scrollHeight:el.scrollHeight,overflow:getComputedStyle(el).overflowY}));
               assert.ok(scrollable.height > 0 && scrollable.scrollHeight > scrollable.height && scrollable.overflow === 'auto', 'Published reader must scroll within its viewport');
               await page.locator('#fictionView').evaluate(el => el.scrollTo({top:el.scrollHeight,behavior:'instant'}));
-              await page.waitForFunction(() => [...document.querySelectorAll('#fictionPdfPages .fiction-pdf-page-canvas')].filter(el => el.querySelector('.fiction-reflow-content,canvas')).length > 2, null, {timeout:30000});
+              await page.waitForFunction(() => document.querySelector('#fictionPdfPages .fiction-unified-text p:last-child')?.getBoundingClientRect().bottom < innerHeight + 1000, null, {timeout:15000});
               assert.equal(popupOpened, false, 'Read Book must not open a new browser tab');
 
               await page.locator('#fictionPageBack').click();
