@@ -477,9 +477,9 @@ fictionDetailView.id='fictionDetailView';fictionDetailView.className='fiction-de
 fictionDetailView.innerHTML=`
 <header class="fiction-detail-header"><button type="button" class="fiction-page-back" data-detail-back>‹ Books</button><p class="eyebrow">ANAGKAZO MEDIA LIBRARY</p></header>
 <article class="fiction-detail-card">
-<button type="button" class="fiction-detail-cover-button" aria-expanded="true" aria-controls="fictionDetailDescription" aria-label="Show or hide the book summary"><span class="fiction-detail-cover-frame"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg?v=2" alt="The Black Man’s Jesus by Antwi Bosiako Papa Kofi book cover"></span><span class="fiction-detail-cover-hint">Book cover · tap to hide or show summary</span></button>
+<button type="button" class="fiction-detail-cover-button" aria-expanded="false" aria-controls="fictionDetailDescription" aria-label="Show or hide the book summary"><span class="fiction-detail-cover-frame"><img class="fiction-detail-cover" src="./assets/books/the-black-mans-jesus-cover.jpg?v=2" alt="The Black Man’s Jesus by Antwi Bosiako Papa Kofi book cover"></span><span class="fiction-detail-cover-hint">Tap cover to view story summary</span></button>
 <div class="fiction-detail-copy"><p class="fiction-book-series">FICTION · ANAGKAZO MEDIA</p><h2 id="fictionDetailTitle">THE BLACK MAN’S JESUS</h2><p class="fiction-book-author">By Antwi Bosiako Papa Kofi</p>
-<div id="fictionDetailDescription" class="fiction-detail-description"><p>Set across two eras, this story follows Kwamina, a captive in the dungeons of Cape Coast Castle in 1767, and Jeffrey, a Ghanaian-American university student in 2025. Through the account of Archibald Coffie, a Black priest who risks his freedom to bring hope to a fellow prisoner, the story explores compassion, faith, history and the difference between the message of Jesus and the cruelty of people who claim his name.</p></div>
+<div id="fictionDetailDescription" class="fiction-detail-description" hidden><p>Two lives, centuries apart: from Cape Coast Castle in 1767 to a Ghanaian-American student in 2025. A moving story about faith, history and the true message of Jesus.</p></div>
 <button type="button" class="fiction-read-book-button" data-open-fiction-reader>Read Book <span aria-hidden="true">→</span></button></div></article><p class="fiction-detail-note">Read the complete story inside PED-Talk. Your reading progress is saved on this device.</p>`;
 document.getElementById('fictionView')?.before(fictionDetailView);
 const fictionDetailStyle=document.createElement('style');
@@ -487,18 +487,47 @@ fictionDetailStyle.textContent=`
 .fiction-detail-view{min-height:calc(100dvh - 110px);padding:clamp(18px,4vw,42px) clamp(15px,4vw,38px) 70px;background:var(--app-bg);color:var(--pt-text-primary)}
 .fiction-detail-header{display:flex;align-items:center;gap:18px;padding-bottom:18px;border-bottom:1px solid var(--app-border)}.fiction-detail-header .eyebrow{margin:0;font-size:10px;letter-spacing:.15em}
 .fiction-detail-card{width:min(100%,620px);margin:clamp(28px,8vh,76px) auto 0;padding:20px;display:flex;flex-direction:row;gap:20px;align-items:center;background:var(--pt-surface,#fff);border:1px solid var(--app-border);border-radius:18px;box-shadow:0 12px 36px rgba(0,0,0,.07)}
-.fiction-detail-cover-button{display:flex;flex:0 0 112px;flex-direction:column;align-items:center;width:112px;padding:0;border:0;background:transparent;color:inherit;text-align:center;cursor:pointer}
-.fiction-detail-cover-frame{display:grid;place-items:center;width:104px;height:156px;overflow:hidden;border-radius:7px;background:linear-gradient(145deg,#eee9dc,#c9c1ae);box-shadow:0 9px 22px rgba(0,0,0,.2)}
-.fiction-detail-cover{display:block;width:100%;height:100%;object-fit:cover;border-radius:7px}
+.fiction-detail-cover-button{display:flex;flex:0 0 132px;flex-direction:column;align-items:center;width:132px;padding:0;border:0;background:transparent;color:inherit;text-align:center;cursor:pointer}
+.fiction-detail-cover-frame{display:grid;place-items:center;width:124px;height:186px;overflow:hidden;border-radius:8px;background:#080b09;box-shadow:0 9px 22px rgba(0,0,0,.2)}
+.fiction-detail-cover{display:block;width:100%;height:100%;object-fit:contain;object-position:center;border-radius:8px;background:#080b09}
 .fiction-detail-cover-hint{display:block;width:112px;margin-top:9px;font-size:9px;line-height:1.4;color:var(--pt-text-secondary)}
 .fiction-detail-copy{min-width:0;flex:1}.fiction-detail-copy .fiction-book-series{font-size:9px;letter-spacing:.15em;color:#6e9b50;font-weight:800}.fiction-detail-copy h2{margin:8px 0;font:700 clamp(18px,3vw,25px)/1.15 'Playfair Display',Georgia,serif;color:var(--pt-text-primary)}.fiction-detail-copy .fiction-book-author{color:var(--pt-text-secondary);font-size:12px;margin:0}
 .fiction-detail-description{margin:16px 0 0;padding:13px 14px;border-left:3px solid #8caf67;background:color-mix(in srgb,var(--pt-surface,#fff) 90%,#8caf67 10%);border-radius:0 10px 10px 0}.fiction-detail-description p{margin:0;color:var(--pt-text-primary);font:400 13px/1.75 'DM Sans',sans-serif}
 .fiction-read-book-button{display:flex;align-items:center;justify-content:space-between;gap:24px;width:100%;max-width:250px;margin-top:16px;padding:13px 18px;border:0;border-radius:999px;background:#739b55;color:#fff;font:700 13px 'DM Sans',sans-serif;cursor:pointer}.fiction-read-book-button[hidden]{display:none!important}
 .fiction-detail-note{max-width:620px;margin:16px auto;color:var(--pt-text-secondary);font-size:10px;line-height:1.6;text-align:center}
-@media(max-width:430px){.fiction-detail-card{gap:14px;padding:14px}.fiction-detail-cover-button{flex-basis:112px;width:112px}.fiction-detail-cover-frame{width:104px;height:156px}.fiction-detail-cover-hint{width:112px;font-size:8px}.fiction-detail-copy h2{font-size:18px}.fiction-detail-copy .fiction-book-author{font-size:11px}}
+@media(max-width:430px){.fiction-detail-card{gap:14px;padding:14px}.fiction-detail-cover-button{flex-basis:124px;width:124px}.fiction-detail-cover-frame{width:124px;height:186px}.fiction-detail-cover-hint{width:124px;font-size:8px}.fiction-detail-copy h2{font-size:18px}.fiction-detail-copy .fiction-book-author{font-size:11px}}
 .fiction-detail-cover-button:focus-visible{outline:2px solid #8caf67;outline-offset:5px;border-radius:8px}
 `;
 fictionDetailStyle.textContent+=" \n/* v141 — compact book tile, readable reflow text and clear reader navigation. */\n.fiction-reflow-content{max-width:760px;margin:0 auto;padding:clamp(22px,5vw,48px) clamp(20px,5vw,54px);background:var(--pt-surface,#fff);color:var(--pt-text-primary);font-family:Georgia,'Times New Roman',serif;font-size:var(--fiction-reader-font-size,18px);line-height:1.9;letter-spacing:.005em}\n.fiction-reflow-content p{margin:0 0 1.25em;text-align:left;white-space:normal;overflow-wrap:anywhere}\n.fiction-reflow-content p:last-child{margin-bottom:0}\n.fiction-view .fiction-pdf-page{background:var(--pt-surface,#fff);border-color:var(--app-border);border-radius:10px}\n.fiction-view .fiction-pdf-page-number{background:transparent;color:var(--pt-text-tertiary);padding:12px 20px 0;font-size:9px}\n.fiction-view .fiction-pdf-page-canvas{min-height:90px}\n.fiction-reader-topbar button,.fiction-reader-bottombar button{min-width:34px;min-height:34px}\n.fiction-reader-bottombar button{border:1px solid var(--app-border);border-radius:50%;background:transparent;color:var(--pt-text-primary);font-size:18px;line-height:1}\n.fiction-reader-bottombar{gap:7px}\n.fiction-reader-bottombar span{font-variant-numeric:tabular-nums}\n.fiction-view .fiction-featured-book{padding-top:16px;padding-bottom:0}\n.fiction-view .fiction-cover-stage{width:min(100%,116px);margin:0 auto 12px}\n.fiction-view .fiction-cover-frame{max-height:none}\n.fiction-view .fiction-cover-frame canvas{max-height:none}\n.fiction-view .fiction-cover-desk{margin-top:7px}\n.fiction-view .fiction-featured-copy{padding-bottom:4px}\n.fiction-view .fiction-featured-copy h3{font-size:18px}\n@media(max-width:520px){.fiction-reflow-content{padding:22px 19px;font-size:var(--fiction-reader-font-size,18px);line-height:1.85}.fiction-reader-topbar{flex-wrap:wrap}.fiction-reader-topbar strong{flex-basis:100%;order:-1}.fiction-reader-bottombar{gap:5px}.fiction-reader-bottombar span{font-size:9px}}\n";
+
+/* v141 — premium library finish and a genuinely scrollable reader viewport. */
+fictionDetailStyle.textContent+="
+.fiction-detail-view{background:#080b0a!important;color:#f3f5f1!important}
+.fiction-detail-header{border-color:rgba(255,255,255,.1)!important}
+.fiction-detail-header .eyebrow{color:#aab5ad!important}
+.fiction-detail-card{width:min(100%,700px);margin:clamp(24px,6vh,54px) auto 0;padding:clamp(16px,3vw,26px);background:linear-gradient(145deg,#151b18 0%,#0b100d 100%)!important;border:1px solid rgba(255,255,255,.1)!important;box-shadow:0 24px 60px rgba(0,0,0,.42)!important}
+.fiction-detail-cover-button{flex-basis:132px!important;width:132px!important}
+.fiction-detail-cover-frame{width:124px!important;height:186px!important;background:#080b09!important;box-shadow:0 16px 34px rgba(0,0,0,.48)!important}
+.fiction-detail-cover{object-fit:contain!important;background:#080b09!important}
+.fiction-detail-copy .fiction-book-series{color:#a9c98c!important}
+.fiction-detail-copy h2{color:#f4f5f2!important}
+.fiction-detail-copy .fiction-book-author,.fiction-detail-cover-hint,.fiction-detail-note{color:#aeb8b1!important}
+.fiction-detail-description{margin:12px 0 0!important;padding:0!important;border:0!important;background:transparent!important}
+.fiction-detail-description p{color:#c8d0ca!important;font-size:12px!important;line-height:1.65!important}
+.fiction-read-book-button{max-width:none!important;margin-top:18px!important;background:linear-gradient(110deg,#315d43,#537b5b)!important;box-shadow:0 10px 28px rgba(0,0,0,.3)!important}
+.fiction-detail-note{margin-top:18px!important}
+.fiction-view{height:calc(100dvh - 118px)!important;max-height:calc(100dvh - 118px)!important;min-height:0!important;overflow-y:auto!important;overscroll-behavior:contain!important;background:#080b0a!important;color:#f3f5f1!important}
+.fiction-view .fiction-page-header{background:#080b0a!important}
+.fiction-reader-chrome{background:rgba(16,21,18,.94)!important;border-color:rgba(255,255,255,.12)!important;box-shadow:0 12px 30px rgba(0,0,0,.3)!important}
+.fiction-reader-topbar strong,.fiction-reader-topbar button,.fiction-reader-bottombar button{color:#edf1ed!important}
+.fiction-reader-topbar button,.fiction-reader-bottombar button{border-color:rgba(255,255,255,.16)!important}
+.fiction-reader-bottombar input{accent-color:#b7d58a}
+.fiction-reader-search input,.fiction-reader-options button{background:#0b100d!important;color:#edf1ed!important;border-color:rgba(255,255,255,.16)!important}
+.fiction-view .fiction-pdf-page{background:#f8f6f0!important;border-color:rgba(255,255,255,.08)!important}
+.fiction-view .fiction-reflow-content{background:#f8f6f0!important;color:#262a27!important}
+.fiction-view .fiction-reflow-content p{color:#262a27!important}
+@media(max-width:560px){.fiction-detail-card{align-items:flex-start!important}.fiction-detail-cover-button{flex-basis:124px!important;width:124px!important}.fiction-detail-cover-frame{width:124px!important;height:186px!important}.fiction-detail-copy h2{font-size:19px!important}.fiction-view{height:calc(100dvh - 126px)!important;max-height:calc(100dvh - 126px)!important;padding:12px 10px calc(20px + env(safe-area-inset-bottom))!important}}
+";
 document.head.appendChild(fictionDetailStyle);
 let viewTransitionToken=0;
 function showView(view,reference=null,preserveBible=false,options={}){
@@ -1495,7 +1524,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
    if(observer)observer.disconnect();
    observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
     if(entry.isIntersecting){const item=containers.find(row=>row.host===entry.target);if(item)renderPage(pdf,item.number,item.host);observer.unobserve(entry.target);}
-   }),{root:page,rootMargin:'700px 0px'});
+   }),{root:page,rootMargin:'1200px 0px'});
    containers.forEach(item=>observer.observe(item.host));
    await renderPage(pdf,1,containers[0].host);
    return pdf;
