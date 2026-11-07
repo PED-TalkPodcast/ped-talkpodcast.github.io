@@ -1486,14 +1486,22 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
    article.setAttribute('aria-label','The Black Man’s Jesus — continuous reading text');
    pagesRoot.appendChild(article);
    const anchors=[];
-   for(let number=1;number<=pdf.numPages;number++){
-    const anchor=document.createElement('span');anchor.className='fiction-pdf-page fiction-unified-page-anchor';anchor.dataset.page=String(number);anchor.setAttribute('aria-label','Source PDF page '+number);anchor.id='fiction-source-page-'+number;
-    article.appendChild(anchor);anchors.push(anchor);
-    const pdfPage=await pdf.getPage(number);
-    const paragraphs=await extractParagraphs(pdfPage);
-    if(paragraphs.length){paragraphs.forEach(text=>appendParagraph(article,text));}
-    else{await appendScanPage(pdf,pdfPage,number,article);}
-    if(number===1||number===pdf.numPages||number%5===0)setStatus('Preparing continuous text · '+number+' of '+pdf.numPages+' source pages');
+   const batchSize=4;
+   for(let first=1;first<=pdf.numPages;first+=batchSize){
+    const last=Math.min(pdf.numPages,first+batchSize-1);
+    const prepared=await Promise.all(Array.from({length:last-first+1},async(_,index)=>{
+     const number=first+index;
+     const pdfPage=await pdf.getPage(number);
+     const paragraphs=await extractParagraphs(pdfPage);
+     return {number,pdfPage,paragraphs};
+    }));
+    for(const item of prepared){
+     const anchor=document.createElement('span');anchor.className='fiction-pdf-page fiction-unified-page-anchor';anchor.dataset.page=String(item.number);anchor.setAttribute('aria-label','Source PDF page '+item.number);anchor.id='fiction-source-page-'+item.number;
+     article.appendChild(anchor);anchors.push(anchor);
+     if(item.paragraphs.length){item.paragraphs.forEach(text=>appendParagraph(article,text));}
+     else{await appendScanPage(pdf,item.pdfPage,item.number,article);}
+    }
+    setStatus('Preparing continuous text · '+last+' of '+pdf.numPages+' source pages');
    }
    if(!article.children.length)setStatus('No readable text was found in this PDF.');
    else setStatus('Your book is ready · '+pdf.numPages+' source pages in one continuous flow.');
