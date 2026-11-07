@@ -75,6 +75,7 @@ jobs:
               // The Real Conversations feature must retain its artwork after opening.
               await page.locator('.app-showcase-real').evaluate(el => el.click());
               await page.locator('#dwoopOverlay.active').waitFor({ state: 'visible', timeout: 10000 });
+              await page.waitForFunction(() => { const img=document.querySelector('#dwoopArtwork img'); return !!(img && img.complete && img.naturalWidth > 0); }, null, { timeout: 15000 });
               const realArtwork = await page.locator('#dwoopArtwork img').evaluate(img => ({visible:!!(img.getBoundingClientRect().width && img.getBoundingClientRect().height),loaded:img.complete && img.naturalWidth > 0,src:img.currentSrc || img.src}));
               assert.ok(realArtwork.visible && realArtwork.loaded, 'Expanded Real Conversations card must display its original artwork');
               assert.ok(await page.locator('.dwoop-card-expanded.dwoop-real-mode').count() === 1, 'Expanded Real Conversations card must receive its dedicated artwork treatment');
