@@ -78,7 +78,11 @@ jobs:
 
               assert.match(await page.locator('#fictionDetailTitle').textContent(), /THE BLACK MAN’S JESUS/i);
               assert.match(await page.locator('.fiction-detail-author,.fiction-detail-copy .fiction-book-author').first().textContent(), /Antwi Bosiako Papa Kofi/i);
-              await page.locator('#fictionDetailDescription').waitFor({ state: 'visible' });
+              await page.locator('#fictionDetailDescription').waitFor({ state: 'hidden' });
+              assert.ok((await page.locator('#fictionDetailDescription').textContent()).trim().length < 190, 'Book summary must be concise');
+              const detailStyle = await page.locator('.fiction-detail-card').evaluate(el => ({ background:getComputedStyle(el).backgroundImage, cover:el.querySelector('img').getBoundingClientRect().width }));
+              assert.match(detailStyle.background, /linear-gradient/, 'Book details must use the premium dark surface');
+              assert.ok(detailStyle.cover >= 120, 'Book cover must be large enough on mobile');
               await page.locator('[data-open-fiction-reader]').click();
               await page.locator('#fictionView').waitFor({ state: 'visible' });
               await page.waitForFunction(
@@ -98,6 +102,10 @@ jobs:
               assert.ok(result.documentWidth <= result.width, 'Published reader must not overflow horizontally on mobile');
               assert.ok(result.pages > 0 && result.rendered, 'Published PDF pages must render inside PED-Talk');
               assert.ok(result.backVisible, 'Published reader must provide a Back to book control');
+              const scrollable = await page.locator('#fictionView').evaluate(el => ({height:el.clientHeight,scrollHeight:el.scrollHeight,overflow:getComputedStyle(el).overflowY}));
+              assert.ok(scrollable.height > 0 && scrollable.scrollHeight > scrollable.height && scrollable.overflow === 'auto', 'Published reader must scroll within its viewport');
+              await page.locator('#fictionView').evaluate(el => el.scrollTo({top:el.scrollHeight,behavior:'instant'}));
+              await page.waitForFunction(() => [...document.querySelectorAll('#fictionPdfPages .fiction-pdf-page-canvas')].filter(el => el.querySelector('.fiction-reflow-content,canvas')).length > 2, null, {timeout:30000});
               assert.equal(popupOpened, false, 'Read Book must not open a new browser tab');
 
               await page.locator('#fictionPageBack').click();
