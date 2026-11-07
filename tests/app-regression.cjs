@@ -204,10 +204,11 @@ const server = http.createServer((req,res)=>{
     assert.ok((await page.locator('#fictionDetailDescription').textContent()).trim().length<190,'book summary should stay concise');
     await visible('[data-open-fiction-reader]');
     const detailLayout=await page.locator('.fiction-detail-card').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth,cover:el.querySelector('img').getBoundingClientRect().width,titleColor:getComputedStyle(el.querySelector('h2')).color,background:getComputedStyle(el).backgroundImage,detailBackground:getComputedStyle(el.parentElement).backgroundColor,scrollWidth:document.documentElement.scrollWidth}));
-    assert.ok(detailLayout.cover>=95,'book cover must be large enough to identify on mobile');
+    assert.ok(detailLayout.cover>=120,'book cover must be large and clear enough to identify on mobile');
+    assert.match(detailLayout.background,/linear-gradient/,'book details must use the premium dark surface');
     assert.ok(detailLayout.width<=detailLayout.viewport,'book details card must fit the phone viewport');
     assert.ok(detailLayout.scrollWidth<=390,'book details must not create horizontal overflow');
-    assert.equal(detailLayout.titleColor,'rgb(242, 247, 240)','book title must have strong contrast on its dark card');
+    assert.equal(detailLayout.titleColor,'rgb(244, 245, 242)','book title must have strong contrast on its dark card');
     assert.equal(await page.locator('.fiction-detail-cover').evaluate(img=>img.complete&&img.naturalWidth>0),true,'original book cover must load');
     await page.locator('[data-open-fiction-reader]').click();
     await visible('#fictionView');
