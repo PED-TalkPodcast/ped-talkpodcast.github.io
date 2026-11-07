@@ -46,6 +46,8 @@ jobs:
             const failures = [];
             let popupOpened = false;
             page.on('pageerror', error => failures.push('Browser error: ' + error.message));
+          page.on('console', message => { if (message.type() === 'error') failures.push('Console error: ' + message.text()); });
+          page.on('requestfailed', request => failures.push('Request failed: ' + request.url() + ' — ' + (request.failure()?.errorText || 'unknown')));
             page.on('popup', () => { popupOpened = true; });
             page.on('response', response => {
               if (response.status() >= 400 && new URL(response.url()).origin === new URL(process.env.PED_TALK_LIVE_URL).origin) {
@@ -56,7 +58,15 @@ jobs:
             try {
               const response = await page.goto(process.env.PED_TALK_LIVE_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
               assert.ok(response && response.ok(), 'Published app URL must return a successful HTTP response');
-              await page.locator('#homeView').waitFor({ state: 'visible', timeout: 30000 });
+              await page.waitForTimeout(2000);
+          const startup = await page.evaluate(() => {
+            const home = document.querySelector('#homeView');
+            const nav = document.querySelector('.bottom-nav');
+            const script = [...document.scripts].map(item => ({src:item.src, ready:item.readyState || 'loaded'}));
+            return {url:location.href,title:document.title,readyState:document.readyState,homeExists:!!home,homeHidden:home?.hidden ?? null,homeDisplay:home?getComputedStyle(home).display:null,homeVisibility:home?getComputedStyle(home).visibility:null,navExists:!!nav,navDisplay:nav?getComputedStyle(nav).display:null,script};
+          });
+          console.log('STARTUP_DIAGNOSTICS ' + JSON.stringify(startup));
+          await page.locator('#homeView').waitFor({ state: 'visible', timeout: 10000 });
           await page.locator('.bottom-nav [data-view="the-show"]').waitFor({ state: 'visible', timeout: 15000 });
 
               await page.locator('.bottom-nav [data-view="the-show"]').click();
