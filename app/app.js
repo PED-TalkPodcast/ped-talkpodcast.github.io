@@ -104,7 +104,7 @@ function openDwoopModal(kind='upcoming'){
  const overlay=document.getElementById('dwoopOverlay'),title=document.getElementById('dwoopTitle'),eyebrow=document.getElementById('dwoopEyebrow'),intro=document.getElementById('dwoopIntro'),content=document.getElementById('dwoopContent');
  if(!overlay||!title||!content)return;
  const activePlayer=document.getElementById('pedtalkAudioEngine');
- const detailCard=overlay.querySelector('.dwoop-card-expanded');detailCard?.classList.toggle('dwoop-light',document.body.classList.contains('app-light'));
+ const detailCard=overlay.querySelector('.dwoop-card-expanded');detailCard?.classList.toggle('dwoop-light',document.body.classList.contains('app-light'));detailCard?.classList.toggle('dwoop-real-mode',kind==='real');
  const indicator=document.querySelector('.coming-soon-indicator');if(indicator)indicator.hidden=false;
  const artwork=document.getElementById('dwoopArtwork');if(artwork){artwork.replaceChildren();const source=kind==='upcoming'?document.querySelector('.app-showcase-upcoming .upcoming-artwork'):kind==='anagkazo'?document.querySelector('.app-showcase-anagkazo .anagkazo-artwork'):kind==='world'?document.querySelector('.app-showcase-world img'):kind==='real'?document.querySelector('.app-showcase-real img'):document.querySelector('.app-showcase-voice img');if(source){const clone=source.cloneNode(true);clone.querySelectorAll?.('[id]').forEach(node=>node.removeAttribute('id'));clone.removeAttribute?.('id');artwork.appendChild(clone);}}
  if(kind==='upcoming'){

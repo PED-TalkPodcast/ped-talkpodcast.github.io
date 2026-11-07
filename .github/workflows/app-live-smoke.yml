@@ -69,6 +69,16 @@ jobs:
           await page.locator('#homeView').waitFor({ state: 'visible', timeout: 10000 });
           await page.locator('.bottom-nav [data-view="the-show"]').waitFor({ state: 'visible', timeout: 15000 });
 
+              // The Real Conversations feature must retain its artwork after opening.
+              await page.locator('.app-showcase-real').evaluate(el => el.click());
+              await page.locator('#dwoopOverlay.active').waitFor({ state: 'visible', timeout: 10000 });
+              const realArtwork = await page.locator('#dwoopArtwork img').evaluate(img => ({visible:!!(img.getBoundingClientRect().width && img.getBoundingClientRect().height),loaded:img.complete && img.naturalWidth > 0,src:img.currentSrc || img.src}));
+              assert.ok(realArtwork.visible && realArtwork.loaded, 'Expanded Real Conversations card must display its original artwork');
+              assert.ok(await page.locator('.dwoop-card-expanded.dwoop-real-mode').count() === 1, 'Expanded Real Conversations card must receive its dedicated artwork treatment');
+              assert.match(await page.locator('#dwoopTitle').textContent(), /Real conversations/i);
+              await page.locator('#dwoopClose').click();
+              await page.locator('#dwoopOverlay').waitFor({ state: 'hidden', timeout: 10000 });
+
               await page.locator('.bottom-nav [data-view="the-show"]').click();
               await page.locator('#theShowView').waitFor({ state: 'visible' });
               await page.locator('#theShowView [data-show-view="books"]').click();

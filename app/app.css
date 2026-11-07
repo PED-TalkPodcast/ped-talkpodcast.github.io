@@ -3994,3 +3994,12 @@ body.app-light .app-showcase-real .voice-copy .eyebrow{color:#d8edc9}
 
 .fiction-view .fiction-unified-page-anchor{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important}
 .fiction-view .fiction-pdf-pages:has(.fiction-unified-text){display:block}
+
+
+/* v143 — retain the Real Conversations artwork in its expanded feature view. */
+.dwoop-card-expanded.dwoop-real-mode #dwoopArtwork{display:block!important;width:100%!important;max-width:100%!important;max-height:none!important;margin:18px 0 22px!important;overflow:hidden!important;border:1px solid rgba(183,217,142,.22)!important;border-radius:20px!important;background:#071b16!important;box-shadow:0 18px 48px rgba(0,0,0,.24)!important}
+.dwoop-card-expanded.dwoop-real-mode #dwoopArtwork>img{display:block!important;width:100%!important;height:clamp(210px,42vw,320px)!important;max-height:320px!important;object-fit:cover!important;object-position:center 42%!important;border-radius:19px!important}
+.dwoop-card-expanded.dwoop-real-mode .dwoop-feature-copy{color:var(--pt-muted,#aeb9b1)!important;line-height:1.8!important}
+.dwoop-card-expanded.dwoop-real-mode .eyebrow{color:#b7d98e!important}
+body.app-light .dwoop-card-expanded.dwoop-real-mode #dwoopArtwork{border-color:rgba(70,111,54,.24)!important;background:#eaf1e5!important;box-shadow:0 16px 36px rgba(29,48,25,.12)!important}
+body.app-light .dwoop-card-expanded.dwoop-real-mode .dwoop-feature-copy{color:#465346!important}
