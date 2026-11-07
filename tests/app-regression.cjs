@@ -200,10 +200,10 @@ const server = http.createServer((req,res)=>{
     await visible('#fictionDetailView');
     assert.match(await page.locator('#fictionDetailTitle').textContent(),/THE BLACK MAN’S JESUS/i,'book details must show the book title');
     assert.match(await page.locator('.fiction-detail-author,.fiction-detail-copy .fiction-book-author').first().textContent(),/Antwi Bosiako Papa Kofi/,'book details must show the author');
-    await visible('#fictionDetailDescription');
-    assert.match(await page.locator('#fictionDetailDescription').textContent(),/Kwamina.*1767/s,'book summary must describe the actual story');
+    assert.equal(await page.locator('#fictionDetailDescription').evaluate(el=>el.hidden),true,'book summary should be tucked away until requested');
+    assert.ok((await page.locator('#fictionDetailDescription').textContent()).trim().length<190,'book summary should stay concise');
     await visible('[data-open-fiction-reader]');
-    const detailLayout=await page.locator('.fiction-detail-card').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth,cover:el.querySelector('img').getBoundingClientRect().width,titleColor:getComputedStyle(el.querySelector('h2')).color,scrollWidth:document.documentElement.scrollWidth}));
+    const detailLayout=await page.locator('.fiction-detail-card').evaluate(el=>({width:el.getBoundingClientRect().width,viewport:innerWidth,cover:el.querySelector('img').getBoundingClientRect().width,titleColor:getComputedStyle(el.querySelector('h2')).color,background:getComputedStyle(el).backgroundImage,detailBackground:getComputedStyle(el.parentElement).backgroundColor,scrollWidth:document.documentElement.scrollWidth}));
     assert.ok(detailLayout.cover>=95,'book cover must be large enough to identify on mobile');
     assert.ok(detailLayout.width<=detailLayout.viewport,'book details card must fit the phone viewport');
     assert.ok(detailLayout.scrollWidth<=390,'book details must not create horizontal overflow');
@@ -219,6 +219,11 @@ const server = http.createServer((req,res)=>{
     assert.ok(readerLayout.documentWidth<=390,'in-app reader must not overflow horizontally on mobile');
     assert.ok(readerLayout.pages>0&&readerLayout.rendered,'PDF pages must render inside PED-Talk');
     assert.ok(readerLayout.backVisible,'reader must provide a Back to book action');
+    const scrollViewport=await page.locator('#fictionView').evaluate(el=>({height:el.clientHeight,scrollHeight:el.scrollHeight,overflow:getComputedStyle(el).overflowY}));
+    assert.ok(scrollViewport.height>0&&scrollViewport.scrollHeight>scrollViewport.height&&scrollViewport.overflow==='auto','reader must have its own scrollable viewport so lazy-loaded pages continue beyond the first screen');
+    await page.locator('#fictionView').evaluate(el=>el.scrollTo({top:el.scrollHeight,behavior:'instant'}));
+    await page.waitForFunction(()=>[...document.querySelectorAll('#fictionPdfPages .fiction-pdf-page-canvas')].filter(el=>el.querySelector('.fiction-reflow-content,canvas')).length>2,null,{timeout:30000});
+    await page.locator('#fictionView').evaluate(el=>el.scrollTo({top:0,behavior:'instant'}));
     await page.locator('#fictionPageBack').click();
     await visible('#fictionDetailView');
     assert.equal(popupOpened,false,'returning to book details must remain inside PED-Talk');
