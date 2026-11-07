@@ -1464,7 +1464,8 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  };
  const appendParagraph=(article,text)=>{
   const clean=text.trim();if(!clean)return;
-  const previous=article.lastElementChild;
+  let previous=article.lastElementChild;
+  while(previous?.classList?.contains('fiction-unified-page-anchor'))previous=previous.previousElementSibling;
   if(previous?.tagName==='P'){
    const oldText=previous.textContent||'';
    if(/[-‐‑]$/.test(oldText)){previous.textContent=oldText.replace(/[-‐‑]$/,'')+clean;return;}
