@@ -1401,7 +1401,7 @@ if(initialRouteView&&['home','episodes','saved','the-show','bible','bible-librar
 
 document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
 
-/* Fiction reading page: open directly from the Fiction category and render the source PDF sharply. */
+/* Unified-flow fiction reader: extract all selectable PDF text into one continuous document. */
 (()=>{
  const page=document.getElementById('fictionView');
  const pagesRoot=document.getElementById('fictionPdfPages');
@@ -1409,7 +1409,7 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  const back=document.getElementById('fictionPageBack');
  const pdfUrl=new URL("./assets/books/I%20am%20sharing%20%27THE%20BLACK%20MAN%27S%20JESUS%27%20with%20you.pdf",document.baseURI).href;
  if(!page||!pagesRoot||!status)return;
- let documentPromise=null,observer=null;
+ let documentPromise=null;
  const setStatus=message=>{status.textContent=message;};
  const loadPdfJs=()=>{
   if(window.pdfjsLib)return Promise.resolve(window.pdfjsLib);
@@ -1423,90 +1423,88 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
   }).catch(error=>{window.__pedTalkPdfJsPromise=null;throw error;});
   return window.__pedTalkPdfJsPromise;
  };
- const escapeReaderText=value=>String(value||'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
- const renderPage=async(pdf,pageNumber,container)=>{
-  if(container.dataset.rendered==='true'||container.dataset.rendering==='true')return;
-  container.dataset.rendering='true';
-  try{
-   const pdfPage=await pdf.getPage(pageNumber);
-   const textContent=await pdfPage.getTextContent();
-   const items=(textContent.items||[]).filter(item=>typeof item.str==='string'&&item.str.trim());
-   if(items.length){
-    const lines=[];
-    items.forEach(item=>{
-     const y=Number(item.transform?.[5]||0);
-     let line=lines.find(candidate=>Math.abs(candidate.y-y)<3.2);
-     if(!line){line={y,items:[]};lines.push(line);}
-     line.items.push(item);
-    });
-    lines.sort((a,b)=>b.y-a.y);
-    const heights=items.map(item=>Number(item.height)||10).filter(value=>value>0).sort((a,b)=>a-b);
-    const typicalHeight=heights[Math.floor(heights.length/2)]||10;
-    const paragraphs=[];let paragraph='',previousY=null;
-    lines.forEach(line=>{
-     line.items.sort((a,b)=>(Number(a.transform?.[4])||0)-(Number(b.transform?.[4])||0));
-     const lineText=line.items.map(item=>item.str).join(' ').replace(/\s+/g,' ').trim();
-     if(!lineText)return;
-     const gap=previousY===null?0:previousY-line.y;
-     if(paragraph&&gap>typicalHeight*1.85){paragraph=paragraph.replace(/-$/,'');paragraph=paragraph.trim();if(paragraph)paragraphs.push(paragraph);paragraph='';}
-     if(paragraph){paragraph+=/[-‐‑]$/.test(paragraph)?lineText:' '+lineText;}else paragraph=lineText;
-     previousY=line.y;
-    });
-    if(paragraph.trim())paragraphs.push(paragraph.trim());
-    const article=document.createElement('article');article.className='fiction-reflow-content';
-    paragraphs.forEach(text=>{
-     const p=document.createElement('p');p.textContent=text;article.appendChild(p);
-    });
-    if(article.childElementCount){container.replaceChildren(article);container.dataset.rendered='true';container.dataset.rendering='false';return;}
-   }
-   // Image-only pages retain the source PDF appearance when no selectable text exists.
-   const width=Math.max(280,Math.min(container.clientWidth||760,1000));
-   const base=pdfPage.getViewport({scale:1});
-   const scale=Math.min(2.5,Math.max(1.25,width/base.width*(window.devicePixelRatio||1)*1.15));
-   const viewport=pdfPage.getViewport({scale});
-   const canvas=document.createElement('canvas');
-   canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
-   canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Scanned page '+pageNumber+' of The Black Man’s Jesus');
-   canvas.style.width='100%';canvas.style.height='auto';canvas.style.display='block';
-   await pdfPage.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;
-   container.replaceChildren(canvas);container.dataset.rendered='true';container.dataset.rendering='false';
-  }catch(error){
-   container.dataset.rendering='false';
-   container.textContent='This page could not be displayed. Check your connection and try again.';
-   console.warn('Fiction page render failed',pageNumber,error);
+ const extractParagraphs=async(pdfPage)=>{
+  const content=await pdfPage.getTextContent();
+  const items=(content.items||[]).filter(item=>typeof item.str==='string'&&item.str.trim());
+  if(!items.length)return [];
+  const lines=[];
+  items.forEach(item=>{
+   const y=Number(item.transform?.[5]||0);
+   let line=lines.find(candidate=>Math.abs(candidate.y-y)<3.2);
+   if(!line){line={y,items:[]};lines.push(line);}
+   line.items.push(item);
+  });
+  lines.sort((a,b)=>b.y-a.y);
+  const heights=items.map(item=>Number(item.height)||10).filter(value=>value>0).sort((a,b)=>a-b);
+  const typicalHeight=heights[Math.floor(heights.length/2)]||10;
+  const paragraphs=[];let paragraph='',previousY=null;
+  lines.forEach(line=>{
+   line.items.sort((a,b)=>(Number(a.transform?.[4])||0)-(Number(b.transform?.[4])||0));
+   const lineText=line.items.map(item=>item.str).join(' ').replace(/\\s+/g,' ').trim();
+   if(!lineText)return;
+   const gap=previousY===null?0:previousY-line.y;
+   if(paragraph&&gap>typicalHeight*1.85){paragraph=paragraph.replace(/[-‐‑]$/,'').trim();if(paragraph)paragraphs.push(paragraph);paragraph='';}
+   if(paragraph){paragraph+=/[-‐‑]$/.test(paragraph)?lineText:' '+lineText;}else paragraph=lineText;
+   previousY=line.y;
+  });
+  if(paragraph.trim())paragraphs.push(paragraph.trim());
+  return paragraphs;
+ };
+ const appendScanPage=async(pdf,pdfPage,number,article)=>{
+  const figure=document.createElement('figure');figure.className='fiction-scan-page';figure.setAttribute('aria-label','Scanned page '+number);
+  const width=Math.max(280,Math.min(article.clientWidth||760,1000));
+  const base=pdfPage.getViewport({scale:1});
+  const scale=Math.min(2.5,Math.max(1.25,width/base.width*(window.devicePixelRatio||1)*1.15));
+  const viewport=pdfPage.getViewport({scale});
+  const canvas=document.createElement('canvas');canvas.width=Math.ceil(viewport.width);canvas.height=Math.ceil(viewport.height);
+  canvas.setAttribute('role','img');canvas.setAttribute('aria-label','Scanned page '+number+' of The Black Man’s Jesus');
+  canvas.style.width='100%';canvas.style.height='auto';canvas.style.display='block';
+  await pdfPage.render({canvasContext:canvas.getContext('2d',{alpha:false}),viewport}).promise;
+  figure.appendChild(canvas);article.appendChild(figure);
+ };
+ const appendParagraph=(article,text)=>{
+  const clean=text.trim();if(!clean)return;
+  const previous=article.lastElementChild;
+  if(previous?.tagName==='P'){
+   const oldText=previous.textContent||'';
+   if(/[-‐‑]$/.test(oldText)){previous.textContent=oldText.replace(/[-‐‑]$/,'')+clean;return;}
+   if(/^[a-z,;:)]/.test(clean)){previous.textContent=oldText+' '+clean;return;}
   }
+  const p=document.createElement('p');p.textContent=clean;article.appendChild(p);
  };
  const prepare=async()=>{
   if(documentPromise)return documentPromise;
-  setStatus('Opening the original book…');
+  setStatus('Opening the book and preparing its continuous text…');
   documentPromise=(async()=>{
    const pdfjs=await loadPdfJs();
    pdfjs.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
    const pdf=await pdfjs.getDocument({url:pdfUrl}).promise;
    window.__pedTalkFictionPdf=pdf;
-   window.dispatchEvent(new Event('pedTalkFictionPdfReady'));
-   pagesRoot.querySelectorAll('.fiction-pdf-page').forEach(node=>node.remove());
-   setStatus('The book is ready. Scroll to read all '+pdf.numPages+' pages.');
-   const fragment=document.createDocumentFragment(),containers=[];
+   pagesRoot.replaceChildren();
+   const article=document.createElement('article');article.className='fiction-unified-text';
+   article.setAttribute('aria-label','The Black Man’s Jesus — continuous reading text');
+   pagesRoot.appendChild(article);
+   const anchors=[];
    for(let number=1;number<=pdf.numPages;number++){
-    const section=document.createElement('section');section.className='fiction-pdf-page';section.setAttribute('aria-label','Page '+number);
-    const label=document.createElement('span');label.className='fiction-pdf-page-number';label.textContent='PAGE '+number;
-    const host=document.createElement('div');host.className='fiction-pdf-page-canvas';
-    section.append(label,host);fragment.appendChild(section);containers.push({number,host});
+    const anchor=document.createElement('span');anchor.className='fiction-pdf-page fiction-unified-page-anchor';anchor.dataset.page=String(number);anchor.setAttribute('aria-label','Source PDF page '+number);anchor.id='fiction-source-page-'+number;
+    article.appendChild(anchor);anchors.push(anchor);
+    const pdfPage=await pdf.getPage(number);
+    const paragraphs=await extractParagraphs(pdfPage);
+    if(paragraphs.length){paragraphs.forEach(text=>appendParagraph(article,text));}
+    else{await appendScanPage(pdf,pdfPage,number,article);}
+    if(number===1||number===pdf.numPages||number%5===0)setStatus('Preparing continuous text · '+number+' of '+pdf.numPages+' source pages');
    }
-   pagesRoot.appendChild(fragment);
-   if(observer)observer.disconnect();
-   observer=new IntersectionObserver(entries=>entries.forEach(entry=>{
-    if(entry.isIntersecting){const item=containers.find(row=>row.host===entry.target);if(item)renderPage(pdf,item.number,item.host);observer.unobserve(entry.target);}
-   }),{root:page,rootMargin:'1200px 0px'});
-   containers.forEach(item=>observer.observe(item.host));
-   await renderPage(pdf,1,containers[0].host);
+   if(!article.children.length)setStatus('No readable text was found in this PDF.');
+   else setStatus('Your book is ready · '+pdf.numPages+' source pages in one continuous flow.');
+   window.dispatchEvent(new Event('pedTalkFictionPdfReady'));
    return pdf;
   })().catch(error=>{
    documentPromise=null;
-   status.innerHTML='The book could not be loaded. Check your connection and try again.';const retry=document.createElement('button');retry.type='button';retry.className='fiction-reader-retry';retry.textContent='Try again';retry.addEventListener('click',()=>{documentPromise=null;pagesRoot.querySelectorAll('.fiction-pdf-page').forEach(node=>node.remove());prepare().catch(()=>{});});status.appendChild(retry);
-   console.warn('Fiction book could not be opened in-app',error);
-   throw error;
+   pagesRoot.replaceChildren();
+   status.textContent='The book could not be loaded. Check your connection and try again.';
+   const retry=document.createElement('button');retry.type='button';retry.className='fiction-reader-retry';retry.textContent='Try again';
+   retry.addEventListener('click',()=>{documentPromise=null;prepare().catch(()=>{});});status.appendChild(retry);
+   console.warn('Fiction book could not be opened in-app',error);throw error;
   });
   return documentPromise;
  };
@@ -1516,33 +1514,21 @@ document.addEventListener('DOMContentLoaded',()=>{loadExploreDailyVisual();});
  const readButton=fictionDetailView.querySelector('[data-open-fiction-reader]');
  const coverHint=coverButton?.querySelector('.fiction-detail-cover-hint');
  coverImage?.addEventListener('error',()=>{
-  coverImage.hidden=true;
-  const frame=coverImage.closest('.fiction-detail-cover-frame');
+  coverImage.hidden=true;const frame=coverImage.closest('.fiction-detail-cover-frame');
   if(frame){frame.textContent='THE BLACK MAN’S JESUS';frame.style.padding='10px';frame.style.textAlign='center';frame.style.font='700 10px/1.5 Georgia,serif';frame.style.color='#27382a';}
  });
  coverButton?.addEventListener('click',()=>{
-  const description=fictionDetailView.querySelector('#fictionDetailDescription');
-  const reveal=description.hidden;description.hidden=!reveal;
-  if(readButton)readButton.hidden=false;
-  coverButton.setAttribute('aria-expanded',String(reveal));
+  const description=fictionDetailView.querySelector('#fictionDetailDescription');const reveal=description.hidden;description.hidden=!reveal;
+  if(readButton)readButton.hidden=false;coverButton.setAttribute('aria-expanded',String(reveal));
   if(coverHint)coverHint.textContent=reveal?'Book cover · tap to hide summary':'Book cover · tap to show summary';
  });
- fictionDetailView.querySelector('[data-open-fiction-reader]')?.addEventListener('click',()=>{showView('fiction');prepare().catch(()=>{});});
- document.addEventListener('click',event=>{
-  const trigger=event.target.closest('[data-open-fiction-archive]');
-  if(trigger){event.preventDefault();showView('fiction-detail');}
- });
- document.addEventListener('keydown',event=>{
-  const trigger=event.target.closest?.('[data-open-fiction-archive]');
-  if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('fiction-detail');}
- });
+ readButton?.addEventListener('click',()=>{showView('fiction');prepare().catch(()=>{});});
+ document.addEventListener('click',event=>{const trigger=event.target.closest('[data-open-fiction-archive]');if(trigger){event.preventDefault();showView('fiction-detail');}});
+ document.addEventListener('keydown',event=>{const trigger=event.target.closest?.('[data-open-fiction-archive]');if(trigger&&(event.key==='Enter'||event.key===' ')){event.preventDefault();showView('fiction-detail');}});
  back?.addEventListener('click',()=>showView('fiction-detail'));
- const fictionNavBack=document.querySelector('#fictionView [data-view="books"]');
- fictionNavBack?.addEventListener('click',()=>showView('books'));
+ document.querySelector('#fictionView [data-view="books"]')?.addEventListener('click',()=>showView('books'));
  const observerPage=new MutationObserver(()=>{if(!page.hidden)prepare().catch(()=>{});});
  observerPage.observe(page,{attributes:true,attributeFilter:['hidden']});
- // A direct ?view=fiction route is rendered before this reader controller is attached.
- // MutationObserver does not replay the existing visible state, so initialise it explicitly.
  if(!page.hidden)prepare().catch(()=>{});
 })();
 
