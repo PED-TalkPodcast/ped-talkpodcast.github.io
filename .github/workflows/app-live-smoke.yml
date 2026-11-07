@@ -29,7 +29,7 @@ jobs:
         run: npx playwright install chromium
       - name: Test the published PED-Talk app on a mobile viewport
         env:
-          PED_TALK_LIVE_URL: https://ped-talkpodcast.github.io/ped-talkpodcast.github.io/app/
+          PED_TALK_LIVE_URL: https://ped-talkpodcast.github.io/app/
         run: |
           node <<'NODE'
           const assert = require('node:assert/strict');
