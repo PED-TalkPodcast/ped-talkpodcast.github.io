@@ -69,6 +69,9 @@ jobs:
           await page.locator('#homeView').waitFor({ state: 'visible', timeout: 10000 });
           await page.locator('.bottom-nav [data-view="the-show"]').waitFor({ state: 'visible', timeout: 15000 });
 
+              // Navigate to the Real Conversations slide before testing its tap-to-open flow.
+              await page.evaluate(() => window.PEDShowcase?.goTo(4));
+              await page.waitForFunction(() => window.PEDShowcase?.activeIndex === 4, null, { timeout: 5000 });
               // The Real Conversations feature must retain its artwork after opening.
               await page.locator('.app-showcase-real').evaluate(el => el.click());
               await page.locator('#dwoopOverlay.active').waitFor({ state: 'visible', timeout: 10000 });
