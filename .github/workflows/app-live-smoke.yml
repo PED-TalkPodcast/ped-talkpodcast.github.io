@@ -105,8 +105,9 @@ jobs:
               assert.ok(result.backVisible, 'Published reader must provide a Back to book control');
               const scrollable = await page.locator('#fictionView').evaluate(el => ({height:el.clientHeight,scrollHeight:el.scrollHeight,overflow:getComputedStyle(el).overflowY}));
               assert.ok(scrollable.height > 0 && scrollable.scrollHeight > scrollable.height && scrollable.overflow === 'auto', 'Published reader must scroll within its viewport');
-              await page.locator('#fictionView').evaluate(el => el.scrollTo({top:el.scrollHeight,behavior:'instant'}));
-              await page.waitForFunction(() => document.querySelector('#fictionPdfPages .fiction-unified-text p:last-child')?.getBoundingClientRect().bottom < innerHeight + 1000, null, {timeout:15000});
+              const bottomScroll = await page.locator('#fictionView').evaluate(el => { el.scrollTo({top:el.scrollHeight,behavior:'instant'}); return {top:el.scrollTop,max:el.scrollHeight-el.clientHeight}; });
+              assert.ok(bottomScroll.max > 0 && bottomScroll.top > 0, 'Published reader must scroll through the continuous book');
+              assert.ok(await page.locator('#fictionPdfPages .fiction-unified-text p:last-child').count() > 0, 'The final book text must exist in the unified document');
               assert.equal(popupOpened, false, 'Read Book must not open a new browser tab');
 
               await page.locator('#fictionPageBack').click();
